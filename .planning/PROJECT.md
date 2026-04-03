@@ -66,10 +66,27 @@ Thư ký khoa có thể quản lý toàn bộ vòng đời LVTN — từ import 
 - **Giảng viên hướng dẫn**: Thầy Trần Văn Hùng (fitstu.net) — đã confirm tech stack React + Laravel
 - **Deadline**: Dưới 2 tháng — ưu tiên hoàn thành core flow trước, polish sau
 - **Developer**: Mới bắt đầu với Laravel — cần code tự nhiên kiểu sinh viên, không over-engineer
+- **Greenfield project**: Không tái sử dụng code cũ trong `backend/` và `frontend/` — chỉ dùng để tham khảo logic nghiệp vụ
 - **File mẫu Word**: Đã có trong `docs/huong_dan/huong_dan/` — cần map đúng fields khi export
 - **File Excel mẫu**: `Chốt_DSSV_GVHD_TenDeTai_LVTN_Dot2_17112025.xlsx` — import format từ đây
 - **Công thức điểm**: 20% HD + 20% PB + 60% HĐ (đã confirm với thầy)
 - **Một GV có thể đảm nhiều vai trò** cùng lúc (GVHD nhóm A, GVPB nhóm B, thành viên HĐ nhóm C) — RBAC phải xử lý đúng
+
+### Yêu cầu kiểm tra từ thầy (Chu de phan 2.docx)
+
+**Kiểm tra lần 1 (thuyết trình trên lớp):**
+- Chuẩn bị: File PowerPoint — giới thiệu đề tài, chức năng, database (chụp relationship), công nghệ, công việc từng thành viên (kỹ), kết quả từng thành viên (đã làm, đã deploy)
+- Demo: Chạy trên 1 máy, kết quả trên hosting (cần laptop dự phòng)
+- Thời gian: Tối đa 20 phút/nhóm, thứ tự random
+- Cung cấp: link website FE, BE, GitHub
+
+**Kiểm tra kết thúc (tuần cuối):**
+- Cuốn báo cáo in A4 (không in màu, không đóng bìa kính) theo mẫu: https://tranvanhung.fitstu.net/lvtn/Y_MAU_LVTN_2025.pdf
+  - Trang bìa: đúng thông tin (tên môn học, DSSV, GVHD)
+  - Trang 2: công việc + % đóng góp từng thành viên (tổng = 100%), địa chỉ website + GitHub
+- Laptop: mỗi cá nhân chuẩn bị, test local phần mình làm
+- Thời gian: 30 phút/nhóm
+- Chú ý: **không bắt buộc làm hết tất cả chức năng** — ưu tiên làm tốt những gì đã làm
 
 ## Constraints
 
@@ -108,4 +125,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-03 after initialization*
+*Last updated: 2026-04-03 after initialization + thêm yêu cầu kiểm tra từ Chu de phan 2.docx*

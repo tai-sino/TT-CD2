@@ -1,41 +1,10 @@
-# Roadmap: TT-CD2 — He thong Quan ly Luan van Tot nghiep
+# Roadmap: TT-CD2 — Hệ thống Quản lý Luận văn Tốt nghiệp
 
 **Created:** 2026-04-03
-**Target:** 2026-05-25 (~7 tuan con lai)
-**Phases:** 6 phases -> Demo Ready (v1.0)
+**Target:** 2026-05-25 (~7 tuần)
+**Phases:** 6 phases → Demo Ready (v1.0)
 
----
-
-## Hien trang code hien tai
-
-Truoc khi len ke hoach, can hieu nhung gi da co de khong lam lai tu dau:
-
-### Backend (Laravel 12)
-- **Models**: Student, Teacher, Topic, Council, CouncilMember, Score, Setting, ThesisForm (8 models)
-- **Controllers**: StudentController, LecturerController (chua dung), TopicController (chua dung), CouncilController (chua dung), DashboardController, ThesisFormController, AuthController (chua dung)
-- **API routes**: ~820 dong trong `api.php`, phan lon la closure routes (logic viet thang trong route, khong qua controller)
-- **Auth**: Custom token luu Cache file store — khong on dinh, mat khi restart server
-- **Role system**: Lay role tu `council_members` table — sai logic (GV chua co hoi dong thi khong co role)
-- **Packages**: phpoffice/phpspreadsheet + phpoffice/phpword da co trong composer.json
-- **Migrations**: KHONG CO — chi co SQL dump
-- **Cham diem**: Logic cham GVHD/GVPB da co (4 tieu chi, quy thang 10). Cham hoi dong + tinh tong ket da co.
-
-### Frontend (React 18 + Vite + Tailwind 4)
-- **Pages**: LoginPage, Dashboard, Assignment, Midterm, Review, Council, TopicManagement, ThesisForm, UsersPage
-- **Layout**: ThesisLayout (sidebar + content area)
-- **Auth**: AuthContext voi token luu localStorage
-- **Services**: 8 service files (authService, studentService, lecturerService, thesisService, councilService, ...)
-- **Routing**: React Router 6, nested routes duoi `/thesis/*`
-
-### Nhung gi CAN LAM MOI / REFACTOR
-1. Tach closure routes thanh controller methods (api.php qua lon)
-2. Viet migrations thay cho SQL dump
-3. Fix auth system — doi tu Cache sang DB token hoac Sanctum
-4. Fix role system — isAdmin flag + role-per-context
-5. Implement cac route dang tra 501 (import Excel, export Word)
-6. Them SV login (hien tai chi co GV login)
-7. Them phan cong GVPB
-8. UI cho SV xem de tai + in form nhiem vu
+> **Lưu ý:** Đây là project mới hoàn toàn (greenfield). Thư mục `backend/` và `frontend/` trong repo hiện tại chỉ để tham khảo logic nghiệp vụ, KHÔNG tái sử dụng code.
 
 ---
 
@@ -43,193 +12,178 @@ Truoc khi len ke hoach, can hieu nhung gi da co de khong lam lai tu dau:
 
 | Phase | Name | Goal | Est. Duration |
 |-------|------|------|---------------|
-| 1 | Nen tang & Refactor | Migrations, auth dung, tach controllers, role system chuan | 1.5 tuan |
-| 2 | Import SV & Phan cong GVHD | Import Excel chay duoc, phan cong SV cho GVHD, GVHD giao de tai | 1.5 tuan |
-| 3 | Cham diem & Export Word | GVHD/GVPB cham diem, xuat phieu cham Word tu template | 1.5 tuan |
-| 4 | Hoi dong & Phan cong PB | Lap hoi dong, phan cong GVPB, phan cong de tai vao HĐ | 1 tuan |
-| 5 | SV Portal & Diem tong ket | SV dang nhap, xem de tai, in form nhiem vu, tinh diem tong ket | 1 tuan |
-| 6 | Deploy & Polish | Deploy len hosting, sua UI, test toan bo flow | 0.5-1 tuan |
+| 1 | Nền tảng | Laravel project mới, DB migrations, auth, React setup | 1.5 tuần |
+| 2 | Import SV & Phân công GVHD | Import Excel, phân công, GVHD giao đề tài | 1.5 tuần |
+| 3 | Chấm điểm & Export Word | GVHD/GVPB chấm điểm, xuất phiếu Word | 1.5 tuần |
+| 4 | Hội đồng & Phân công PB | Lập hội đồng, phân công GVPB, xuất danh sách | 1 tuần |
+| 5 | SV Portal & Điểm tổng kết | SV đăng nhập, xem đề tài, in form nhiệm vụ, tính điểm | 1 tuần |
+| 6 | Deploy & Polish | Deploy hosting, test toàn bộ flow, UI cleanup | 0.5-1 tuần |
 
-**Tong:** ~7 tuan (vua du deadline)
-
----
-
-## Phase 1: Nen tang & Refactor
-
-**Goal:** Backend co migrations chuan, auth on dinh, role dung logic, api.php duoc tach thanh controllers. Frontend ket noi duoc voi auth moi.
-
-**Delivers:**
-- Database tao bang migrations (khong con phu thuoc SQL dump)
-- Auth login/logout dung DB token thay vi Cache file
-- Role system: isAdmin flag cho thu ky, role-per-context cho GVHD/GVPB
-- api.php chi chua route definitions, logic nam trong controllers
-- Login page frontend ket noi duoc voi auth backend moi
-
-**Code da co lien quan:**
-- 8 models da dinh nghia — giu lai, sua table name/fillable neu can
-- AuthContext frontend — giu lai, update API endpoints
-- ThesisLayout + routing — giu nguyen
-
-**Plans:**
-1. **Viet migrations** — tao migrations cho 7 bang chinh (giangvien, sinhvien, detai, hoidong, thanhvienhoidong, diem, cauhinh) + them cot `isAdmin` vao giangvien, them cot `matKhau` vao sinhvien
-2. **Refactor auth** — tao bang `api_tokens` trong DB, viet middleware xac thuc tu DB token thay Cache. Them endpoint login cho SV (hoac check ca 2 bang giangvien + sinhvien khi login)
-3. **Tach controllers** — chuyen closure routes trong api.php sang cac controller tuong ung (AuthController, LecturerController, TopicController, CouncilController, ScoreController, SettingController, ExportController)
-4. **Seeder co ban** — tao seeder voi 1 admin account, vai GV mau, vai SV mau de test
-
-**Success criteria:**
-- [ ] `php artisan migrate` chay thanh cong tu database trong
-- [ ] Login bang GV account tra ve token, /me tra ve user info voi roles dung
-- [ ] api.php duoi 50 dong (chi route definitions)
-- [ ] Moi controller co it nhat index + show method hoat dong
-- [ ] Frontend login/logout hoat dong voi auth moi
+**Tổng:** ~7 tuần (vừa đủ deadline)
 
 ---
 
-## Phase 2: Import SV & Phan cong GVHD
+## Phase 1: Nền tảng
 
-**Goal:** Thu ky import duoc danh sach SV tu file Excel, phan cong SV cho GVHD (max 10 SV/GV), GVHD xem duoc danh sach SV va giao de tai.
+**Goal:** Laravel 12 project mới chạy được, database schema đúng, auth hoạt động với 4 role, React SPA kết nối được với backend.
 
 **Delivers:**
-- Upload file Excel (.xlsx) va import DSSV vao database
-- Giao dien phan cong SV cho GVHD (drag-drop hoac select)
-- GVHD thay danh sach SV duoc phan cong
-- GVHD tao de tai va gan SV vao (1 hoac 2 SV/de tai)
-- CRUD giangvien hoan chinh (da co API, can fix va ket noi FE)
-
-**Code da co lien quan:**
-- StudentController co index/show/store/update/destroy — giu lai
-- Route `/students/import-excel` dang tra 501 — can implement
-- Route `/topics/create-group-assign` da co logic tao de tai + gan SV — giu lai
-- Frontend: Assignment.jsx, TopicManagement.jsx — review lai va update
+- Laravel 12 project mới với cấu trúc chuẩn
+- Migrations cho toàn bộ schema (giangvien, sinhvien, detai, hoidong, thanhvienhoidong, diem, cauhinh)
+- Auth: login/logout/me — token lưu DB, check cả bảng giangvien + sinhvien
+- Role system: `isAdmin` flag cho thư ký, role-per-context cho GVHD/GVPB
+- React 19 + Vite + Tailwind setup, routing, AuthContext, login page hoạt động
+- Seeders: 1 admin, vài GV mẫu, vài SV mẫu để test
 
 **Plans:**
-1. **Import Excel** — dung phpspreadsheet doc file truc tiep (khong dung maatwebsite/excel), parse theo format file mau `Chốt_DSSV_GVHD_TenDeTai_LVTN_Dot2_17112025.xlsx`, validate data truoc khi insert
-2. **UI Import** — form upload file, hien thi preview truoc khi import, bao loi neu co dong sai
-3. **Phan cong GVHD** — API gan SV cho GV (max 10), FE cho phep chon GV va chon SV de phan cong
-4. **GVHD giao de tai** — GVHD dang nhap thay danh sach SV, tao de tai moi, gan 1-2 SV vao de tai
+1. **Laravel setup** — `composer create-project laravel/laravel`, cài packages (phpoffice/phpword, phpoffice/phpspreadsheet, spatie/laravel-permission v6), cấu hình CORS
+2. **Database schema** — viết migrations cho 7 bảng chính, foreign keys, indexes
+3. **Auth API** — endpoint login/logout/me, middleware xác thực token từ DB, response trả về roles
+4. **React setup** — Vite project, React Router 6, Tailwind 4, AuthContext, LoginPage, layout với sidebar theo role
+5. **Seeder** — admin + GV mẫu + SV mẫu, test login từng role
 
 **Success criteria:**
-- [ ] Upload file Excel mau import thanh cong, SV xuat hien trong danh sach
-- [ ] Phan cong 10 SV cho 1 GV thanh cong, SV thu 11 bi tu choi
-- [ ] GVHD dang nhap thay chi danh sach SV cua minh
-- [ ] GVHD tao de tai va gan 2 SV vao thanh cong
+- [ ] `php artisan migrate` chạy thành công từ database trống
+- [ ] Login GV → token trả về, `/api/me` trả về user info với roles đúng
+- [ ] Login SV → cùng endpoint, phân biệt được GV vs SV
+- [ ] React SPA đăng nhập được, redirect đúng trang theo role
+- [ ] 4 role thấy menu khác nhau
+
+**Requirements covered:** AUTH-01, AUTH-02, AUTH-03, AUTH-04, AUTH-05, AUTH-06, KY-01, KY-02
 
 ---
 
-## Phase 3: Cham diem & Export Word
+## Phase 2: Import SV & Phân công GVHD
 
-**Goal:** GVHD cham diem huong dan, GVPB cham diem phan bien, xuat phieu cham thanh file Word theo mau cua khoa.
+**Goal:** Thư ký import được danh sách SV từ file Excel, phân công SV cho GVHD (max 10 SV/GV), GVHD tạo và giao đề tài.
 
 **Delivers:**
-- Form cham diem GVHD (4 tieu chi, quy thang 10) — da co logic, can UI tot hon
-- Form cham diem GVPB — tuong tu GVHD
-- Export file Word Mau 01.01, 01.02 (GVHD) tu template .docx
-- Export file Word Mau 02.01, 02.02 (GVPB) tu template .docx
-- Danh gia 50% (giua ky) — da co toggle, can hoan thien
-
-**Code da co lien quan:**
-- API `/topics/{topic}/score-gvhd` va `/topics/{topic}/score-gvpb` da co — giu lai
-- Frontend: Midterm.jsx (cham giua ky), Review.jsx (phan bien) — update UI
-- phpoffice/phpword da co trong composer.json — chua implement
-- File mau .docx da convert trong `docs/huong_dan/`
+- Upload file Excel → parse → validate → import SV vào DB
+- Tự tạo tài khoản SV khi import
+- Giao diện phân công SV cho GVHD
+- GVHD xem danh sách SV mình hướng dẫn
+- GVHD tạo đề tài và gán 1-2 SV
 
 **Plans:**
-1. **Hoan thien UI cham diem GVHD** — form nhap 4 tieu chi cho tung SV, tinh diem tu dong, luu vao DB
-2. **UI cham diem GVPB** — tuong tu GVHD nhung cho role GVPB
-3. **Export Word GVHD** — dung PHPWord TemplateProcessor, load file Mau_01.01.docx / 01.02.docx, fill data va stream download. Test ky voi template thuc te.
-4. **Export Word GVPB** — tuong tu, dung Mau_02.01.docx / 02.02.docx
-5. **Danh gia giua ky** — thu ky bat/tat cho phep cham GK, GVHD danh gia trang thai SV (duoc lam tiep / dinh chi / canh cao)
+1. **Import Excel** — dùng phpspreadsheet đọc file trực tiếp, parse theo format file mẫu `Chốt_DSSV_GVHD_TenDeTai_LVTN_Dot2_17112025.xlsx`, validate, insert vào DB
+2. **UI Import** — form upload, hiển thị preview trước khi import, báo lỗi theo từng dòng
+3. **Phân công GVHD** — API gán SV cho GV (max 10), FE dropdown chọn GV cho từng SV hoặc nhóm SV
+4. **GVHD giao đề tài** — GVHD tạo đề tài (tên, mô tả, mục tiêu, output), gán 1 hoặc 2 SV, xem danh sách đề tài
 
 **Success criteria:**
-- [ ] GVHD cham diem cho de tai co 2 SV, diem tinh dung (trung binh 2 SV)
-- [ ] Download file Word Mau 01.01 co day du thong tin SV, de tai, diem — dung format mau khoa
-- [ ] Download file Word Mau 02.01 cho GVPB tuong tu
-- [ ] Thu ky bat/tat cham giua ky thanh cong
+- [ ] Upload file Excel mẫu → import thành công, SV xuất hiện trong danh sách
+- [ ] Phân công 10 SV cho 1 GV thành công, SV thứ 11 bị từ chối
+- [ ] GVHD đăng nhập thấy chỉ danh sách SV của mình
+- [ ] GVHD tạo đề tài và gán 2 SV vào thành công
+
+**Requirements covered:** SV-01, SV-02, SV-03, GV-01, PC-GVHD-01, PC-GVHD-02, PC-GVHD-03, DT-01, DT-02, DT-03
 
 ---
 
-## Phase 4: Hoi dong & Phan cong PB
+## Phase 3: Chấm điểm & Export Word
 
-**Goal:** Thu ky lap hoi dong bao ve, phan cong GVPB cho de tai, phan cong de tai vao hoi dong co thu tu.
+**Goal:** GVHD chấm điểm hướng dẫn và giữa kỳ, GVPB chấm điểm phản biện, xuất phiếu chấm thành file Word đúng format mẫu của khoa.
 
 **Delivers:**
-- CRUD hoi dong bao ve (ngay, phong, 3-4 GV voi vai tro)
-- Phan cong GVPB cho tung de tai
-- Phan cong de tai vao hoi dong co thu tu trinh bay
-- Xuat danh sach bao ve LVTN (Excel)
+- Form chấm điểm GVHD (tiêu chí, tổng điểm, nhận xét)
+- Export Word: Mẫu 01.01 (nhóm), 01.02 (cá nhân)
+- Form chấm điểm GVPB
+- Export Word: Mẫu 02.01 (nhóm), 02.02 (cá nhân)
+- Đánh giá giữa kỳ 50% (đạt/không đạt)
 
-**Code da co lien quan:**
-- Council CRUD da co trong api.php (closure routes) — can chuyen sang controller
-- Route `/topics/assign-hoidong` da co — giu lai
-- Frontend: Council.jsx da co — review va update
-- Topic model co `maGV_PB` va `maHoiDong` fields — da co
+> ⚠️ **Risk cao:** Test export Word sớm nhất có thể — placeholder trong template có thể bị tách XML.
 
 **Plans:**
-1. **Phan cong GVPB** — thu ky chon de tai, chon GV phan bien, luu vao `detai.maGV_PB`. FE hien thi dropdown GV cho moi de tai.
-2. **Hoan thien UI Hoi dong** — form tao/sua hoi dong voi chon GV theo vai tro (chu tich, thu ky, uy vien), them truong ngay bao ve
-3. **Phan cong de tai vao HĐ** — chon nhieu de tai, gan vao 1 hoi dong, co thu tu trinh bay (dung drag-drop hoac input so thu tu)
-4. **Xuat danh sach bao ve** — export Excel danh sach SV + de tai + hoi dong + ngay + phong
+1. **Chấm điểm GVHD** — form nhập tiêu chí, tính tổng tự động, lưu DB, hiển thị lại điểm đã chấm
+2. **Export Word GVHD** — dùng PHPWord TemplateProcessor, load Mau_01.01.docx / 01.02.docx, fill dữ liệu, stream download. Test kỹ với file thực tế.
+3. **Chấm điểm GVPB + Export** — tương tự GVHD, dùng Mau_02.01.docx / 02.02.docx
+4. **Đánh giá giữa kỳ** — thư ký bật/tắt cho phép chấm GK, GVHD đánh giá trạng thái SV
 
 **Success criteria:**
-- [ ] Phan cong GVPB cho de tai thanh cong, GVPB dang nhap thay de tai phan bien
-- [ ] Tao hoi dong voi 3 GV (ChuTich, ThuKy, UyVien) thanh cong
-- [ ] Gan 3 de tai vao hoi dong co thu tu 1-2-3
-- [ ] Download file Excel danh sach bao ve day du thong tin
+- [ ] GVHD chấm điểm đề tài 2 SV, lưu thành công
+- [ ] Download Mẫu 01.01 có đầy đủ thông tin SV, đề tài, điểm — đúng format mẫu khoa
+- [ ] Download Mẫu 02.02 cho GVPB tương tự
+- [ ] Chữ tiếng Việt trong file Word không bị lỗi font
+
+**Requirements covered:** GIAM50-01, GIAM50-02, GIAM50-03, CHAMSV-01, CHAMSV-02, CHAMSV-03, CHAMSV-04, CHAMPB-01, CHAMPB-02, CHAMPB-03, CHAMPB-04, EXPORT-01, EXPORT-02, EXPORT-03
 
 ---
 
-## Phase 5: SV Portal & Diem tong ket
+## Phase 4: Hội đồng & Phân công PB
 
-**Goal:** Sinh vien dang nhap xem de tai cua minh, in form nhiem vu LVTN. He thong tinh diem tong ket tu dong.
+**Goal:** Thư ký lập hội đồng bảo vệ, phân công GVPB cho từng đề tài, phân công đề tài vào hội đồng có thứ tự, xuất danh sách bảo vệ.
 
 **Delivers:**
-- SV dang nhap bang MSSV + mat khau
-- Trang SV xem thong tin de tai, GVHD, trang thai
-- Export form nhiem vu LVTN (Form_NhiemvuLVTN.docx)
-- Tinh diem tong ket: 20% HD + 20% PB + 60% HĐ, quy doi diem chu
-- Dashboard thong ke cho admin (neu con thoi gian)
-
-**Code da co lien quan:**
-- Logic tinh diem tong ket da co trong route `/topics/council-score` — giu lai
-- Logic quy doi diem chu (A+, A, B+, ...) da co — giu lai
-- Chua co SV login, chua co trang SV
+- CRUD hội đồng (ngày, phòng, số HĐ, 3-4 GV với vai trò)
+- Phân công GVPB cho đề tài
+- Phân công đề tài vào hội đồng có thứ tự trình bày
+- Xuất danh sách bảo vệ LVTN (Excel)
 
 **Plans:**
-1. **SV login** — them endpoint login check bang `sinhvien` (MSSV + matKhau), tra ve token + info. FE them trang login cho SV (hoac dung chung trang login, auto detect GV hay SV).
-2. **Trang SV** — hien thi de tai, ten GVHD, trang thai giua ky, diem (neu da co), thong tin hoi dong
-3. **Export form nhiem vu** — dung PHPWord fill Form_NhiemvuLVTN.docx voi ten SV, ten de tai, ten GVHD, ...
-4. **Tinh diem tong ket** — khi admin nhap diem hoi dong, tu dong tinh diem tong ket va diem chu. Hien thi bang diem tong hop.
+1. **Phân công GVPB** — thư ký chọn đề tài → chọn GV phản biện, lưu vào DB. FE dropdown GV cho mỗi đề tài.
+2. **Lập hội đồng** — form tạo/sửa hội đồng với chọn GV theo vai trò (chủ tịch, thư ký, uỷ viên), ngày bảo vệ, phòng
+3. **Phân công đề tài vào HĐ** — chọn nhiều đề tài, gán vào 1 hội đồng, có thứ tự trình bày
+4. **Xuất danh sách bảo vệ** — export Excel danh sách SV + đề tài + hội đồng + ngày + phòng
 
 **Success criteria:**
-- [ ] SV dang nhap bang MSSV, thay duoc de tai cua minh
-- [ ] SV download form nhiem vu LVTN voi thong tin dung
-- [ ] Nhap du 3 loai diem (HD, PB, HĐ) -> diem tong ket tinh tu dong
-- [ ] Bang diem tong hop hien thi dung diem chu
+- [ ] Phân công GVPB cho đề tài thành công, GVPB đăng nhập thấy đề tài phản biện
+- [ ] Tạo hội đồng với 3 GV (Chủ tịch, Thư ký, Uỷ viên) thành công
+- [ ] Gán 3 đề tài vào hội đồng có thứ tự 1-2-3
+- [ ] Download file Excel danh sách bảo vệ đầy đủ thông tin
+
+**Requirements covered:** PC-GVPB-01, PC-GVPB-02, PC-GVPB-03, HD-01, HD-02, HD-03, HD-04, HD-05
+
+---
+
+## Phase 5: SV Portal & Điểm tổng kết
+
+**Goal:** Sinh viên đăng nhập xem đề tài, tải form nhiệm vụ LVTN. Hệ thống tính điểm tổng kết tự động từ 3 loại điểm.
+
+**Delivers:**
+- SV đăng nhập bằng MSSV + mật khẩu
+- Trang SV xem thông tin đề tài, GVHD, trạng thái
+- Tải form nhiệm vụ LVTN (Form_NhiemvuLVTN.docx) — bản 1SV và 2SV
+- Admin nhập điểm hội đồng → tính điểm tổng kết: 20%HD + 20%PB + 60%HĐ
+- Bảng điểm tổng hợp
+
+**Plans:**
+1. **SV login** — endpoint login check bảng sinhvien (MSSV + mật khẩu), trả về token + info
+2. **Trang SV** — hiển thị đề tài, tên GVHD, trạng thái, điểm (nếu đã có)
+3. **Export form nhiệm vụ** — PHPWord fill Form_NhiemvuLVTN.docx với tên SV, đề tài, GVHD, ...
+4. **Tính điểm tổng kết** — admin nhập điểm HĐ, hệ thống tính tự động, hiển thị bảng điểm
+
+**Success criteria:**
+- [ ] SV đăng nhập bằng MSSV, thấy được đề tài của mình
+- [ ] SV download form nhiệm vụ LVTN với thông tin đúng
+- [ ] Nhập đủ 3 loại điểm → điểm tổng kết tính tự động đúng công thức
+- [ ] Bảng điểm tổng hợp hiển thị đúng
+
+**Requirements covered:** SV-04, DT-04, DT-05, GIAM50-03, DIEM-01, DIEM-02, DIEM-03, DIEM-04, SV-PAGE-01, SV-PAGE-02
 
 ---
 
 ## Phase 6: Deploy & Polish
 
-**Goal:** He thong chay tren hosting thuc, giao dien on dinh, flow chinh demo duoc tron ven.
+**Goal:** Hệ thống chạy trên hosting thật, giao diện ổn định, flow chính demo được trọn vẹn.
 
 **Delivers:**
-- Deploy thanh cong len hosting cua thay
-- Domain .io.vn hoac .id.vn tro ve dung
-- UI responsive, khong bi loi hien thi
-- Flow demo: Import SV -> Phan cong GVHD -> Giao de tai -> Cham diem -> Export Word -> Lap HĐ -> Tinh tong ket
+- Deploy thành công lên hosting của thầy
+- Domain .io.vn hoặc .id.vn trỏ về đúng
+- UI responsive, không bị lỗi hiển thị
+- Full demo flow chạy được end-to-end
 
 **Plans:**
-1. **Build React** — `npm run build`, copy output vao `backend/public/`, cau hinh catch-all route cho SPA
-2. **Deploy Laravel** — upload len hosting, cau hinh .env, chay migrations, test API
-3. **Cau hinh .htaccess** — rewrite rules cho API va SPA routing
-4. **Test toan bo flow** — chay thu tu dau den cuoi, fix loi gap duoc
-5. **UI polish** — sua nhung cho bi loi UI, them loading states cho cac trang chinh, responsive check
+1. **Build React** — `npm run build`, config để serve từ Laravel `public/`
+2. **Deploy Laravel** — upload lên hosting, cấu hình `.env`, chạy migrations, test API
+3. **Cấu hình .htaccess** — rewrite rules cho API routes và SPA routing
+4. **Test toàn bộ flow** — chạy thử từ đầu đến cuối, fix lỗi gặp phải
+5. **UI polish** — sửa những chỗ bị lỗi UI, thêm loading states, responsive check
 
 **Success criteria:**
-- [ ] Truy cap domain.io.vn thay giao dien login
-- [ ] Demo full flow tu import SV den xuat diem tong ket khong bi loi
-- [ ] Trang web hoat dong tren laptop khac (khong chi may dev)
-- [ ] Khong co loi console JS nghiem trong
+- [ ] Truy cập domain.io.vn thấy giao diện login
+- [ ] Demo full flow từ import SV đến xuất điểm tổng kết không bị lỗi
+- [ ] Trang web hoạt động trên laptop khác (không chỉ máy dev)
+- [ ] Không có lỗi console JS nghiêm trọng
 
 ---
 
@@ -238,53 +192,26 @@ Truoc khi len ke hoach, can hieu nhung gi da co de khong lam lai tu dau:
 **Phases:** 1-6
 **Target:** 2026-05-25
 
-**Demo flow chinh (BAT BUOC hoat dong):**
+**Demo flow bắt buộc hoạt động:**
 ```
-Admin login -> Import DSSV tu Excel -> Phan cong SV cho GVHD
--> GVHD login -> Giao de tai -> Cham diem giua ky -> Cham diem HD -> Export Word
--> Admin phan cong GVPB -> GVPB login -> Cham diem PB -> Export Word
--> Admin lap hoi dong -> Gan de tai vao HĐ -> Nhap diem HĐ -> Tinh tong ket
--> SV login -> Xem de tai -> In form nhiem vu
--> Admin xuat danh sach bao ve
+Admin login
+→ Import DSSV từ Excel
+→ Phân công SV cho GVHD
+→ GVHD login → Giao đề tài → Chấm điểm giữa kỳ → Chấm điểm HD → Export Word
+→ Admin phân công GVPB
+→ GVPB login → Chấm điểm PB → Export Word
+→ Admin lập hội đồng → Gán đề tài vào HĐ → Nhập điểm HĐ → Tính tổng kết
+→ SV login → Xem đề tài → In form nhiệm vụ
+→ Admin xuất danh sách bảo vệ
 ```
 
-**Nice to have (lam neu con thoi gian):**
-- Dashboard thong ke dep (so SV, so de tai, tien do)
-- Auto-assign GVHD (phan cong tu dong deu cho GV)
-- Preview Excel truoc khi import
-- Tim kiem/loc nang cao tren cac trang danh sach
-
-**Khong lam trong v1 (da xac nhan):**
-- Cham diem hoi dong realtime trong buoi bao ve
-- In cong bo ket qua 50%
-- SV tu dang ky de tai online
-- Notification email
-- OAuth/SSO
+**Nếu bị trễ — thứ tự cắt feature:**
+1. Dashboard thống kê (nice-to-have)
+2. Auto-assign GVHD (làm manual thay thế)
+3. Đánh giá giữa kỳ chi tiết (chỉ cần toggle đạt/không đạt)
+4. UI polish (functional > beautiful)
+5. **KHÔNG cắt:** core flow import → assign → topic → score → export
 
 ---
-
-## Risk & Mitigation
-
-| Risk | Kha nang | Tac dong | Cach xu ly |
-|------|----------|----------|------------|
-| PHPWord template fill bi loi (placeholder tach XML) | Cao | Mat 3-5 ngay | Test template ngay Phase 1, neu khong duoc thi tao Word moi thay vi dung template |
-| File Excel tu truong khac format | Trung binh | Import sai data | Xem file thuc te truoc khi code, parse thu cong (khong dung WithHeadingRow) |
-| Hosting thieu PHP extension | Trung binh | Deploy fail | Kiem tra hosting ngay khi co access, deploy thu som (cuoi Phase 1) |
-| Auth cookie/CORS tren hosting | Thap | Login khong hoat dong | Dung token DB (khong dung Sanctum cookie), deploy cung origin |
-| Het thoi gian truoc khi xong het | Trung binh | Thieu feature | Uu tien core flow, thay noi "khong bat buoc lam het" |
-
----
-
-## Luu y ve thu tu uu tien
-
-Neu bi tre tien do, cat theo thu tu nay (tu duoi len):
-1. **Cat truoc nhat**: Dashboard thong ke, auto-assign, preview Excel
-2. **Cat neu can**: Xuat danh sach bao ve (lam bang tay duoc)
-3. **Cat neu ep buoc**: SV portal (SV co the xem qua GV)
-4. **KHONG duoc cat**: Import Excel, Phan cong GVHD, Giao de tai, Cham diem HD/PB, Export Word, Hoi dong
-
-Core flow phai chay duoc end-to-end — tot hon la co nhieu feature do dang.
-
----
-
-*Tài liệu nay se duoc cap nhat sau moi phase transition. Xem PROJECT.md de biet requirements chi tiet.*
+*Roadmap created: 2026-04-03*
+*Updated: 2026-04-03 — greenfield project, không refactor code cũ*
