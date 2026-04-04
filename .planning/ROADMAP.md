@@ -43,7 +43,7 @@
 **Tại sao cần làm chung phase này:** Đây là nền để cả team build lên — sai ở đây thì tất cả phải sửa lại.
 
 ### BE làm:
-1. **Khởi tạo Laravel 12** — `composer create-project`, cài packages: `phpoffice/phpword`, `phpoffice/phpspreadsheet`, `spatie/laravel-permission v6`, config CORS cho React
+1. **Khởi tạo Laravel 12** — `composer create-project`, cài packages: `phpoffice/phpword`, `phpoffice/phpspreadsheet`, `spatie/laravel-permission v6`, cấu hình CORS (allow Vercel domain), Rate limit `throttle:60,1` cho toàn bộ API routes
 2. **Viết migrations** — 8 bảng: `giangvien`, `sinhvien`, `ky_lvtn`, `detai`, `hoidong`, `thanhvien_hoidong`, `diem_hoidong`, `cau_hinh`
 3. **Auth API** — `POST /api/login`, `POST /api/logout`, `GET /api/me` — token lưu DB (`personal_access_tokens` của Sanctum), check cả bảng GV và SV
 4. **Seeder** — 1 admin, 3 GV mẫu, 5 SV mẫu

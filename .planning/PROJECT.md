@@ -95,9 +95,13 @@ Thư ký khoa có thể quản lý toàn bộ vòng đời LVTN — từ import 
 ## Constraints
 
 - **Tech Stack**: Laravel 12 (API) + React (SPA) + MySQL — đã confirm với thầy
-- **Hosting**: Thầy hỗ trợ hosting, cần mua domain (.io.vn hoặc .id.vn)
-- **Packages**: maatwebsite/excel (import/export Excel), phpoffice/phpword (export Word từ template .doc)
-- **Timeline**: Dưới 2 tháng — không có thời gian để refactor hoặc thay đổi architecture
+- **Hosting FE**: Vercel — deploy React build
+- **Hosting BE**: Railway — deploy Laravel API + MySQL
+- **Kết nối**: RESTful API qua CORS — FE gọi BE bằng Axios/fetch với Bearer token
+- **CORS**: BE phải allow origin từ Vercel domain
+- **Rate Limit**: 60 request / phút / IP (dùng Laravel `throttle` middleware)
+- **Packages**: phpoffice/phpword (export Word), phpoffice/phpspreadsheet (import Excel)
+- **Timeline**: 5-6 tuần — không có thời gian refactor hoặc thay đổi architecture
 - **Code style**: Phải trông như sinh viên viết — không quá clean, không dùng design pattern phức tạp
 - **Anti-AI**: Không để lại bất kỳ dấu vết AI nào trong code/docs/commit
 
@@ -105,11 +109,12 @@ Thư ký khoa có thể quản lý toàn bộ vòng đời LVTN — từ import 
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Laravel 12 API + React SPA | Thầy confirm dùng React (PA2) | — Pending |
-| maatwebsite/excel cho import | Package phổ biến nhất cho Laravel Excel | — Pending |
+| Laravel 12 API + React SPA | Thầy confirm dùng React (PA2) | ✓ Good |
+| maatwebsite/excel → phpoffice/phpspreadsheet | phpspreadsheet không cần queue, phù hợp hơn Railway | — Pending |
 | phpoffice/phpword cho export Word | Chuẩn nhất cho fill template .docx trong PHP | — Pending |
 | Auth bằng Laravel Sanctum (SPA) | Token-based auth phù hợp với React SPA | — Pending |
-| Blade thuần cho admin panel (option) | Nếu React quá phức tạp trong thời gian ngắn, fallback về Blade | — Pending |
+| FE deploy Vercel, BE deploy Railway | Đã setup sẵn, tách deploy độc lập | ✓ Good |
+| Rate limit 60 req/phút dùng Laravel throttle | Bảo vệ API Railway, built-in Laravel không cần package thêm | — Pending |
 
 ## Evolution
 
