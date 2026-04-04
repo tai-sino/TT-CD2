@@ -52,7 +52,7 @@ Thư ký khoa có thể quản lý toàn bộ vòng đời LVTN — từ import 
 
 ### Out of Scope
 
-- Chấm điểm hội đồng (trong buổi bảo vệ) — chưa có trong yêu cầu thầy, thêm sau nếu cần
+- Thư ký nhập điểm hội đồng hộ — từng thành viên HĐ tự login và nhập điểm riêng (đã confirm)
 - Real-time concurrency khi nhiều GV chấm điểm cùng lúc — phức tạp, dùng page refresh thay thế
 - In công bố kết quả 50% — thầy ghi "Không cần"
 - Sinh viên tự đăng ký đề tài online — SV đăng ký qua link PDT, khoa chỉ import file kết quả
@@ -69,7 +69,9 @@ Thư ký khoa có thể quản lý toàn bộ vòng đời LVTN — từ import 
 - **Greenfield project**: Không tái sử dụng code cũ trong `backend/` và `frontend/` — chỉ dùng để tham khảo logic nghiệp vụ
 - **File mẫu Word**: Đã có trong `docs/huong_dan/huong_dan/` — cần map đúng fields khi export
 - **File Excel mẫu**: `Chốt_DSSV_GVHD_TenDeTai_LVTN_Dot2_17112025.xlsx` — import format từ đây
-- **Công thức điểm**: 20% HD + 20% PB + 60% HĐ (đã confirm với thầy)
+- **Điểm HĐ**: Mỗi thành viên HĐ tự login và nhập điểm riêng → hệ thống tính trung bình tự động (đã confirm)
+- **Mốc thời gian LVTN**: Admin cài đặt ngày cụ thể (tháng 4 → tháng 7), có thể chỉnh sửa linh động bất kỳ lúc nào vì trường có thể thay đổi tùy từng đợt (đã confirm)
+- **Timeline thực tế**: 5-6 tuần, 6 thành viên mới bắt đầu, BE/FE tách riêng, làm online/remote
 - **Một GV có thể đảm nhiều vai trò** cùng lúc (GVHD nhóm A, GVPB nhóm B, thành viên HĐ nhóm C) — RBAC phải xử lý đúng
 
 ### Yêu cầu kiểm tra từ thầy (Chu de phan 2.docx)

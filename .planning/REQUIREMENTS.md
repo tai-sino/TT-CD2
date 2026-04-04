@@ -15,6 +15,7 @@
 - [ ] **AUTH-04**: Mỗi role chỉ truy cập được các route và menu thuộc quyền của mình (route guard)
 - [ ] **AUTH-05**: Người dùng có thể đổi mật khẩu của mình
 - [ ] **AUTH-06**: Admin có thể tạo, sửa, xoá tài khoản giảng viên và sinh viên (khi import SV từ Excel, hệ thống tự tạo tài khoản SV)
+- [ ] **AUTH-07**: Thành viên hội đồng (GV có vai trò trong 1 hội đồng) tự đăng nhập và thấy chức năng nhập điểm HĐ cho đề tài thuộc hội đồng của mình — đây là context role, không cần role mới, GV đã có tài khoản sẵn
 
 ### KY — Quản lý kỳ LVTN
 
@@ -87,8 +88,8 @@
 ### DIEM — Tính điểm tổng kết
 
 - [ ] **DIEM-01**: Hệ thống tự động tính điểm tổng kết theo công thức: 20% điểm hướng dẫn + 20% điểm phản biện + 60% điểm hội đồng
-- [ ] **DIEM-02**: Điểm hội đồng = trung bình cộng điểm của các thành viên hội đồng chấm đề tài đó
-- [ ] **DIEM-03**: Admin nhập điểm hội đồng thủ công cho từng đề tài (vì chấm trên giấy trong buổi bảo vệ, sau đó nhập lại vào hệ thống)
+- [ ] **DIEM-02**: Điểm hội đồng = trung bình cộng điểm của tất cả thành viên hội đồng đã nhập điểm cho đề tài đó
+- [ ] **DIEM-03**: Từng thành viên hội đồng (chủ tịch, thư ký, uỷ viên) tự đăng nhập và nhập điểm riêng cho từng đề tài được phân vào hội đồng của mình (không phải admin nhập hộ)
 - [ ] **DIEM-04**: Hệ thống hiển thị bảng tổng hợp điểm: điểm HD, điểm PB, điểm HĐ, điểm tổng kết — filter theo hội đồng, GVHD, hoặc lớp
 
 ### SV-PAGE — Trang sinh viên

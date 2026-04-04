@@ -1,217 +1,319 @@
 # Roadmap: TT-CD2 — Hệ thống Quản lý Luận văn Tốt nghiệp
 
 **Created:** 2026-04-03
-**Target:** 2026-05-25 (~7 tuần)
+**Target:** 2026-05-25 (~5-6 tuần)
+**Team:** 6 người — BE/FE tách riêng, làm remote
 **Phases:** 6 phases → Demo Ready (v1.0)
 
-> **Lưu ý:** Đây là project mới hoàn toàn (greenfield). Thư mục `backend/` và `frontend/` trong repo hiện tại chỉ để tham khảo logic nghiệp vụ, KHÔNG tái sử dụng code.
+> Greenfield project — không tái sử dụng code cũ trong `backend/` và `frontend/`.
+
+---
+
+## Nguyên tắc làm việc 6 người
+
+**Chia team:**
+- **BE team (2-3 người)**: Laravel 12 — migrations, API endpoints, auth, logic nghiệp vụ, export
+- **FE team (2-3 người)**: React 19 — UI, routing, kết nối API, UX
+
+**Quy tắc để không bị block nhau:**
+1. **Phase 1 làm cùng nhau** — setup project, thống nhất API contract trước khi tách
+2. **Mỗi phase có API contract rõ** — BE và FE dùng chung tài liệu endpoint để làm song song
+3. **FE dùng mock data khi BE chưa xong** — không ngồi chờ
+4. **Cuối mỗi phase integrate và test chung** — không để dồn lại
 
 ---
 
 ## Phase Overview
 
-| Phase | Name | Goal | Est. Duration |
-|-------|------|------|---------------|
-| 1 | Nền tảng | Laravel project mới, DB migrations, auth, React setup | 1.5 tuần |
-| 2 | Import SV & Phân công GVHD | Import Excel, phân công, GVHD giao đề tài | 1.5 tuần |
-| 3 | Chấm điểm & Export Word | GVHD/GVPB chấm điểm, xuất phiếu Word | 1.5 tuần |
-| 4 | Hội đồng & Phân công PB | Lập hội đồng, phân công GVPB, xuất danh sách | 1 tuần |
-| 5 | SV Portal & Điểm tổng kết | SV đăng nhập, xem đề tài, in form nhiệm vụ, tính điểm | 1 tuần |
-| 6 | Deploy & Polish | Deploy hosting, test toàn bộ flow, UI cleanup | 0.5-1 tuần |
-
-**Tổng:** ~7 tuần (vừa đủ deadline)
+| Phase | Tên | BE làm | FE làm | Tuần |
+|-------|-----|--------|--------|------|
+| 1 | Nền tảng | Laravel setup, DB, Auth API | React setup, Login UI, Layout | 1-1.5 |
+| 2 | Quản lý SV & GV | Import Excel API, CRUD API | Import UI, Danh sách SV/GV | 1 |
+| 3 | Đề tài & Phân công | Topic API, Phân công API | Trang GVHD, Giao đề tài UI | 1 |
+| 4 | Chấm điểm & Export | Score API, Export Word API | Form chấm điểm, Download UI | 1-1.5 |
+| 5 | Hội đồng & Điểm HĐ | Council API, Điểm TV HĐ API | Trang lập hội đồng, SV portal | 1 |
+| 6 | Tích hợp & Deploy | Fix bugs BE, Deploy | Fix bugs FE, Build prod | 0.5-1 |
 
 ---
 
 ## Phase 1: Nền tảng
 
-**Goal:** Laravel 12 project mới chạy được, database schema đúng, auth hoạt động với 4 role, React SPA kết nối được với backend.
+**Goal:** Project chạy được, database đúng schema, auth hoạt động, BE và FE kết nối được với nhau.
 
-**Delivers:**
-- Laravel 12 project mới với cấu trúc chuẩn
-- Migrations cho toàn bộ schema (giangvien, sinhvien, detai, hoidong, thanhvienhoidong, diem, cauhinh)
-- Auth: login/logout/me — token lưu DB, check cả bảng giangvien + sinhvien
-- Role system: `isAdmin` flag cho thư ký, role-per-context cho GVHD/GVPB
-- React 19 + Vite + Tailwind setup, routing, AuthContext, login page hoạt động
-- Seeders: 1 admin, vài GV mẫu, vài SV mẫu để test
+**Tại sao cần làm chung phase này:** Đây là nền để cả team build lên — sai ở đây thì tất cả phải sửa lại.
 
-**Plans:**
-1. **Laravel setup** — `composer create-project laravel/laravel`, cài packages (phpoffice/phpword, phpoffice/phpspreadsheet, spatie/laravel-permission v6), cấu hình CORS
-2. **Database schema** — viết migrations cho 7 bảng chính, foreign keys, indexes
-3. **Auth API** — endpoint login/logout/me, middleware xác thực token từ DB, response trả về roles
-4. **React setup** — Vite project, React Router 6, Tailwind 4, AuthContext, LoginPage, layout với sidebar theo role
-5. **Seeder** — admin + GV mẫu + SV mẫu, test login từng role
+### BE làm:
+1. **Khởi tạo Laravel 12** — `composer create-project`, cài packages: `phpoffice/phpword`, `phpoffice/phpspreadsheet`, `spatie/laravel-permission v6`, config CORS cho React
+2. **Viết migrations** — 8 bảng: `giangvien`, `sinhvien`, `ky_lvtn`, `detai`, `hoidong`, `thanhvien_hoidong`, `diem_hoidong`, `cau_hinh`
+3. **Auth API** — `POST /api/login`, `POST /api/logout`, `GET /api/me` — token lưu DB (`personal_access_tokens` của Sanctum), check cả bảng GV và SV
+4. **Seeder** — 1 admin, 3 GV mẫu, 5 SV mẫu
 
-**Success criteria:**
+### FE làm:
+1. **Khởi tạo React 19 + Vite + Tailwind 4** — cấu trúc thư mục, React Router 6
+2. **AuthContext** — lưu token localStorage, `useAuth` hook
+3. **LoginPage** — form email + password, gọi API login
+4. **Layout** — sidebar với menu theo role (admin/gvhd/gvpb/sv), protected routes
+
+### API Contract (thống nhất trước khi làm):
+```
+POST /api/login       { email, password } → { token, user: { id, name, role[] } }
+POST /api/logout      Header: Bearer token → 200
+GET  /api/me          Header: Bearer token → { id, name, email, roles[] }
+```
+
+### Success criteria:
 - [ ] `php artisan migrate` chạy thành công từ database trống
-- [ ] Login GV → token trả về, `/api/me` trả về user info với roles đúng
-- [ ] Login SV → cùng endpoint, phân biệt được GV vs SV
-- [ ] React SPA đăng nhập được, redirect đúng trang theo role
+- [ ] Login GV → token trả về, `/api/me` trả về đúng roles
+- [ ] Login SV → cùng endpoint, phân biệt được loại user
+- [ ] FE đăng nhập được, redirect đúng trang theo role
 - [ ] 4 role thấy menu khác nhau
 
-**Requirements covered:** AUTH-01, AUTH-02, AUTH-03, AUTH-04, AUTH-05, AUTH-06, KY-01, KY-02
+**Requirements covered:** AUTH-01, AUTH-02, AUTH-03, AUTH-04
 
 ---
 
-## Phase 2: Import SV & Phân công GVHD
+## Phase 2: Quản lý SV & GV
 
-**Goal:** Thư ký import được danh sách SV từ file Excel, phân công SV cho GVHD (max 10 SV/GV), GVHD tạo và giao đề tài.
+**Goal:** Thư ký import được danh sách SV từ Excel, xem và quản lý danh sách SV/GV.
 
-**Delivers:**
-- Upload file Excel → parse → validate → import SV vào DB
-- Tự tạo tài khoản SV khi import
-- Giao diện phân công SV cho GVHD
-- GVHD xem danh sách SV mình hướng dẫn
-- GVHD tạo đề tài và gán 1-2 SV
+### BE làm:
+1. **Import Excel** — `POST /api/students/import` dùng phpspreadsheet đọc file, parse MSSV/tên/lớp/email, validate, insert, tự tạo tài khoản SV
+2. **CRUD SV** — `GET /api/students`, `POST /api/students`, `PUT /api/students/{id}`, `DELETE /api/students/{id}`
+3. **CRUD GV** — tương tự, thêm `isAdmin` flag
+4. **Quản lý kỳ LVTN** — `GET/POST/PUT /api/ky-lvtn`, lưu tên kỳ + các mốc ngày (linh động, admin chỉnh được)
 
-**Plans:**
-1. **Import Excel** — dùng phpspreadsheet đọc file trực tiếp, parse theo format file mẫu `Chốt_DSSV_GVHD_TenDeTai_LVTN_Dot2_17112025.xlsx`, validate, insert vào DB
-2. **UI Import** — form upload, hiển thị preview trước khi import, báo lỗi theo từng dòng
-3. **Phân công GVHD** — API gán SV cho GV (max 10), FE dropdown chọn GV cho từng SV hoặc nhóm SV
-4. **GVHD giao đề tài** — GVHD tạo đề tài (tên, mô tả, mục tiêu, output), gán 1 hoặc 2 SV, xem danh sách đề tài
+### FE làm:
+1. **Trang Import SV** — form upload file Excel, preview danh sách trước khi confirm, hiện lỗi từng dòng
+2. **Danh sách SV** — bảng với filter theo lớp, search, phân trang
+3. **Danh sách GV** — bảng, form thêm/sửa/xóa GV
+4. **Trang Cài đặt kỳ LVTN** — form nhập tên kỳ + các mốc thời gian (ngày bắt đầu/kết thúc từng giai đoạn)
 
-**Success criteria:**
-- [ ] Upload file Excel mẫu → import thành công, SV xuất hiện trong danh sách
-- [ ] Phân công 10 SV cho 1 GV thành công, SV thứ 11 bị từ chối
-- [ ] GVHD đăng nhập thấy chỉ danh sách SV của mình
-- [ ] GVHD tạo đề tài và gán 2 SV vào thành công
+### API Contract:
+```
+POST   /api/students/import    multipart/form-data → { imported: N, errors: [] }
+GET    /api/students           ?ky_id=&lop=&search= → { data: [...] }
+POST   /api/students           { mssv, ten, lop, email } → student
+GET    /api/giang-vien         → { data: [...] }
+POST   /api/giang-vien         { ten, email, password } → gv
+GET    /api/ky-lvtn            → { data: [...] }
+POST   /api/ky-lvtn            { ten, ngay_nhan_de_tai, ngay_cham_50, ngay_phan_bien, ngay_bao_ve } → ky
+PUT    /api/ky-lvtn/{id}       (same fields) → ky
+```
 
-**Requirements covered:** SV-01, SV-02, SV-03, GV-01, PC-GVHD-01, PC-GVHD-02, PC-GVHD-03, DT-01, DT-02, DT-03
+### Success criteria:
+- [ ] Upload file Excel mẫu → SV xuất hiện trong danh sách, tài khoản SV tự tạo
+- [ ] Lỗi import hiển thị rõ theo dòng (VD: "Dòng 5: MSSV trùng")
+- [ ] Admin thêm/sửa/xóa GV được
+- [ ] Admin tạo kỳ LVTN với các mốc ngày, sửa lại được
+
+**Requirements covered:** SV-01, SV-02, SV-03, GV-01, GV-02, KY-01, KY-02, KY-03
 
 ---
 
-## Phase 3: Chấm điểm & Export Word
+## Phase 3: Đề tài & Phân công
 
-**Goal:** GVHD chấm điểm hướng dẫn và giữa kỳ, GVPB chấm điểm phản biện, xuất phiếu chấm thành file Word đúng format mẫu của khoa.
+**Goal:** Thư ký phân công SV cho GVHD, GVHD giao đề tài cho SV, thư ký phân công GVPB.
 
-**Delivers:**
-- Form chấm điểm GVHD (tiêu chí, tổng điểm, nhận xét)
-- Export Word: Mẫu 01.01 (nhóm), 01.02 (cá nhân)
-- Form chấm điểm GVPB
-- Export Word: Mẫu 02.01 (nhóm), 02.02 (cá nhân)
-- Đánh giá giữa kỳ 50% (đạt/không đạt)
+### BE làm:
+1. **Phân công GVHD** — `POST /api/phan-cong/gvhd` gán list SV vào 1 GV, check max 10 SV/GV
+2. **Đề tài CRUD** — GVHD tạo đề tài, gán 1-2 SV: `POST /api/de-tai`, `PUT /api/de-tai/{id}`
+3. **Phân công GVPB** — `PUT /api/de-tai/{id}/gvpb` gán GVPB cho đề tài
+4. **Filter theo role** — `GET /api/de-tai` trả đúng data theo người đang login (GVHD thấy đề tài mình hướng dẫn, GVPB thấy đề tài mình phản biện)
 
-> ⚠️ **Risk cao:** Test export Word sớm nhất có thể — placeholder trong template có thể bị tách XML.
+### FE làm:
+1. **Trang Phân công GVHD** — chọn GV, chọn nhiều SV, assign — hiện cảnh báo nếu GV đã đủ 10 SV
+2. **Trang GVHD** — danh sách SV được phân công, form tạo đề tài (tên, mô tả, chọn 1-2 SV)
+3. **Trang Phân công GVPB** — danh sách đề tài, dropdown chọn GVPB cho từng đề tài
+4. **Trang GVPB** — danh sách đề tài được giao phản biện
 
-**Plans:**
-1. **Chấm điểm GVHD** — form nhập tiêu chí, tính tổng tự động, lưu DB, hiển thị lại điểm đã chấm
-2. **Export Word GVHD** — dùng PHPWord TemplateProcessor, load Mau_01.01.docx / 01.02.docx, fill dữ liệu, stream download. Test kỹ với file thực tế.
-3. **Chấm điểm GVPB + Export** — tương tự GVHD, dùng Mau_02.01.docx / 02.02.docx
-4. **Đánh giá giữa kỳ** — thư ký bật/tắt cho phép chấm GK, GVHD đánh giá trạng thái SV
+### API Contract:
+```
+POST   /api/phan-cong/gvhd    { gv_id, sv_ids: [] } → { ok, errors }
+GET    /api/de-tai             → filtered by current user role
+POST   /api/de-tai             { ten, mo_ta, gv_hd_id, sv_ids: [1 or 2] } → de_tai
+PUT    /api/de-tai/{id}        (same fields)
+PUT    /api/de-tai/{id}/gvpb   { gv_pb_id } → de_tai
+```
 
-**Success criteria:**
-- [ ] GVHD chấm điểm đề tài 2 SV, lưu thành công
-- [ ] Download Mẫu 01.01 có đầy đủ thông tin SV, đề tài, điểm — đúng format mẫu khoa
+### Success criteria:
+- [ ] Phân công 10 SV cho 1 GV OK, SV thứ 11 bị từ chối với thông báo rõ
+- [ ] GVHD đăng nhập chỉ thấy SV và đề tài của mình
+- [ ] GVHD tạo đề tài gán 2 SV thành công
+- [ ] GVPB đăng nhập thấy danh sách đề tài phản biện
+
+**Requirements covered:** PC-GVHD-01, PC-GVHD-02, PC-GVHD-03, DT-01, DT-02, DT-03, PC-GVPB-01, PC-GVPB-02
+
+---
+
+## Phase 4: Chấm điểm & Export Word
+
+**Goal:** GVHD chấm điểm hướng dẫn và giữa kỳ, GVPB chấm điểm phản biện, xuất phiếu chấm ra file Word đúng mẫu.
+
+> ⚠️ **Risk cao nhất của cả project** — test export Word sớm nhất có thể. Placeholder `${ten_sv}` trong file .docx có thể bị Word tách thành nhiều XML tag → `setValue()` không tìm thấy.
+
+### BE làm:
+1. **Chấm điểm GVHD** — `POST /api/de-tai/{id}/diem-hd` lưu các tiêu chí + tổng điểm + nhận xét
+2. **Chấm điểm giữa kỳ** — `POST /api/de-tai/{id}/diem-gk` lưu trạng thái + nhận xét giữa kỳ
+3. **Chấm điểm GVPB** — `POST /api/de-tai/{id}/diem-pb` tương tự
+4. **Export Word GVHD** — `GET /api/de-tai/{id}/export/gvhd` fill Mau_01.01.docx (nhóm) hoặc 01.02 (cá nhân) bằng PHPWord TemplateProcessor, stream download
+5. **Export Word GVPB** — `GET /api/de-tai/{id}/export/gvpb` tương tự với Mau_02.01/02.02
+
+### FE làm:
+1. **Form chấm điểm GVHD** — nhập từng tiêu chí, tính tổng tự động, nhận xét, submit
+2. **Form chấm điểm giữa kỳ** — đánh giá trạng thái SV (Được làm tiếp / Đình chỉ / Cảnh cáo) + nhận xét
+3. **Form chấm điểm GVPB** — tương tự GVHD
+4. **Nút export** — download button gọi API export, hiện trạng thái loading
+
+### API Contract:
+```
+POST   /api/de-tai/{id}/diem-hd     { tieu_chi: {}, tong_diem, nhan_xet } → ok
+POST   /api/de-tai/{id}/diem-gk     { trang_thai, nhan_xet } → ok
+POST   /api/de-tai/{id}/diem-pb     { tieu_chi: {}, tong_diem, nhan_xet } → ok
+GET    /api/de-tai/{id}/export/gvhd → file download (Word)
+GET    /api/de-tai/{id}/export/gvpb → file download (Word)
+```
+
+### Success criteria:
+- [ ] GVHD chấm điểm lưu thành công, xem lại được điểm đã nhập
+- [ ] Download Mẫu 01.01 có đầy đủ thông tin SV, đề tài, điểm — không lỗi font tiếng Việt
 - [ ] Download Mẫu 02.02 cho GVPB tương tự
-- [ ] Chữ tiếng Việt trong file Word không bị lỗi font
+- [ ] Chọn đúng mẫu: 1 SV → dùng 01.02, 2 SV → dùng 01.01
 
-**Requirements covered:** GIAM50-01, GIAM50-02, GIAM50-03, CHAMSV-01, CHAMSV-02, CHAMSV-03, CHAMSV-04, CHAMPB-01, CHAMPB-02, CHAMPB-03, CHAMPB-04, EXPORT-01, EXPORT-02, EXPORT-03
-
----
-
-## Phase 4: Hội đồng & Phân công PB
-
-**Goal:** Thư ký lập hội đồng bảo vệ, phân công GVPB cho từng đề tài, phân công đề tài vào hội đồng có thứ tự, xuất danh sách bảo vệ.
-
-**Delivers:**
-- CRUD hội đồng (ngày, phòng, số HĐ, 3-4 GV với vai trò)
-- Phân công GVPB cho đề tài
-- Phân công đề tài vào hội đồng có thứ tự trình bày
-- Xuất danh sách bảo vệ LVTN (Excel)
-
-**Plans:**
-1. **Phân công GVPB** — thư ký chọn đề tài → chọn GV phản biện, lưu vào DB. FE dropdown GV cho mỗi đề tài.
-2. **Lập hội đồng** — form tạo/sửa hội đồng với chọn GV theo vai trò (chủ tịch, thư ký, uỷ viên), ngày bảo vệ, phòng
-3. **Phân công đề tài vào HĐ** — chọn nhiều đề tài, gán vào 1 hội đồng, có thứ tự trình bày
-4. **Xuất danh sách bảo vệ** — export Excel danh sách SV + đề tài + hội đồng + ngày + phòng
-
-**Success criteria:**
-- [ ] Phân công GVPB cho đề tài thành công, GVPB đăng nhập thấy đề tài phản biện
-- [ ] Tạo hội đồng với 3 GV (Chủ tịch, Thư ký, Uỷ viên) thành công
-- [ ] Gán 3 đề tài vào hội đồng có thứ tự 1-2-3
-- [ ] Download file Excel danh sách bảo vệ đầy đủ thông tin
-
-**Requirements covered:** PC-GVPB-01, PC-GVPB-02, PC-GVPB-03, HD-01, HD-02, HD-03, HD-04, HD-05
+**Requirements covered:** GIAM50-01, GIAM50-02, CHAMSV-01~04, CHAMPB-01~04, EXPORT-01~03
 
 ---
 
-## Phase 5: SV Portal & Điểm tổng kết
+## Phase 5: Hội đồng & SV Portal
 
-**Goal:** Sinh viên đăng nhập xem đề tài, tải form nhiệm vụ LVTN. Hệ thống tính điểm tổng kết tự động từ 3 loại điểm.
+**Goal:** Thư ký lập hội đồng, phân công đề tài vào hội đồng, từng thành viên HĐ nhập điểm, SV xem đề tài và in form nhiệm vụ.
 
-**Delivers:**
-- SV đăng nhập bằng MSSV + mật khẩu
-- Trang SV xem thông tin đề tài, GVHD, trạng thái
-- Tải form nhiệm vụ LVTN (Form_NhiemvuLVTN.docx) — bản 1SV và 2SV
-- Admin nhập điểm hội đồng → tính điểm tổng kết: 20%HD + 20%PB + 60%HĐ
-- Bảng điểm tổng hợp
+### BE làm:
+1. **CRUD Hội đồng** — tạo HĐ với ngày/phòng/số HĐ, thêm 3-4 GV với vai trò (chủ tịch, thư ký, uỷ viên)
+2. **Phân công đề tài vào HĐ** — `POST /api/hoi-dong/{id}/de-tai` gán đề tài có thứ tự trình bày
+3. **Điểm thành viên HĐ** — `POST /api/de-tai/{id}/diem-hd-tv` TV HĐ tự nhập điểm sau khi bảo vệ
+4. **Tính điểm tổng kết** — tự động tính khi đủ 3 loại điểm: `diem_hd * 0.2 + diem_pb * 0.2 + avg(diem_hd_tv) * 0.6`
+5. **Xuất danh sách bảo vệ** — `GET /api/hoi-dong/{id}/export` export Excel danh sách SV + đề tài + HĐ + ngày + phòng
+6. **Export Form nhiệm vụ SV** — `GET /api/sv/form-nhiem-vu` fill Form_NhiemvuLVTN.docx
 
-**Plans:**
-1. **SV login** — endpoint login check bảng sinhvien (MSSV + mật khẩu), trả về token + info
-2. **Trang SV** — hiển thị đề tài, tên GVHD, trạng thái, điểm (nếu đã có)
-3. **Export form nhiệm vụ** — PHPWord fill Form_NhiemvuLVTN.docx với tên SV, đề tài, GVHD, ...
-4. **Tính điểm tổng kết** — admin nhập điểm HĐ, hệ thống tính tự động, hiển thị bảng điểm
+### FE làm:
+1. **Trang Hội đồng** — form tạo/sửa HĐ, chọn GV theo vai trò, ngày/phòng
+2. **Phân công đề tài vào HĐ** — drag-drop hoặc input số thứ tự, gán đề tài vào HĐ
+3. **Trang thành viên HĐ** — TV HĐ đăng nhập thấy danh sách đề tài cần chấm, form nhập điểm
+4. **Bảng điểm tổng hợp** — admin xem bảng điểm tất cả SV (HD, PB, HĐ, tổng kết, điểm chữ)
+5. **SV Portal** — SV đăng nhập thấy đề tài, GVHD, trạng thái, điểm (nếu có), nút download form nhiệm vụ
 
-**Success criteria:**
-- [ ] SV đăng nhập bằng MSSV, thấy được đề tài của mình
-- [ ] SV download form nhiệm vụ LVTN với thông tin đúng
-- [ ] Nhập đủ 3 loại điểm → điểm tổng kết tính tự động đúng công thức
-- [ ] Bảng điểm tổng hợp hiển thị đúng
+### API Contract:
+```
+GET/POST       /api/hoi-dong                           → list / tạo mới
+PUT/DELETE     /api/hoi-dong/{id}
+POST           /api/hoi-dong/{id}/thanh-vien           { gv_id, vai_tro } → ok
+POST           /api/hoi-dong/{id}/de-tai               { de_tai_ids: [], thu_tu_start: 1 } → ok
+POST           /api/de-tai/{id}/diem-hd-tv             { diem, nhan_xet } → ok  (TV HĐ gọi)
+GET            /api/de-tai/{id}/diem-tong-ket          → { diem_hd, diem_pb, diem_hoi_dong, tong_ket, diem_chu }
+GET            /api/hoi-dong/{id}/export               → file Excel
+GET            /api/sv/de-tai                          → đề tài của SV đang login
+GET            /api/sv/form-nhiem-vu                   → file Word download
+```
 
-**Requirements covered:** SV-04, DT-04, DT-05, GIAM50-03, DIEM-01, DIEM-02, DIEM-03, DIEM-04, SV-PAGE-01, SV-PAGE-02
+### Success criteria:
+- [ ] Tạo hội đồng với 3 GV vai trò khác nhau thành công
+- [ ] TV HĐ đăng nhập, thấy đề tài mình cần chấm, nhập điểm được
+- [ ] Sau khi cả 3 TV HĐ nhập điểm → điểm tổng kết tính đúng
+- [ ] SV đăng nhập thấy thông tin đề tài và download được form nhiệm vụ
+- [ ] Admin download được Excel danh sách bảo vệ
+
+**Requirements covered:** HD-01~05, DIEM-01~04, SV-PAGE-01~02
 
 ---
 
-## Phase 6: Deploy & Polish
+## Phase 6: Tích hợp & Deploy
 
-**Goal:** Hệ thống chạy trên hosting thật, giao diện ổn định, flow chính demo được trọn vẹn.
+**Goal:** Toàn bộ flow chạy end-to-end không lỗi, deploy lên hosting, demo được.
 
-**Delivers:**
-- Deploy thành công lên hosting của thầy
-- Domain .io.vn hoặc .id.vn trỏ về đúng
-- UI responsive, không bị lỗi hiển thị
-- Full demo flow chạy được end-to-end
+### BE làm:
+1. Sửa bugs phát hiện khi integrate với FE
+2. Config `.env.production`, storage symlink
+3. Deploy lên hosting của thầy, chạy migrations
 
-**Plans:**
-1. **Build React** — `npm run build`, config để serve từ Laravel `public/`
-2. **Deploy Laravel** — upload lên hosting, cấu hình `.env`, chạy migrations, test API
-3. **Cấu hình .htaccess** — rewrite rules cho API routes và SPA routing
-4. **Test toàn bộ flow** — chạy thử từ đầu đến cuối, fix lỗi gặp phải
-5. **UI polish** — sửa những chỗ bị lỗi UI, thêm loading states, responsive check
+### FE làm:
+1. Sửa bugs UI/UX phát hiện khi test
+2. `npm run build`, config base URL production
+3. Copy build output vào `backend/public/` hoặc serve riêng
 
-**Success criteria:**
-- [ ] Truy cập domain.io.vn thấy giao diện login
-- [ ] Demo full flow từ import SV đến xuất điểm tổng kết không bị lỗi
-- [ ] Trang web hoạt động trên laptop khác (không chỉ máy dev)
-- [ ] Không có lỗi console JS nghiêm trọng
+### Chung:
+1. Test toàn bộ demo flow từ đầu đến cuối
+2. Fix lỗi gặp phải
+3. Cấu hình `.htaccess` cho SPA routing + API routing
+4. Kiểm tra trên máy khác (không chỉ máy dev)
+
+### Success criteria:
+- [ ] Truy cập domain thấy trang login
+- [ ] Demo full flow không bị lỗi: Import SV → Phân công → Giao đề tài → Chấm điểm → Export Word → Lập HĐ → TV HĐ nhập điểm → Tổng kết → SV in form
+- [ ] Chạy được trên laptop của thầy
 
 ---
 
 ## Milestone: v1.0 — Demo Ready
 
-**Phases:** 1-6
 **Target:** 2026-05-25
+**Phases:** 1-6
 
-**Demo flow bắt buộc hoạt động:**
+**Demo flow bắt buộc:**
 ```
 Admin login
+→ Tạo kỳ LVTN (tên + các mốc thời gian)
 → Import DSSV từ Excel
 → Phân công SV cho GVHD
-→ GVHD login → Giao đề tài → Chấm điểm giữa kỳ → Chấm điểm HD → Export Word
-→ Admin phân công GVPB
-→ GVPB login → Chấm điểm PB → Export Word
-→ Admin lập hội đồng → Gán đề tài vào HĐ → Nhập điểm HĐ → Tính tổng kết
-→ SV login → Xem đề tài → In form nhiệm vụ
-→ Admin xuất danh sách bảo vệ
+
+GVHD login
+→ Xem danh sách SV
+→ Tạo đề tài, gán 2 SV
+→ Chấm điểm giữa kỳ
+→ Chấm điểm hướng dẫn → Export Word Mẫu 01.01
+
+Admin login
+→ Phân công GVPB cho đề tài
+
+GVPB login
+→ Xem đề tài phản biện
+→ Chấm điểm → Export Word Mẫu 02.01
+
+Admin login
+→ Lập hội đồng (3 GV)
+→ Gán đề tài vào HĐ (thứ tự)
+→ Xuất danh sách bảo vệ (Excel)
+
+TV HĐ login (3 người)
+→ Nhập điểm cho đề tài
+
+Admin xem bảng điểm tổng kết
+
+SV login
+→ Xem đề tài
+→ Download form nhiệm vụ LVTN
 ```
 
-**Nếu bị trễ — thứ tự cắt feature:**
-1. Dashboard thống kê (nice-to-have)
-2. Auto-assign GVHD (làm manual thay thế)
-3. Đánh giá giữa kỳ chi tiết (chỉ cần toggle đạt/không đạt)
-4. UI polish (functional > beautiful)
-5. **KHÔNG cắt:** core flow import → assign → topic → score → export
+**Nếu bị trễ — thứ tự cắt:**
+1. Bảng điểm tổng hợp đẹp → bảng HTML đơn giản là đủ
+2. Drag-drop sắp thứ tự → input số thứ tự thay thế
+3. Auto-calculate realtime → tính khi load trang
+4. **KHÔNG cắt:** import → phân công → chấm điểm → export Word → lập HĐ → nhập điểm HĐ → SV in form
+
+---
+
+## Gợi ý phân công 6 người
+
+Tùy team tự điều chỉnh, đây chỉ là gợi ý:
+
+| Người | Phần | Lý do |
+|-------|------|-------|
+| BE-1 | Auth, Migrations, Deploy | Cần người mạnh nhất làm nền |
+| BE-2 | Import Excel, Export Word | Risk cao, cần người kiên nhẫn |
+| BE-3 | Logic nghiệp vụ (chấm điểm, hội đồng, tính điểm) | |
+| FE-1 | Setup React, Layout, Auth, trang Admin | |
+| FE-2 | Trang GVHD, GVPB, form chấm điểm | |
+| FE-3 | Trang SV, Hội đồng, Bảng điểm | |
 
 ---
 *Roadmap created: 2026-04-03*
-*Updated: 2026-04-03 — greenfield project, không refactor code cũ*
+*Updated: 2026-04-03 — cập nhật cho team 6 người, TV HĐ tự nhập điểm, mốc thời gian linh động*
