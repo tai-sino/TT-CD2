@@ -301,18 +301,21 @@ SV login
 
 ---
 
-## Gợi ý phân công 6 người
+## Phân công team (đã xác nhận)
 
-Tùy team tự điều chỉnh, đây chỉ là gợi ý:
+| Người | Role | Phần phụ trách |
+|-------|------|----------------|
+| BE-1 | Backend | Laravel API — Auth, migrations, logic nghiệp vụ |
+| BE-2 | Backend | Laravel API — Import Excel, Export Word, Hội đồng, Điểm |
+| FE-1 | Frontend | React — Setup, Layout, Auth, trang Admin |
+| FE-2 | Frontend | React — Trang GVHD, GVPB, Form chấm điểm |
+| FE-3 | Frontend | React — Trang SV, Hội đồng, Bảng điểm |
+| OPS | DevOps/QA | Deploy, test, viết tài liệu API |
 
-| Người | Phần | Lý do |
-|-------|------|-------|
-| BE-1 | Auth, Migrations, Deploy | Cần người mạnh nhất làm nền |
-| BE-2 | Import Excel, Export Word | Risk cao, cần người kiên nhẫn |
-| BE-3 | Logic nghiệp vụ (chấm điểm, hội đồng, tính điểm) | |
-| FE-1 | Setup React, Layout, Auth, trang Admin | |
-| FE-2 | Trang GVHD, GVPB, form chấm điểm | |
-| FE-3 | Trang SV, Hội đồng, Bảng điểm | |
+**Lưu ý quan trọng:**
+- OPS viết tài liệu API dựa trên contract đã thống nhất trong roadmap này
+- BE và FE dùng chung tài liệu API — FE mock data khi BE chưa xong
+- OPS test sau mỗi phase khi BE + FE integrate xong
 
 ---
 *Roadmap created: 2026-04-03*

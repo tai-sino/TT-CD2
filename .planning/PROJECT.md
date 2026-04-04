@@ -72,6 +72,8 @@ Thư ký khoa có thể quản lý toàn bộ vòng đời LVTN — từ import 
 - **Điểm HĐ**: Mỗi thành viên HĐ tự login và nhập điểm riêng → hệ thống tính trung bình tự động (đã confirm)
 - **Mốc thời gian LVTN**: Admin cài đặt ngày cụ thể (tháng 4 → tháng 7), có thể chỉnh sửa linh động bất kỳ lúc nào vì trường có thể thay đổi tùy từng đợt (đã confirm)
 - **Timeline thực tế**: 5-6 tuần, 6 thành viên mới bắt đầu, BE/FE tách riêng, làm online/remote
+- **Team**: 2 BE (Laravel API) + 3 FE (React) + 1 DevOps/QA/Tài liệu API
+- **API contract**: Thống nhất từ đầu mỗi phase — FE mock data khi BE chưa xong, không ngồi chờ
 - **Một GV có thể đảm nhiều vai trò** cùng lúc (GVHD nhóm A, GVPB nhóm B, thành viên HĐ nhóm C) — RBAC phải xử lý đúng
 
 ### Yêu cầu kiểm tra từ thầy (Chu de phan 2.docx)
