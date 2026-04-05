@@ -51,13 +51,13 @@ Ngoai le: Khong co.
 | Role | Size | Tailwind | Weight | Line Height |
 |------|------|----------|--------|-------------|
 | Body | 14px | text-sm | 400 (font-normal) | 1.5 (leading-normal) |
-| Label | 14px | text-sm | 500 (font-medium) | 1.5 |
+| Label | 14px | text-sm | 600 (font-semibold) | 1.5 |
 | Heading | 20px | text-xl | 600 (font-semibold) | 1.2 |
 | Small / Caption | 12px | text-xs | 400 (font-normal) | 1.5 |
 
 **Ghi chu tu Phase 1:**
 - Tieu de trang dung `text-xl font-semibold text-slate-900` (da thiet lap o PlaceholderPage)
-- Label form dung `text-sm font-medium text-slate-700` (da thiet lap o LoginPage)
+- Label form dung `text-sm font-semibold text-slate-700` (da thiet lap o LoginPage)
 - Body text dung `text-sm text-slate-500` cho secondary content
 - Khong dung text-lg hoac text-2xl trong cac trang noi dung (chi dung o login)
 
@@ -90,6 +90,17 @@ Ngoai le: Khong co.
 
 ---
 
+## Visual Hierarchy & Focal Points
+
+| Screen | Focal Point | Ly do |
+|--------|-------------|-------|
+| Trang Sinh Vien (`/admin/sinh-vien`) | Nut "Import Excel" (primary button mau xanh, goc phai toolbar) | La hanh dong chinh cua trang — thu ky bat dau flow import SV tu day |
+| Trang Giang Vien (`/admin/giang-vien`) | Nut "Them giang vien" (primary button mau xanh, goc phai toolbar) | La hanh dong chinh khi chua co GV nao |
+| Trang Cai Dat (`/admin/cai-dat`) | Card ky LVTN hien tai (bg-white, border, p-6) | Chiem phan lon viewport, chua form chinh |
+| Modal Import Excel | Nut "Import" (primary button cuoi form) | Ket thuc flow chon file -> import |
+
+---
+
 ## Component Inventory — Phase 2
 
 ### 1. Trang Sinh Vien (`/admin/sinh-vien`)
@@ -117,10 +128,10 @@ Ngoai le: Khong co.
 | Search input | `border border-slate-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none` | Placeholder: "Tim theo MSSV, ho ten..." |
 | Filter dropdown (Ky) | `border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white` | native `<select>` — don gian |
 | Filter dropdown (Lop) | same as Ky dropdown | Placeholder option: "Tat ca lop" |
-| Primary button (Import) | `bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors` | Text: "Import Excel" |
-| Secondary button (Them SV) | `border border-slate-200 text-slate-700 hover:bg-slate-50 text-sm font-medium px-4 py-2 rounded-lg transition-colors` | Text: "Them sinh vien" |
+| Primary button (Import) | `bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors` | Text: "Import Excel" |
+| Secondary button (Them SV) | `border border-slate-200 text-slate-700 hover:bg-slate-50 text-sm font-semibold px-4 py-2 rounded-lg transition-colors` | Text: "Them sinh vien" |
 | Table container | `bg-white rounded-lg border border-slate-200 overflow-hidden` | |
-| Table header row | `bg-slate-50 text-left text-xs font-medium text-slate-500 uppercase tracking-wider` | |
+| Table header row | `bg-slate-50 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider` | |
 | Table header cell | `px-4 py-3` | |
 | Table body cell | `px-4 py-3 text-sm text-slate-700 border-t border-slate-100` | |
 | Table row hover | `hover:bg-slate-50` | |
@@ -137,6 +148,7 @@ Ngoai le: Khong co.
 ```
 +-- Modal Overlay (bg-black/50) -----------+
 | +-- Modal Card (max-w-lg) -------------+ |
+| | [X close]                            | |
 | | Heading: "Import danh sach sinh vien"| |
 | |                                      | |
 | | [Dropdown chon Ky LVTN]             | |
@@ -158,10 +170,10 @@ Ngoai le: Khong co.
 | Element | Tailwind Classes | Ghi chu |
 |---------|-----------------|---------|
 | Overlay | `fixed inset-0 bg-black/50 flex items-center justify-center z-50` | Click outside de dong |
-| Modal card | `bg-white rounded-xl p-6 max-w-lg w-full mx-4 max-h-[80vh] overflow-y-auto` | |
-| Modal heading | `text-lg font-semibold text-slate-900 mb-4` | |
-| Close button (X) | `absolute top-4 right-4 text-slate-400 hover:text-slate-600` | HiOutlineXMark icon, size 20 |
-| File input | native `<input type="file" accept=".xlsx,.xls">` voi styling | `text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-600 hover:file:bg-blue-100` |
+| Modal card | `bg-white rounded-xl p-6 max-w-lg w-full mx-4 max-h-[80vh] overflow-y-auto relative` | `relative` cho close button positioning |
+| Modal heading | `text-xl font-semibold text-slate-900 mb-4` | |
+| Close button (X) | `absolute top-4 right-4 text-slate-400 hover:text-slate-600` | HiOutlineXMark icon, size 20, `aria-label="Dong"` |
+| File input | native `<input type="file" accept=".xlsx,.xls">` voi styling | `text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-600 hover:file:bg-blue-100` |
 | Import button | Same as Primary button | Text: "Import", disabled khi chua chon file hoac dang loading |
 | Loading state | Spinner + "Dang xu ly..." thay doi text button | `disabled:opacity-50` |
 | Success message | `bg-green-50 text-green-700 text-sm px-4 py-3 rounded-lg mt-4` | "Da import N sinh vien thanh cong" |
@@ -173,6 +185,7 @@ Ngoai le: Khong co.
 **Layout:**
 ```
 +-- Modal Card (max-w-md) -----------------+
+| [X close]                                |
 | Heading: "Them sinh vien" / "Sua sinh vien" |
 |                                          |
 | MSSV:       [input]     (disabled khi sua) |
@@ -187,8 +200,9 @@ Ngoai le: Khong co.
 
 | Element | Ghi chu |
 |---------|---------|
+| Close button (X) | `absolute top-4 right-4 text-slate-400 hover:text-slate-600`, HiOutlineXMark icon, `aria-label="Dong"` |
 | Form fields | Dung chung style voi LoginPage: `border border-slate-200 rounded-lg px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none` |
-| Label | `text-sm font-medium text-slate-700 mb-1` |
+| Label | `text-sm font-semibold text-slate-700 mb-1` |
 | Field spacing | `mb-4` giua cac field |
 | Button row | `flex justify-end gap-3 mt-6` |
 | Cancel button | `border border-slate-200 text-slate-700 hover:bg-slate-50 px-4 py-2 text-sm rounded-lg` | Text: "Huy" |
@@ -215,14 +229,15 @@ Ngoai le: Khong co.
 
 | Element | Tailwind Classes |
 |---------|-----------------|
-| Badge Admin | `bg-blue-50 text-blue-600 text-xs font-medium px-2 py-0.5 rounded-full` |
-| So SV gan day (7/10) | `text-sm text-slate-700` binh thuong, `text-sm text-amber-600 font-medium` khi = 10 |
+| Badge Admin | `bg-blue-50 text-blue-600 text-xs font-semibold px-2 py-0.5 rounded-full` |
+| So SV gan day (7/10) | `text-sm text-slate-700` binh thuong, `text-sm text-amber-600 font-semibold` khi = 10 |
 
 ### 5. Modal Them/Sua Giang Vien
 
 **Layout:**
 ```
 +-- Modal Card (max-w-md) -----------------+
+| [X close]                                |
 | Heading: "Them giang vien" / "Sua giang vien" |
 |                                          |
 | Ma GV:     [input]      (disabled khi sua) |
@@ -238,6 +253,7 @@ Ngoai le: Khong co.
 
 | Element | Ghi chu |
 |---------|---------|
+| Close button (X) | `absolute top-4 right-4 text-slate-400 hover:text-slate-600`, HiOutlineXMark icon, `aria-label="Dong"` |
 | Checkbox "La Admin" | `flex items-center gap-2` voi native checkbox + `text-sm text-slate-700` |
 | Hoc vi dropdown | native `<select>` voi options: ThS, TS, PGS.TS, GS.TS |
 | Password hint khi sua | `text-xs text-slate-400 mt-1` — "De trong neu khong doi mat khau" |
@@ -271,8 +287,8 @@ Ngoai le: Khong co.
 | Card container | `bg-white rounded-lg border border-slate-200 p-6 mb-6` |
 | Date input | native `<input type="date">` voi cung style input | `border border-slate-200 rounded-lg px-4 py-2 text-sm` |
 | Form layout | 2 cot tren man hinh lon: `grid grid-cols-1 md:grid-cols-2 gap-4` |
-| Active badge | `bg-green-50 text-green-600 text-xs font-medium px-2 py-0.5 rounded-full` — "Dang hoat dong" |
-| Inactive badge | `bg-slate-100 text-slate-500 text-xs font-medium px-2 py-0.5 rounded-full` — "Da ket thuc" |
+| Active badge | `bg-green-50 text-green-600 text-xs font-semibold px-2 py-0.5 rounded-full` — "Dang hoat dong" |
+| Inactive badge | `bg-slate-100 text-slate-500 text-xs font-semibold px-2 py-0.5 rounded-full` — "Da ket thuc" |
 
 ### 7. Dialog Xac Nhan Xoa
 
@@ -292,9 +308,9 @@ Ngoai le: Khong co.
 | Element | Tailwind Classes |
 |---------|-----------------|
 | Warning icon | `text-red-500 mx-auto mb-3` size 40 |
-| Heading | `text-lg font-semibold text-slate-900 text-center` |
+| Heading | `text-xl font-semibold text-slate-900 text-center` |
 | Body text | `text-sm text-slate-500 text-center mt-2` |
-| Delete button | `bg-red-500 hover:bg-red-600 text-white text-sm font-medium px-4 py-2 rounded-lg` | Text: "Xoa" |
+| Delete button | `bg-red-500 hover:bg-red-600 text-white text-sm font-semibold px-4 py-2 rounded-lg` | Text: "Xoa" |
 
 ---
 
@@ -401,6 +417,7 @@ Tuy nhien, day la admin tool — focus desktop. Khong can invest vao mobile layo
 | Focus visible | Tailwind `focus:ring-2 focus:ring-blue-500` tren tat ca input va button |
 | Label cho input | Moi `<input>` co `<label>` tuong ung (da co tu LoginPage pattern) |
 | Button text | Tat ca button co text label ro rang, khong chi icon |
+| Icon-only buttons | Close button (X) trong modal phai co `aria-label="Dong"` |
 | Color contrast | text-slate-900 tren bg-white = ratio > 10:1 (PASS WCAG AA) |
 | Error association | Error text nam ngay duoi input tuong ung |
 
