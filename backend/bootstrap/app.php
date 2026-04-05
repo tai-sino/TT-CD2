@@ -12,12 +12,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->validateCsrfTokens(except: [
-            // '/users',
-            // '/users/*',
-            '*',
-            '*/*',
+        $middleware->api(prepend: [
+            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
         ]);
+        $middleware->throttleApi('60,1');
         $middleware->validateCsrfTokens(except: [
             'api/*',
         ]);
