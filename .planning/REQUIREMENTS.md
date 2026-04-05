@@ -9,10 +9,10 @@
 
 ### AUTH — Xác thực & Phân quyền
 
-- [ ] **AUTH-01**: Người dùng đăng nhập bằng email + password, hệ thống trả về token lưu trong localStorage để duy trì session qua các lần reload
-- [ ] **AUTH-02**: Hệ thống hỗ trợ 4 role: admin (thư ký khoa), gvhd (giảng viên hướng dẫn), gvpb (giảng viên phản biện), sv (sinh viên)
-- [ ] **AUTH-03**: Một giảng viên có thể mang nhiều role cùng lúc theo context — vừa là GVHD của nhóm A, GVPB của nhóm B, thành viên HĐ nhóm C — và thấy đúng menu/chức năng tương ứng với từng role
-- [ ] **AUTH-04**: Mỗi role chỉ truy cập được các route và menu thuộc quyền của mình (route guard)
+- [x] **AUTH-01**: Người dùng đăng nhập bằng email + password, hệ thống trả về token lưu trong localStorage để duy trì session qua các lần reload
+- [x] **AUTH-02**: Hệ thống hỗ trợ 4 role: admin (thư ký khoa), gvhd (giảng viên hướng dẫn), gvpb (giảng viên phản biện), sv (sinh viên)
+- [x] **AUTH-03**: Một giảng viên có thể mang nhiều role cùng lúc theo context — vừa là GVHD của nhóm A, GVPB của nhóm B, thành viên HĐ nhóm C — và thấy đúng menu/chức năng tương ứng với từng role
+- [x] **AUTH-04**: Mỗi role chỉ truy cập được các route và menu thuộc quyền của mình (route guard)
 - [ ] **AUTH-05**: Người dùng có thể đổi mật khẩu của mình
 - [ ] **AUTH-06**: Admin có thể tạo, sửa, xoá tài khoản giảng viên và sinh viên (khi import SV từ Excel, hệ thống tự tạo tài khoản SV)
 - [ ] **AUTH-07**: Thành viên hội đồng (GV có vai trò trong 1 hội đồng) tự đăng nhập và thấy chức năng nhập điểm HĐ cho đề tài thuộc hội đồng của mình — đây là context role, không cần role mới, GV đã có tài khoản sẵn

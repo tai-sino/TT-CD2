@@ -25,9 +25,9 @@
 
 ## Phase Overview
 
-| Phase | Tên | BE làm | FE làm | Tuần |
-|-------|-----|--------|--------|------|
-| 1 | Nền tảng | Laravel setup, DB, Auth API | React setup, Login UI, Layout | 1-1.5 |
+| Phase | Tên | BE làm | FE làm | Tuần | Status |
+|-------|-----|--------|--------|------|--------|
+| 1 | Nền tảng | Laravel setup, DB, Auth API | React setup, Login UI, Layout | 1-1.5 | BE done (01-01 ✓) |
 | 2 | Quản lý SV & GV | Import Excel API, CRUD API | Import UI, Danh sách SV/GV | 1 |
 | 3 | Đề tài & Phân công | Topic API, Phân công API | Trang GVHD, Giao đề tài UI | 1 |
 | 4 | Chấm điểm & Export | Score API, Export Word API | Form chấm điểm, Download UI | 1-1.5 |
@@ -62,9 +62,9 @@ GET  /api/me          Header: Bearer token → { id, name, email, roles[] }
 ```
 
 ### Success criteria:
-- [ ] `php artisan migrate` chạy thành công từ database trống
-- [ ] Login GV → token trả về, `/api/me` trả về đúng roles
-- [ ] Login SV → cùng endpoint, phân biệt được loại user
+- [x] `php artisan migrate` chạy thành công từ database trống (migrations tạo sẵn)
+- [x] Login GV → token trả về, `/api/me` trả về đúng roles
+- [x] Login SV → cùng endpoint, phân biệt được loại user
 - [ ] FE đăng nhập được, redirect đúng trang theo role
 - [ ] 4 role thấy menu khác nhau
 
