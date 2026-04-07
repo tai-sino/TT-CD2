@@ -19,22 +19,22 @@
 
 ### KY — Quản lý kỳ LVTN
 
-- [ ] **KY-01**: Admin tạo kỳ LVTN mới với thông tin: tên kỳ (VD: HK2 2025-2026), các mốc thời gian (nhận đề tài, chấm 50%, phản biện, bảo vệ)
-- [ ] **KY-02**: Admin chỉnh sửa thông tin và mốc thời gian của kỳ LVTN đang hoạt động
-- [ ] **KY-03**: Mọi dữ liệu (SV, đề tài, điểm, hội đồng) đều gắn với 1 kỳ LVTN cụ thể
+- [x] **KY-01**: Admin tạo kỳ LVTN mới với thông tin: tên kỳ (VD: HK2 2025-2026), các mốc thời gian (nhận đề tài, chấm 50%, phản biện, bảo vệ)
+- [x] **KY-02**: Admin chỉnh sửa thông tin và mốc thời gian của kỳ LVTN đang hoạt động
+- [x] **KY-03**: Mọi dữ liệu (SV, đề tài, điểm, hội đồng) đều gắn với 1 kỳ LVTN cụ thể
 - [ ] **KY-04**: Hệ thống hiển thị trạng thái hiện tại của kỳ LVTN (đang ở giai đoạn nào dựa trên mốc thời gian)
 
 ### SV — Quản lý sinh viên
 
-- [ ] **SV-01**: Admin import danh sách SV từ file Excel (từ Phòng Đào tạo) — parse được MSSV, họ tên, lớp, email. Hệ thống validate trùng MSSV và thiếu trường bắt buộc, báo lỗi cụ thể theo từng dòng
-- [ ] **SV-02**: Khi import, hệ thống tự tạo tài khoản SV (email + mật khẩu mặc định) cho mỗi SV chưa có tài khoản
-- [ ] **SV-03**: Admin xem danh sách SV theo kỳ LVTN, có filter theo lớp và theo GVHD đã phân công
+- [x] **SV-01**: Admin import danh sách SV từ file Excel (từ Phòng Đào tạo) — parse được MSSV, họ tên, lớp, email. Hệ thống validate trùng MSSV và thiếu trường bắt buộc, báo lỗi cụ thể theo từng dòng
+- [x] **SV-02**: Khi import, hệ thống tự tạo tài khoản SV (email + mật khẩu mặc định) cho mỗi SV chưa có tài khoản
+- [x] **SV-03**: Admin xem danh sách SV theo kỳ LVTN, có filter theo lớp và theo GVHD đã phân công
 - [ ] **SV-04**: Danh sách SV hiển thị: MSSV, họ tên, lớp, GVHD (nếu đã phân), đề tài (nếu có), trạng thái hiện tại
 
 ### GV — Quản lý giảng viên
 
-- [ ] **GV-01**: Admin quản lý danh sách giảng viên (thêm, sửa, xoá) — thông tin gồm: họ tên, email, số điện thoại, học vị
-- [ ] **GV-02**: Danh sách GV hiển thị số SV đang hướng dẫn, số đề tài đang phản biện, số hội đồng đang tham gia
+- [x] **GV-01**: Admin quản lý danh sách giảng viên (thêm, sửa, xoá) — thông tin gồm: họ tên, email, số điện thoại, học vị
+- [x] **GV-02**: Danh sách GV hiển thị số SV đang hướng dẫn, số đề tài đang phản biện, số hội đồng đang tham gia
 
 ### PC-GVHD — Phân công GVHD
 
