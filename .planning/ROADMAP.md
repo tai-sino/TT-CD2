@@ -108,6 +108,11 @@ PUT    /api/ky-lvtn/{id}       (same fields) → ky
 
 **Requirements covered:** SV-01, SV-02, SV-03, GV-01, GV-02, KY-01, KY-02, KY-03
 
+**Plans:** 2 plans
+Plans:
+- [ ] 02-01-PLAN.md — Backend API: Import SV, CRUD SV/GV, Ky LVTN
+- [ ] 02-02-PLAN.md — Frontend: Trang SinhVien, GiangVien, CaiDat Ky LVTN
+
 ---
 
 ## Phase 3: Đề tài & Phân công
