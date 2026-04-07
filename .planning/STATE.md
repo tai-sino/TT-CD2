@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: — Demo Ready
 status: in-progress
-last_updated: "2026-04-07T15:18:16Z"
+last_updated: "2026-04-07T15:30:00Z"
 progress:
   total_phases: 6
   completed_phases: 1
   total_plans: 5
-  completed_plans: 3
+  completed_plans: 4
 ---
 
 # STATE: TT-CD2 — Hệ thống Quản lý Luận văn Tốt nghiệp
@@ -24,7 +24,7 @@ See: .planning/PROJECT.md (updated 2026-04-03)
 
 ## Current Status
 
-**Phase:** Phase 02 dang thuc hien — plan 01 (BE API) hoan thanh
+**Phase:** Phase 02 dang thuc hien — plan 00 va 01 hoan thanh, con plan 02 (FE)
 **Milestone:** v1.0 — Demo Ready (target ~2026-05-25)
 
 ### Planning Artifacts
@@ -60,8 +60,8 @@ See: .planning/PROJECT.md (updated 2026-04-03)
 |------|------|-------------|---------|
 | 01-01 | BE Nen Tang | b3b39ad → 0d8c5c0 | Sanctum auth, 8 bang DB, 8 models, 3 API routes, seeder |
 | 01-02 | FE Nen Tang | cd0af21 → bc08242 | React 19 + react-router v7, AuthContext, LoginPage, Sidebar, 15 placeholder pages |
-| 02-01 | BE API SV/GV/Ky | dfc3f8f → 0cf67bb | 3 controllers (SinhVien, GiangVien, KyLvtn), 15 API routes, import Excel |
 | 02-00 | Test Infrastructure | 3ab9232 → 7dc3805 | PHPUnit config, 4 test stubs (21 methods), 2 Excel fixtures |
+| 02-01 | BE API SV/GV/Ky | dfc3f8f → 0cf67bb | 3 controllers (SinhVien, GiangVien, KyLvtn), 15 API routes, import Excel |
 
 ---
 
@@ -77,13 +77,12 @@ See: .planning/PROJECT.md (updated 2026-04-03)
 - [Phase 01]: useAuth nam trong AuthContext.jsx, khong tach hook rieng - don gian hon
 - [Phase 02]: Dung phpspreadsheet truc tiep (IOFactory::load) thay vi maatwebsite/excel - don gian, sinh vien hieu duoc
 - [Phase 02]: Import SV bat buoc ky_lvtn_id (KY-03), filter SV theo GVHD dung whereHas('deTai') (SV-03)
-
 - [Phase 02]: Laravel 12 khong can CreatesApplication trait - TestCase don gian extend BaseTestCase
 - [Phase 02]: Test stubs dung markTestIncomplete de Wave 1 fill chi tiet
 
 ## Next Action
 
-Tiep tuc Phase 02: Plan 02-02 (FE pages)
+Tiep tuc Phase 02: Plan 02-02 (FE pages SinhVien, GiangVien, CaiDat)
 
 ---
 
@@ -97,4 +96,4 @@ Tiep tuc Phase 02: Plan 02-02 (FE pages)
 | 02 | 01 | 5 min | 2 | 4 |
 
 ---
-*Last session: 2026-04-07 — Completed 02-00-PLAN.md (Test Infrastructure + Excel Fixtures)*
+*Last session: 2026-04-07 — Completed 02-00 (Test Infrastructure) and 02-01 (BE API SV/GV/Ky)*
