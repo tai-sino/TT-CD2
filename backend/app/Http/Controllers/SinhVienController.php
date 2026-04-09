@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\SinhVien;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class SinhVienController extends Controller
@@ -44,7 +43,6 @@ class SinhVienController extends Controller
                 'hoTen' => $hoTen,
                 'lop' => $lop ?: null,
                 'email' => $email ?: null,
-                'matKhau' => Hash::make($mssv),
                 'ky_lvtn_id' => $request->ky_lvtn_id,
             ]);
             $imported++;
@@ -100,7 +98,6 @@ class SinhVienController extends Controller
             'hoTen' => $request->hoTen,
             'email' => $request->email,
             'lop' => $request->lop,
-            'matKhau' => Hash::make($request->mssv),
             'ky_lvtn_id' => $request->ky_lvtn_id,
         ]);
 

@@ -14,7 +14,6 @@ return new class extends Migration
             $table->string('lop', 20)->nullable();
             $table->string('email', 100)->unique()->nullable();
             $table->string('soDienThoai', 15)->nullable();
-            $table->string('matKhau', 255);
             $table->unsignedBigInteger('maDeTai')->nullable();
             $table->unsignedBigInteger('ky_lvtn_id')->nullable();
             $table->timestamps();

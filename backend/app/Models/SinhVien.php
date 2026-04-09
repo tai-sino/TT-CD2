@@ -2,28 +2,18 @@
 
 namespace App\Models;
 
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Model;
 
-class SinhVien extends Authenticatable
+class SinhVien extends Model
 {
-    use HasApiTokens;
-
     protected $table = 'sinhvien';
     protected $primaryKey = 'mssv';
     public $incrementing = false;
     protected $keyType = 'string';
 
     protected $fillable = [
-        'mssv', 'hoTen', 'lop', 'email', 'soDienThoai', 'matKhau', 'maDeTai', 'ky_lvtn_id',
+        'mssv', 'hoTen', 'lop', 'email', 'soDienThoai', 'maDeTai', 'ky_lvtn_id',
     ];
-
-    protected $hidden = ['matKhau'];
-
-    public function getAuthPassword()
-    {
-        return $this->matKhau;
-    }
 
     public function deTai()
     {
