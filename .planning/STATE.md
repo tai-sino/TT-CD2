@@ -95,5 +95,11 @@ Tiep tuc Phase 02: Plan 02-02 (FE pages SinhVien, GiangVien, CaiDat)
 | 02 | 00 | 10 min | 2 | 9 |
 | 02 | 01 | 5 min | 2 | 4 |
 
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 260410-065 | fix db schema: bo matKhau SV, them migration topic_registrations_form, gop trang PhanCong, them trang NhapLieu | 2026-04-10 | 1326acb | [260410-065](./quick/260410-065-fix-db-schema-bo-matkhau-sv-them-migrati/) |
+
 ---
-*Last session: 2026-04-07 — Completed 02-00 (Test Infrastructure) and 02-01 (BE API SV/GV/Ky)*
+*Last activity: 2026-04-10 - Completed quick task 260410-065: fix db schema + gop trang PhanCong + them trang NhapLieu*
