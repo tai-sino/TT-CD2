@@ -8,9 +8,9 @@ import LoginPage from './pages/LoginPage';
 import TongQuan from './pages/admin/TongQuan';
 import AdminSinhVien from './pages/admin/SinhVien';
 import GiangVien from './pages/admin/GiangVien';
-import PhanCongGVHD from './pages/admin/PhanCongGVHD';
+import PhanCong from './pages/admin/PhanCong';
+import NhapLieu from './pages/admin/NhapLieu';
 import AdminDeTai from './pages/admin/DeTai';
-import PhanCongGVPB from './pages/admin/PhanCongGVPB';
 import HoiDong from './pages/admin/HoiDong';
 import Diem from './pages/admin/Diem';
 import CaiDat from './pages/admin/CaiDat';
@@ -38,9 +38,9 @@ function App() {
                 <Route path="/admin/tong-quan" element={<TongQuan />} />
                 <Route path="/admin/sinh-vien" element={<AdminSinhVien />} />
                 <Route path="/admin/giang-vien" element={<GiangVien />} />
-                <Route path="/admin/phan-cong-gvhd" element={<PhanCongGVHD />} />
+                <Route path="/admin/nhap-lieu" element={<NhapLieu />} />
+                <Route path="/admin/phan-cong" element={<PhanCong />} />
                 <Route path="/admin/de-tai" element={<AdminDeTai />} />
-                <Route path="/admin/phan-cong-gvpb" element={<PhanCongGVPB />} />
                 <Route path="/admin/hoi-dong" element={<HoiDong />} />
                 <Route path="/admin/diem" element={<Diem />} />
                 <Route path="/admin/cai-dat" element={<CaiDat />} />
