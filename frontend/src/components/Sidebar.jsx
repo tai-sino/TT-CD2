@@ -27,14 +27,12 @@ const menuItems = [
 
 ];
 
+
 const roleLabels = {
   admin: 'Thư ký khoa',
   gvhd: 'Giảng viên hướng dẫn',
   gvpb: 'Giảng viên phản biện',
   sv: 'Sinh viên',
-  ChuTich: 'Chủ tịch hội đồng',
-  ThuKy: 'Thư ký hội đồng',
-  UyVien: 'Ủy viên hội đồng',
 };
 
 export default function Sidebar() {
