@@ -3,13 +3,19 @@ import { useNavigate } from "react-router";
 import { login } from "../services/authService";
 import { useAuth } from "../context/AuthContext";
 
-function getDefaultRoute(role) {
-  if (role === "admin") return "/admin/tong-quan";
-  if (role === "gvhd") return "/gvhd/sinh-vien";
-  if (role === "gvpb") return "/gvpb/de-tai";
-  if (role === "sv") return "/sv/de-tai";
-  if (role === "ChuTich" || role === "ThuKy" || role === "UyVien")
-    return "/admin/tong-quan";
+
+function getDefaultRoute(user) {
+  // Ưu tiên type
+  if (user.type === "giangvien") {
+    if (user.role === "ChuTich" || user.role === "ThuKy" || user.role === "UyVien") return "/admin/tong-quan";
+    // Nếu có role khác thì điều hướng theo role
+    if (user.role === "admin") return "/admin/tong-quan";
+    if (user.role === "gvhd") return "/gvhd/sinh-vien";
+    if (user.role === "gvpb") return "/gvpb/de-tai";
+    // Nếu không có role hội đồng thì mặc định là gvhd
+    return "/gvhd/sinh-vien";
+  }
+  if (user.type === "sinhvien") return "/sv/de-tai";
   return "/login";
 }
 
@@ -28,7 +34,7 @@ export default function LoginPage() {
     const saved = localStorage.getItem("user");
     if (token && saved) {
       const userData = JSON.parse(saved);
-      navigate(getDefaultRoute(userData.role));
+      navigate(getDefaultRoute(userData));
     }
   }, []);
 
@@ -43,7 +49,7 @@ export default function LoginPage() {
     try {
       const data = await login(maGV, password);
       saveAuth(data.user, data.token);
-      navigate(getDefaultRoute(data.user.role));
+      navigate(getDefaultRoute(data.user));
     } catch (err) {
       if (err.response?.status === 401 || err.response?.status === 422) {
         setError("Mã GV hoặc mật khẩu không đúng. Vui lòng thử lại.");

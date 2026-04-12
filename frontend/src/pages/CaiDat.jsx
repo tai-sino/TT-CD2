@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getKyLvtn, createKyLvtn, updateKyLvtn } from '../../services/kyLvtnService';
+import { getKyLvtn, createKyLvtn, updateKyLvtn } from '../services/kyLvtnService';
 
 export default function CaiDat() {
   const queryClient = useQueryClient();

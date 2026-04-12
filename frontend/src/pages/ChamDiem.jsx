@@ -1,1 +1,2 @@
-// ...existing code from admin/gvhd/gvpb/sv/ChamDiem.jsx (if needed, will merge after move)
+import PlaceholderPage from './PlaceholderPage';
+export default function ChamDiem() { return <PlaceholderPage title="Chấm Điểm" />; }

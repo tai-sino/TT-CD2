@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from "react";
 import Lottie from "lottie-react";
-import studentWithLaptop from "../../../public/assets/student with laptop.json";
+import studentWithLaptop from '../../public/assets/student with laptop.json';
 
 
 export default function TongQuan() {

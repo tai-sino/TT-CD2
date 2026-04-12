@@ -6,24 +6,25 @@ import MainLayout from './layouts/MainLayout';
 import LoginPage from './pages/LoginPage';
 
 
-import TongQuan from './pages/admin/TongQuan';
-import AdminSinhVien from './pages/admin/SinhVien';
-import GiangVien from './pages/admin/GiangVien';
-import PhanCong from './pages/admin/PhanCong';
-import NhapLieu from './pages/admin/NhapLieu';
-import AdminDeTai from './pages/admin/DeTai';
-import HoiDong from './pages/admin/HoiDong';
-import Diem from './pages/admin/Diem';
-import CaiDat from './pages/admin/CaiDat';
 
-import GvhdSinhVien from './pages/gvhd/SinhVien';
-import GvhdDeTai from './pages/gvhd/DeTai';
-import GvhdChamDiem from './pages/gvhd/ChamDiem';
+import TongQuan from './pages/TongQuan';
+import AdminSinhVien from './pages/SinhVien';
+import GiangVien from './pages/GiangVien';
+import PhanCong from './pages/PhanCong';
+import NhapLieu from './pages/NhapLieu';
+import AdminDeTai from './pages/DeTai';
+import HoiDong from './pages/HoiDong';
+import Diem from './pages/Diem';
+import CaiDat from './pages/CaiDat';
 
-import GvpbDeTai from './pages/gvpb/DeTai';
-import GvpbChamDiem from './pages/gvpb/ChamDiem';
+import GvhdSinhVien from './pages/SinhVien';
+import GvhdDeTai from './pages/DeTai';
+import GvhdChamDiem from './pages/ChamDiem';
 
-import SvDeTai from './pages/sv/DeTai';
+import GvpbDeTai from './pages/DeTai';
+import GvpbChamDiem from './pages/ChamDiem';
+
+import SvDeTai from './pages/DeTai';
 import DeTai from './pages/DeTai';
 
 const queryClient = new QueryClient();
