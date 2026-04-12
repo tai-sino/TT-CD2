@@ -14,8 +14,8 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'maGV' => 'required',
-            'password' => 'required',
+            'maGV' => 'required|string',
+            'password' => 'required|string',
         ]);
 
         $user = GiangVien::where('maGV', $request->maGV)->first();
