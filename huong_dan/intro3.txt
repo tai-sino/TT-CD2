@@ -1,0 +1,32 @@
+- Login chỉ dùng MaGV đăng nhập (tui đã sửa)
+- Bảng sinh viên, bỏ trường (cột) password
+- Gộp 2 trang phân công GVPB và phân công GVHD làm 1 trang là "phân công gvhd/ gvpb": chỉ admin/ thư kí phân công đc, còn lại chỉ đc xem
+- Thêm 1 trang nhập thông tin: có nút thêm và form modal hiện ra để thêm, sửa, có khả năng import file excel (Chốt_DSSV_GVHD_TenDeTai_LVTN_Dot2_17112025.xlsx), xét sheet "DSSV_ĐK_HƯỚNG ĐỀ TÀI" và "SVĐK_TheoLink" để 
+    lọc các thông tin theo:
+    + MSSV, Họ tên SV, Lớp: để thêm dữ liệu mới vào bảng sinh viên
+    Sau đó dùng theo cấu trúc bảng dưới
+    
+CREATE TABLE topic_registrations_form (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    topic_title VARCHAR(255) NOT NULL,
+    topic_description TEXT NULL,
+    topic_type ENUM('single', 'group') NOT NULL, -- 1 SV / 2 SV
+    student1_id VARCHAR(20) NOT NULL,
+    student2_id VARCHAR(20) NULL,
+    gvhd_code VARCHAR(20) NULL,
+    gvhd_workplace VARCHAR(255) NULL,
+    gvpb_code VARCHAR(20) NULL,
+    note TEXT NULL,
+    source VARCHAR(50) DEFAULT 'google_form',
+    status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+    registered_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+Bảng đó dành cho trang nhập liệu, trong trang có bảng, cột hành động có nút sửa, xoá, thêm vào đề tài chính
+Dữ liệu khi thêm thủ công hoặc import file, nếu có chưa có thông tin sinh viên trong bảng sinh viên thì thêm mới, nếu có rồi thì thôi
+
+Hoàn thiện chức năng ở backend
+Import file excel ở trang nhập liệu, dùng file có tên "chốt..."
+Đối Xem 2 sheet "DSSV_ĐK_HƯỚNG ĐỀ TÀI" và "SVĐK_TheoLink"
+Tham chiếu, trích lọc các cột có liên quan sao tương đương với các cột trong bảng "topic_registrations_form" để thêm dữ liệu vào bảng đó
