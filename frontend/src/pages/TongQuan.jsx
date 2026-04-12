@@ -1,7 +1,9 @@
 
+
 import { useEffect, useState } from "react";
 import Lottie from "lottie-react";
 import studentWithLaptop from '../../public/assets/student with laptop.json';
+import { getGiaiDoan, getDeTaiStats, getStudentStats } from '../services/dashboardService';
 
 
 export default function TongQuan() {
@@ -14,20 +16,41 @@ export default function TongQuan() {
 	});
 
 	useEffect(() => {
-		const token = localStorage.getItem("token");
-		fetch("/api/giai-doan", {
-			headers: {
-				Authorization: `Bearer ${token}`,
-				Accept: "application/json",
-			},
-		})
-			.then((res) => res.json())
-			.then((data) => {
-				if (data.giaiDoan) {
-					setStats((prev) => ({ ...prev, presentations: Number(data.giaiDoan) }));
+		async function fetchStats() {
+			try {
+				// Giai đoạn hiện tại
+				const giaiDoanRes = await getGiaiDoan();
+				let presentations = 0;
+				if (giaiDoanRes && giaiDoanRes.giaiDoan) {
+					presentations = Number(giaiDoanRes.giaiDoan);
 				}
-			})
-			.catch(() => {});
+
+				// Số đề tài, đề tài đã xong
+				let total = 0, finished = 0;
+				try {
+					const deTaiStats = await getDeTaiStats();
+					total = deTaiStats?.total || 0;
+					finished = deTaiStats?.finished || 0;
+				} catch {}
+
+				// Số sinh viên
+				let students = 0;
+				try {
+					const studentStats = await getStudentStats();
+					students = studentStats?.total || 0;
+				} catch {}
+
+				setStats({
+					total,
+					students,
+					finished,
+					presentations,
+				});
+			} catch {
+				setStats({ total: 0, students: 0, finished: 0, presentations: 0 });
+			}
+		}
+		fetchStats();
 	}, []);
 
 
