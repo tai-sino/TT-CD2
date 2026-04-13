@@ -200,7 +200,9 @@ class TopicRegistrationFormController extends Controller
                             }
 
                             $mssv = $this->normalizeExcelText($row[$idx['mssv']] ?? '');
-                            $hoTen = $this->normalizeExcelText($row[$idx['hoTen']] ?? '');
+                            // Họ tên bị tách 2 cột liền kề — nối lại
+                            $hoTenCol = $idx['hoTen'];
+                            $hoTen = trim($this->normalizeExcelText($row[$hoTenCol] ?? '') . ' ' . $this->normalizeExcelText($row[$hoTenCol + 1] ?? ''));
                             $lop = $idx['lop'] !== null ? $this->normalizeExcelText($row[$idx['lop']] ?? '') : '';
                             $gvhd = $idx['gvhd'] !== null ? $this->normalizeExcelText($row[$idx['gvhd']] ?? '') : '';
                             $hhHv = $idx['hh_hv'] !== null ? $this->normalizeExcelText($row[$idx['hh_hv']] ?? '') : '';
@@ -242,10 +244,10 @@ class TopicRegistrationFormController extends Controller
                                     'student2_name' => null,
                                     'student2_class' => null,
                                     'student2_email' => null,
-                                    'gvhd_code' => $gvhd !== '' ? $gvhd : null,
+                                    'gvhd_code' => null,
                                     'gvhd_workplace' => $gvhdWorkplace !== '' ? $gvhdWorkplace : null,
                                     'gvpb_code' => null,
-                                    'note' => count($noteParts) ? implode(' | ', $noteParts) : null,
+                                    'note' => count($noteParts) ? implode(' | ', $noteParts) : ($gvhd !== '' ? 'GVHD: ' . $gvhd : null),
                                     'status' => 'cho_duyet',
                                     'source' => 'excel_import_sheet1',
                                 ]
