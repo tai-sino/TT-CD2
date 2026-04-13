@@ -11,6 +11,49 @@ use Carbon\Carbon;
 
 class TopicRegistrationFormController extends Controller
 {
+
+    /**
+     * Duyệt bản đăng ký đề tài và tạo bản ghi vào bảng detai
+     */
+    public function approve($id)
+    {
+        $form = TopicRegistrationForm::findOrFail($id);
+        if ($form->status === 'da_duyet') {
+            return response()->json(['message' => 'Bản đăng ký đã được duyệt trước đó!'], 400);
+        }
+
+        // Tạo đề tài mới
+        $deTai = \App\Models\DeTai::create([
+            'tenDeTai' => $form->topic_title,
+            'moTa' => $form->topic_description,
+            'maGV_HD' => $form->gvhd_code,
+            'maGV_PB' => $form->gvpb_code,
+            'maHoiDong' => null,
+            'ky_lvtn_id' => null,
+            'thuTuTrongHD' => null,
+            'ghiChu' => $form->note,
+            'trangThai' => 'dat',
+            'diemGiuaKy' => null,
+            'trangThaiGiuaKy' => null,
+            'nhanXetGiuaKy' => null,
+            'diemHuongDan' => null,
+            'nhanXetHuongDan' => null,
+            'diemPhanBien' => null,
+            'nhanXetPhanBien' => null,
+            'diemHoiDong' => null,
+            'diemTongKet' => null,
+            'diemChu' => null,
+        ]);
+
+          // Cập nhật trạng thái
+        $form->status = 'da_duyet';
+        $form->save();
+
+        return response()->json([
+            'message' => 'Đã duyệt và tạo đề tài thành công!',
+            'de_tai' => $deTai,
+        ]);
+    }
     public function index(Request $request)
     {
         $query = TopicRegistrationForm::query();

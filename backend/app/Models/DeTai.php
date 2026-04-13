@@ -11,9 +11,9 @@ class DeTai extends Model
 
     protected $fillable = [
         'tenDeTai', 'moTa', 'maGV_HD', 'maGV_PB', 'maHoiDong', 'ky_lvtn_id',
-        'thuTuTrongHD', 'ghiChu', 'diemGiuaKy', 'trangThaiGiuaKy', 'nhanXetGiuaKy',
+        'diemGiuaKy', 'trangThaiGiuaKy', 'nhanXetGiuaKy',
         'diemHuongDan', 'nhanXetHuongDan', 'diemPhanBien', 'nhanXetPhanBien',
-        'diemHoiDong', 'diemTongKet', 'diemChu', 'trangThai',
+           'diemHoiDong', 'diemTongKet', 'trangThai',
     ];
 
     protected $casts = [

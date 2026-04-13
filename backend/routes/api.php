@@ -32,6 +32,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/nhap-lieu', [TopicRegistrationFormController::class, 'store']);
     Route::put('/nhap-lieu/{id}', [TopicRegistrationFormController::class, 'update']);
     Route::delete('/nhap-lieu/{id}', [TopicRegistrationFormController::class, 'destroy']);
+
+    Route::post('/topic-registration-form/{id}/approve', [TopicRegistrationFormController::class, 'approve']);
     Route::post('/nhap-lieu-import-excel', [TopicRegistrationFormController::class, 'importExcel']);
 
     // Lấy giai đoạn hiện tại

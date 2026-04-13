@@ -19,3 +19,9 @@ export async function deleteDeTai(id) {
   const res = await api.delete(`/de-tai/${id}`);
   return res.data;
 }
+
+// Approve topic registration form and create DeTai
+export async function approveTopicRegistrationForm(id) {
+  const res = await api.post(`/topic-registration-form/${id}/approve`);
+  return res.data;
+}
