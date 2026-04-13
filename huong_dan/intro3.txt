@@ -1,0 +1,31 @@
+CREATE TABLE `topic_registrations_form` (
+  `id` bigint NOT NULL,
+  `topic_title` varchar(255) NOT NULL,
+  `topic_description` text,
+  `topic_type` enum('mot_sinh_vien','hai_sinh_vien') NOT NULL,
+  `student1_id` varchar(20) NOT NULL,
+  `student1_name` varchar(255) NOT NULL,
+  `student1_class` varchar(50) NOT NULL,
+  `student1_email` varchar(255) DEFAULT NULL,
+  `student2_id` varchar(20) DEFAULT NULL,
+  `student2_name` varchar(255) DEFAULT NULL,
+  `student2_class` varchar(50) DEFAULT NULL,
+  `student2_email` varchar(255) DEFAULT NULL,
+  `gvhd_code` varchar(20) DEFAULT NULL,
+  `gvpb_code` varchar(20) DEFAULT NULL,
+  `note` text,
+  `status` enum('cho_duyet','da_duyet','tu_choi') DEFAULT 'cho_duyet',
+  `source` varchar(50) DEFAULT 'google_form',
+  `registered_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `gvhd_workplace` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+Ở sheet 'DSSV_ĐK_HƯỚNG ĐỀ TÀI' (tại dòng 7) có các cột: STT, MSSV, HỌ TÊN SINH VIÊN, LỚP, GVHD, HH-HV, Nơi công tác, Tên đề tài (GVHD nhập thông tin), GHI CHÚ
+Ở sheet 'SVĐK_TheoLink' (tại dòng 1) có các cột: Timestamp, Email Address, Họ và tên sinh viên 1, Lớp sinh viên 1, Mã sinh viên 1, Số điện thoại sinh viên 1, Số Nhóm, Có làm chung nhóm với sinh viên khác không?
+Mỗi cột có thể chứa text có kí tự xuống dòng, bỏ qua kí tự đó để xử lí luôn
+Xử lý bảng ở mỗi sheet, tham chiếu mssv, nhóm, ...
+Sao cho phù hợp với bảng `topic_registrations_form` trong sql
+
+Dựa trên cái đó, hãy sửa lại hàm `ublic function importExcel(Request $request)` trong file `TopicRegistrationFormController.php` để cho nó chạy đúng chạy ổn đi
+Sửa BE xong, sửa cả FE nữa

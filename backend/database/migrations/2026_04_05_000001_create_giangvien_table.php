@@ -15,7 +15,6 @@ return new class extends Migration
             $table->string('soDienThoai', 15)->nullable();
             $table->string('hocVi', 50)->nullable();
             $table->string('matKhau', 255);
-            $table->boolean('isAdmin')->default(false);
             $table->timestamps();
         });
     }

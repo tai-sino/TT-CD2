@@ -118,6 +118,29 @@ _Chutzpah*
 
 # Visual C++ cache files
 ipch/
+
+# === Custom ignore for CD2_Gen project ===
+# Laravel backend
+backend/vendor/
+backend/storage/
+backend/.env
+backend/bootstrap/cache/
+backend/node_modules/
+
+# React frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.local
+frontend/.env.*.local
+
+# VSCode, history, OS files
+.vscode/
+.history/
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
 *.aps
 *.ncb
 *.opendb

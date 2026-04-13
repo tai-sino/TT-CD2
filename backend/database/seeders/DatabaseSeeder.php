@@ -12,20 +12,12 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        $ky = KyLvtn::create([
-            'ten' => 'HK2 2025-2026',
-            'is_active' => true,
-            'ngay_bat_dau' => '2026-02-01',
-            'ngay_ket_thuc' => '2026-06-30',
-        ]);
-
         GiangVien::create([
             'maGV' => 'GV001',
             'tenGV' => 'Nguyen Van Admin',
             'email' => 'admin@stu.edu.vn',
             'hocVi' => 'ThS',
             'matKhau' => Hash::make('123456'),
-            'isAdmin' => true,
         ]);
 
         GiangVien::create([
@@ -34,7 +26,6 @@ class DatabaseSeeder extends Seeder
             'email' => 'binh@stu.edu.vn',
             'hocVi' => 'TS',
             'matKhau' => Hash::make('123456'),
-            'isAdmin' => false,
         ]);
 
         GiangVien::create([
@@ -43,7 +34,6 @@ class DatabaseSeeder extends Seeder
             'email' => 'cuong@stu.edu.vn',
             'hocVi' => 'ThS',
             'matKhau' => Hash::make('123456'),
-            'isAdmin' => false,
         ]);
 
         GiangVien::create([
@@ -52,7 +42,6 @@ class DatabaseSeeder extends Seeder
             'email' => 'duc@stu.edu.vn',
             'hocVi' => 'ThS',
             'matKhau' => Hash::make('123456'),
-            'isAdmin' => false,
         ]);
 
         $svList = [
@@ -69,8 +58,6 @@ class DatabaseSeeder extends Seeder
                 'hoTen' => $sv['hoTen'],
                 'lop' => $sv['lop'],
                 'email' => $sv['email'],
-                'matKhau' => Hash::make('123456'),
-                'ky_lvtn_id' => $ky->id,
             ]);
         }
     }

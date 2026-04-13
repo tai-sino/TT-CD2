@@ -11,11 +11,10 @@ return new class extends Migration
         Schema::create('sinhvien', function (Blueprint $table) {
             $table->string('mssv', 20)->primary();
             $table->string('hoTen', 100);
-            $table->string('lop', 20)->nullable();
-            $table->string('email', 100)->unique()->nullable();
+            $table->string('lop', 50)->nullable();
+            $table->string('email', 100)->nullable();
             $table->string('soDienThoai', 15)->nullable();
             $table->unsignedBigInteger('maDeTai')->nullable();
-            $table->unsignedBigInteger('ky_lvtn_id')->nullable();
             $table->timestamps();
         });
     }

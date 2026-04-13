@@ -32,5 +32,17 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/nhap-lieu', [TopicRegistrationFormController::class, 'store']);
     Route::put('/nhap-lieu/{id}', [TopicRegistrationFormController::class, 'update']);
     Route::delete('/nhap-lieu/{id}', [TopicRegistrationFormController::class, 'destroy']);
-    Route::post('/nhap-lieu/import-excel', [TopicRegistrationFormController::class, 'importExcel']);
+
+    Route::post('/topic-registration-form/{id}/approve', [TopicRegistrationFormController::class, 'approve']);
+    Route::post('/nhap-lieu-import-excel', [TopicRegistrationFormController::class, 'importExcel']);
+
+    // Lấy giai đoạn hiện tại
+    Route::get('/giai-doan', [\App\Http\Controllers\CauHinhController::class, 'giaiDoan']);
+
+    // CRUD Đề tài
+    Route::get('/de-tai', [\App\Http\Controllers\DeTaiController::class, 'index']);
+    Route::get('/de-tai/{id}', [\App\Http\Controllers\DeTaiController::class, 'show']);
+    Route::post('/de-tai', [\App\Http\Controllers\DeTaiController::class, 'store']);
+    Route::put('/de-tai/{id}', [\App\Http\Controllers\DeTaiController::class, 'update']);
+    Route::delete('/de-tai/{id}', [\App\Http\Controllers\DeTaiController::class, 'destroy']);
 });

@@ -57,6 +57,9 @@ php artisan serve --port=8000
 
 - Link frontend: `https://quan-ly-luan-van-tn.vercel.app`
 
-## Thông tin tài khoản test
+## Thông tin tài khoản test (V2)
+![Acc_Image](screenshot/image_v2.png)
+
+## Thông tin tài khoản test (V1)
 
 ![Acc_Image](screenshot/image.png)

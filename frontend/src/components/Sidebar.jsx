@@ -14,31 +14,19 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { logout } from '../services/authService';
 
-const menuConfig = {
-  admin: [
-    { label: 'Tổng quan', path: '/admin/tong-quan', icon: HiOutlineHome },
-    { label: 'Sinh viên', path: '/admin/sinh-vien', icon: HiOutlineUsers },
-    { label: 'Giảng viên', path: '/admin/giang-vien', icon: HiOutlineAcademicCap },
-    { label: 'Nhập liệu', path: '/admin/nhap-lieu', icon: HiOutlinePencilSquare },
-    { label: 'Phân công GVHD/GVPB', path: '/admin/phan-cong', icon: HiOutlineUserGroup },
-    { label: 'Đề tài', path: '/admin/de-tai', icon: HiOutlineDocumentText },
-    { label: 'Hội đồng', path: '/admin/hoi-dong', icon: HiOutlineBuildingOffice2 },
-    { label: 'Điểm tổng kết', path: '/admin/diem', icon: HiOutlineChartBar },
-    { label: 'Cài đặt', path: '/admin/cai-dat', icon: HiOutlineCog6Tooth },
-  ],
-  gvhd: [
-    { label: 'Sinh viên của tôi', path: '/gvhd/sinh-vien', icon: HiOutlineUsers },
-    { label: 'Đề tài hướng dẫn', path: '/gvhd/de-tai', icon: HiOutlineDocumentText },
-    { label: 'Chấm điểm', path: '/gvhd/cham-diem', icon: HiOutlinePencilSquare },
-  ],
-  gvpb: [
-    { label: 'Đề tài phản biện', path: '/gvpb/de-tai', icon: HiOutlineDocumentText },
-    { label: 'Chấm điểm phản biện', path: '/gvpb/cham-diem', icon: HiOutlinePencilSquare },
-  ],
-  sv: [
-    { label: 'Đề tài của tôi', path: '/sv/de-tai', icon: HiOutlineDocumentText },
-  ],
-};
+const menuItems = [
+  { label: 'Tổng quan', path: '/admin/tong-quan', icon: HiOutlineHome },
+  { label: 'Sinh viên', path: '/admin/sinh-vien', icon: HiOutlineUsers },
+  { label: 'Giảng viên', path: '/admin/giang-vien', icon: HiOutlineAcademicCap },
+  { label: 'Nhập liệu', path: '/admin/nhap-lieu', icon: HiOutlinePencilSquare },
+  { label: 'Phân Công GVHD/GVPB', path: '/admin/phan-cong', icon: HiOutlineUserGroup },
+  { label: 'Giữa kỳ', path: '/admin/giua-ky', icon: HiOutlineDocumentText },
+  { label: 'Hội đồng', path: '/admin/hoi-dong', icon: HiOutlineBuildingOffice2 },
+  { label: 'Điểm tổng kết', path: '/admin/diem', icon: HiOutlineChartBar },
+  { label: 'Cài đặt', path: '/admin/cai-dat', icon: HiOutlineCog6Tooth },
+
+];
+
 
 const roleLabels = {
   admin: 'Thư ký khoa',
@@ -52,25 +40,11 @@ export default function Sidebar() {
   const location = useLocation();
   const { user, clearAuth } = useAuth();
 
-  const roles = user?.roles || [];
-
-  let menuItems = [];
-  if (roles.includes('admin')) {
-    menuItems = menuConfig.admin;
-  } else {
-    roles.forEach((role) => {
-      if (menuConfig[role]) {
-        menuItems = [...menuItems, ...menuConfig[role]];
-      }
-    });
-  }
+  const role = user?.role;
 
   const getRoleLabel = () => {
-    if (roles.includes('admin')) return roleLabels.admin;
-    if (roles.includes('gvhd') && roles.includes('gvpb')) return 'Giảng viên HD & PB';
-    if (roles.includes('gvhd')) return roleLabels.gvhd;
-    if (roles.includes('gvpb')) return roleLabels.gvpb;
-    if (roles.includes('sv')) return roleLabels.sv;
+    if (!role) return '';
+    if (roleLabels[role]) return roleLabels[role];
     return '';
   };
 
