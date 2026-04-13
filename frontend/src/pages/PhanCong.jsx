@@ -1,10 +1,15 @@
 import { useState, useEffect, useMemo } from 'react';
 import { FaBan } from 'react-icons/fa';
-import { getDeTais } from '../services/deTaiService';
+import { getDeTais, updateDeTai } from '../services/deTaiService';
 import { getKyLvtn } from '../services/kyLvtnService';
 import { getLecturers } from '../services/giangVienService';
 
 export default function PhanCong() {
+  // Modal state
+  const [editItem, setEditItem] = useState(null);
+  const [editForm, setEditForm] = useState({ maGV_HD: '', maGV_PB: '', trangThai: '' });
+  const [saving, setSaving] = useState(false);
+  const [editError, setEditError] = useState(null);
   // Đã bỏ tab, chỉ còn 1 vùng bảng phân công
   const [aboutMe] = useState(() => {
     try {
@@ -61,7 +66,6 @@ export default function PhanCong() {
         });
     }
   }, [aboutMe, kyId, gvhd, gvpb, trangThai, search, page, perPage]);
-
   if (!aboutMe || aboutMe.vaiTro !== 'ThuKy') {
     return (
       <div className="flex flex-col items-center justify-center min-h-[300px] text-slate-500">
@@ -74,10 +78,114 @@ export default function PhanCong() {
   const start = (page - 1) * perPage + 1;
   const end = Math.min(page * perPage, total);
 
-  return (
-    <div>
-      <h2 className="text-xl font-semibold text-slate-800 mb-4">Phân công giảng viên</h2>
+  // Khi bấm chỉnh sửa
+  function openEdit(dt) {
+    setEditItem(dt);
+    setEditForm({
+      maGV_HD: dt.maGV_HD || '',
+      maGV_PB: dt.maGV_PB || '',
+      trangThai: dt.trangThai || '',
+    });
+    setEditError(null);
+  }
 
+  // Lưu chỉnh sửa
+  async function handleSaveEdit() {
+    setSaving(true);
+    setEditError(null);
+    try {
+      await updateDeTai(editItem.maDeTai, editForm);
+      setEditItem(null);
+      // Reload bảng
+      setLoading(true);
+      getDeTais({
+        ky_lvtn_id: kyId || undefined,
+        maGV_HD: gvhd || undefined,
+        maGV_PB: gvpb || undefined,
+        trangThai: trangThai || undefined,
+        q: search || undefined,
+        page,
+        per_page: perPage,
+      })
+        .then((data) => {
+          setDeTais(data?.data || []);
+          setTotal(data?.total || 0);
+          setLoading(false);
+        })
+        .catch(() => {
+          setError('Lỗi tải dữ liệu');
+          setLoading(false);
+        });
+    } catch (err) {
+      setEditError(err?.response?.data?.message || 'Lỗi khi lưu');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  // Modal component
+  function EditModal() {
+    if (!editItem) return null;
+    return (
+      <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50" onClick={() => setEditItem(null)}>
+        <div className="bg-white rounded-xl p-6 min-w-[320px] max-w-full w-full max-w-sm shadow-xl relative" onClick={e => e.stopPropagation()}>
+          <h3 className="text-lg font-semibold mb-4">Chỉnh sửa phân công</h3>
+          <div className="mb-3">
+            <label className="block text-sm font-medium mb-1">Giảng viên hướng dẫn</label>
+            <select
+              value={editForm.maGV_HD}
+              onChange={e => setEditForm(f => ({ ...f, maGV_HD: e.target.value }))}
+              className="w-full border border-slate-200 rounded px-3 py-2 text-sm"
+            >
+              <option value="">Chưa phân</option>
+              {gvList.map(gv => (
+                <option key={gv.maGV} value={gv.maGV}>{gv.tenGV}</option>
+              ))}
+            </select>
+          </div>
+          <div className="mb-3">
+            <label className="block text-sm font-medium mb-1">Giảng viên phản biện</label>
+            <select
+              value={editForm.maGV_PB}
+              onChange={e => setEditForm(f => ({ ...f, maGV_PB: e.target.value }))}
+              className="w-full border border-slate-200 rounded px-3 py-2 text-sm"
+            >
+              <option value="">Chưa phân</option>
+              {gvList.map(gv => (
+                <option key={gv.maGV} value={gv.maGV}>{gv.tenGV}</option>
+              ))}
+            </select>
+          </div>
+          <div className="mb-3">
+            <label className="block text-sm font-medium mb-1">Trạng thái</label>
+            <select
+              value={editForm.trangThai}
+              onChange={e => setEditForm(f => ({ ...f, trangThai: e.target.value }))}
+              className="w-full border border-slate-200 rounded px-3 py-2 text-sm"
+            >
+              <option value="">Chọn trạng thái</option>
+              <option value="ChuaPhanCong">Chưa phân công</option>
+              <option value="DaPhanCong">Đã phân công</option>
+            </select>
+          </div>
+          {editError && <div className="text-red-500 text-sm mb-2">{editError}</div>}
+          <div className="flex justify-end gap-2 mt-4">
+            <button onClick={() => setEditItem(null)} className="px-4 py-2 rounded border text-slate-600">Hủy</button>
+            <button
+              onClick={handleSaveEdit}
+              disabled={saving}
+              className="px-4 py-2 rounded bg-blue-500 text-white font-semibold hover:bg-blue-600 disabled:opacity-50"
+            >
+              {saving ? 'Đang lưu...' : 'Lưu'}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <>
       {/* Bộ lọc */}
       <div className="flex items-center gap-4 mb-4 flex-wrap">
         <select
@@ -161,12 +269,17 @@ export default function PhanCong() {
             ) : (
               deTais.map((dt, i) => (
                 <tr key={dt.maDeTai} className="hover:bg-slate-50">
-                  <td className="px-4 py-3 text-sm text-slate-700 border-t border-slate-100 text-center">{dt.maDeTai}</td>
+                  <td className="px-4 py-3 text-sm text-slate-700 border-t border-slate-100">{dt.maDeTai}</td>
                   <td className="px-4 py-3 text-sm text-slate-700 border-t border-slate-100">{dt.tenDeTai}</td>
                   <td className="px-4 py-3 text-sm text-slate-700 border-t border-slate-100">{dt.maGV_HD || <span className="text-slate-400">Chưa phân</span>}</td>
                   <td className="px-4 py-3 text-sm text-slate-700 border-t border-slate-100">{dt.maGV_PB || <span className="text-slate-400">Chưa phân</span>}</td>
                   <td className="px-4 py-3 text-sm text-slate-700 border-t border-slate-100 text-center">
-                    <button className="text-sm text-blue-600 hover:text-blue-800 px-2 py-1 rounded transition-colors">Chỉnh sửa</button>
+                    <button
+                      className="text-sm text-blue-600 hover:text-blue-800 px-2 py-1 rounded transition-colors"
+                      onClick={() => openEdit(dt)}
+                    >
+                      Chỉnh sửa
+                    </button>
                   </td>
                 </tr>
               ))
@@ -175,7 +288,7 @@ export default function PhanCong() {
         </table>
       </div>
       {/* Phân trang giống trang sinh viên */}
-      {total > 0 && (
+      {total > perPage && (
         <div className="flex items-center justify-between mt-4">
           <span className="text-sm text-slate-500">Hiển thị {start}-{end} / {total} đề tài</span>
           <div className="flex gap-1">
@@ -205,6 +318,8 @@ export default function PhanCong() {
           </div>
         </div>
       )}
-    </div>
+      <EditModal />
+    </>
   );
+      <EditModal />
 }

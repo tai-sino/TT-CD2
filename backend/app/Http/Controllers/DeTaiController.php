@@ -35,7 +35,9 @@ class DeTaiController extends Controller
         }
         // Sắp xếp mới nhất
         $query->orderByDesc('maDeTai');
-        return response()->json($query->get());
+        $pageSize = $request->input('per_page', 15);
+        $result = $query->paginate($pageSize);
+        return response()->json($result);
     }
 
     // Lấy 1 đề tài
