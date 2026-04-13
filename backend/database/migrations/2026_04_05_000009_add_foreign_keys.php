@@ -10,7 +10,6 @@ return new class extends Migration
     {
         Schema::table('sinhvien', function (Blueprint $table) {
             $table->foreign('maDeTai')->references('maDeTai')->on('detai')->nullOnDelete();
-            $table->foreign('ky_lvtn_id')->references('id')->on('ky_lvtn')->nullOnDelete();
         });
 
         Schema::table('detai', function (Blueprint $table) {
@@ -22,7 +21,6 @@ return new class extends Migration
     {
         Schema::table('sinhvien', function (Blueprint $table) {
             $table->dropForeign(['maDeTai']);
-            $table->dropForeign(['ky_lvtn_id']);
         });
 
         Schema::table('detai', function (Blueprint $table) {

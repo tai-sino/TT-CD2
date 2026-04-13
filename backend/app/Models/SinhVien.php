@@ -12,7 +12,7 @@ class SinhVien extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
-        'mssv', 'hoTen', 'lop', 'email', 'soDienThoai', 'maDeTai', 'created_at', 'updated_at'
+        'mssv', 'hoTen', 'lop', 'email', 'soDienThoai', 'maDeTai',
     ];
 
     public function deTai()

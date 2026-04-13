@@ -44,29 +44,21 @@ class AuthController extends Controller
     {
         $user = $request->user();
 
-        if ($user instanceof GiangVien) {
-            $type = 'giangvien';
-            $roles = [];
-            if ($user->isAdmin) $roles[] = 'admin';
-            if (DeTai::where('maGV_HD', $user->maGV)->exists()) $roles[] = 'gvhd';
-            if (DeTai::where('maGV_PB', $user->maGV)->exists()) $roles[] = 'gvpb';
-            if (ThanhVienHoiDong::where('maGV', $user->maGV)->exists()) $roles[] = 'tv_hd';
-            if (empty($roles) && !$user->isAdmin) $roles[] = 'gvhd';
-            $id = $user->maGV;
-            $name = $user->tenGV;
-        } else {
-            $type = 'sinhvien';
-            $roles = ['sv'];
-            $id = $user->mssv;
-            $name = $user->hoTen;
+        $tvhd = ThanhVienHoiDong::where('maGV', $user->maGV)->first();
+        $role = $tvhd ? $tvhd->vaiTro : null;
+
+        // Xác định role dựa trên đề tài nếu chưa có vai trò hội đồng
+        if (!$role) {
+            if (DeTai::where('maGV_HD', $user->maGV)->exists()) $role = 'gvhd';
+            elseif (DeTai::where('maGV_PB', $user->maGV)->exists()) $role = 'gvpb';
         }
 
         return response()->json([
-            'id' => $id,
-            'name' => $name,
+            'id' => $user->maGV,
+            'name' => $user->tenGV,
             'email' => $user->email,
-            'type' => $type,
-            'roles' => $roles,
+            'type' => 'giangvien',
+            'role' => $role,
         ]);
     }
 

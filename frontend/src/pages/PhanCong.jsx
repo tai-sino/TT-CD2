@@ -321,5 +321,4 @@ export default function PhanCong() {
       <EditModal />
     </>
   );
-      <EditModal />
 }

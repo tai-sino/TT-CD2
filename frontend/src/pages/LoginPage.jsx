@@ -5,17 +5,9 @@ import { useAuth } from "../context/AuthContext";
 
 
 function getDefaultRoute(user) {
-  // Ưu tiên type
   if (user.type === "giangvien") {
-    if (user.role === "ChuTich" || user.role === "ThuKy" || user.role === "UyVien") return "/admin/tong-quan";
-    // Nếu có role khác thì điều hướng theo role
-    if (user.role === "admin") return "/admin/tong-quan";
-    if (user.role === "gvhd") return "/gvhd/sinh-vien";
-    if (user.role === "gvpb") return "/gvpb/de-tai";
-    // Nếu không có role hội đồng thì mặc định là gvhd
-    return "/gvhd/sinh-vien";
+    return "/admin/tong-quan";
   }
-  if (user.type === "sinhvien") return "/sv/de-tai";
   return "/login";
 }
 
