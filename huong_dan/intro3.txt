@@ -1,32 +1,31 @@
-- Login chỉ dùng MaGV đăng nhập (tui đã sửa)
-- Bảng sinh viên, bỏ trường (cột) password
-- Gộp 2 trang phân công GVPB và phân công GVHD làm 1 trang là "phân công gvhd/ gvpb": chỉ admin/ thư kí phân công đc, còn lại chỉ đc xem
-- Thêm 1 trang nhập thông tin: có nút thêm và form modal hiện ra để thêm, sửa, có khả năng import file excel (Chốt_DSSV_GVHD_TenDeTai_LVTN_Dot2_17112025.xlsx), xét sheet "DSSV_ĐK_HƯỚNG ĐỀ TÀI" và "SVĐK_TheoLink" để 
-    lọc các thông tin theo:
-    + MSSV, Họ tên SV, Lớp: để thêm dữ liệu mới vào bảng sinh viên
-    Sau đó dùng theo cấu trúc bảng dưới
-    
-CREATE TABLE topic_registrations_form (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    topic_title VARCHAR(255) NOT NULL,
-    topic_description TEXT NULL,
-    topic_type ENUM('single', 'group') NOT NULL, -- 1 SV / 2 SV
-    student1_id VARCHAR(20) NOT NULL,
-    student2_id VARCHAR(20) NULL,
-    gvhd_code VARCHAR(20) NULL,
-    gvhd_workplace VARCHAR(255) NULL,
-    gvpb_code VARCHAR(20) NULL,
-    note TEXT NULL,
-    source VARCHAR(50) DEFAULT 'google_form',
-    status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
-    registered_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+CREATE TABLE `topic_registrations_form` (
+  `id` bigint NOT NULL,
+  `topic_title` varchar(255) NOT NULL,
+  `topic_description` text,
+  `topic_type` enum('mot_sinh_vien','hai_sinh_vien') NOT NULL,
+  `student1_id` varchar(20) NOT NULL,
+  `student1_name` varchar(255) NOT NULL,
+  `student1_class` varchar(50) NOT NULL,
+  `student1_email` varchar(255) DEFAULT NULL,
+  `student2_id` varchar(20) DEFAULT NULL,
+  `student2_name` varchar(255) DEFAULT NULL,
+  `student2_class` varchar(50) DEFAULT NULL,
+  `student2_email` varchar(255) DEFAULT NULL,
+  `gvhd_code` varchar(20) DEFAULT NULL,
+  `gvpb_code` varchar(20) DEFAULT NULL,
+  `note` text,
+  `status` enum('cho_duyet','da_duyet','tu_choi') DEFAULT 'cho_duyet',
+  `source` varchar(50) DEFAULT 'google_form',
+  `registered_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `gvhd_workplace` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-Bảng đó dành cho trang nhập liệu, trong trang có bảng, cột hành động có nút sửa, xoá, thêm vào đề tài chính
-Dữ liệu khi thêm thủ công hoặc import file, nếu có chưa có thông tin sinh viên trong bảng sinh viên thì thêm mới, nếu có rồi thì thôi
+Ở sheet 'DSSV_ĐK_HƯỚNG ĐỀ TÀI' (tại dòng 7) có các cột: STT, MSSV, HỌ TÊN SINH VIÊN, LỚP, GVHD, HH-HV, Nơi công tác, Tên đề tài (GVHD nhập thông tin), GHI CHÚ
+Ở sheet 'SVĐK_TheoLink' (tại dòng 1) có các cột: Timestamp, Email Address, Họ và tên sinh viên 1, Lớp sinh viên 1, Mã sinh viên 1, Số điện thoại sinh viên 1, Số Nhóm, Có làm chung nhóm với sinh viên khác không?
+Mỗi cột có thể chứa text có kí tự xuống dòng, bỏ qua kí tự đó để xử lí luôn
+Xử lý bảng ở mỗi sheet, tham chiếu mssv, nhóm, ...
+Sao cho phù hợp với bảng `topic_registrations_form` trong sql
 
-Hoàn thiện chức năng ở backend
-Import file excel ở trang nhập liệu, dùng file có tên "chốt..."
-Đối Xem 2 sheet "DSSV_ĐK_HƯỚNG ĐỀ TÀI" và "SVĐK_TheoLink"
-Tham chiếu, trích lọc các cột có liên quan sao tương đương với các cột trong bảng "topic_registrations_form" để thêm dữ liệu vào bảng đó
+Dựa trên cái đó, hãy sửa lại hàm `ublic function importExcel(Request $request)` trong file `TopicRegistrationFormController.php` để cho nó chạy đúng chạy ổn đi
+Sửa BE xong, sửa cả FE nữa

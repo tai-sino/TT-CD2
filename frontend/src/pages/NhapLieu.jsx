@@ -27,9 +27,11 @@ const initialForm = {
   student2_class: '',
   student2_email: '',
   gvhd_code: '',
+  gvpb_code: '',
   gvhd_workplace: '',
   note: '',
   status: 'cho_duyet',
+  source: '',
 };
 
 export default function NhapLieu() {
@@ -458,6 +460,7 @@ function FormModal({ editItem, onClose, queryClient }) {
 function ImportModal({ onClose, queryClient }) {
   const [file, setFile] = useState(null);
   const [result, setResult] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
 
   const importMut = useMutation({
     mutationFn: () => {
@@ -467,7 +470,17 @@ function ImportModal({ onClose, queryClient }) {
     },
     onSuccess: (data) => {
       setResult(data);
+      setErrorMsg(null);
+      setFile(null);
+
       queryClient.invalidateQueries({ queryKey: ['nhap-lieu'] });
+    },
+    onError: (err) => {
+      setErrorMsg(
+        err.response?.data?.message ||
+        err.message ||
+        'Lỗi khi nhập Excel'
+      );
     },
   });
 
@@ -479,15 +492,25 @@ function ImportModal({ onClose, queryClient }) {
         </button>
 
         <h2 className="text-xl font-semibold text-slate-900 mb-4">Nhập Excel</h2>
+
+        {/* FIX: đúng tên sheet */}
         <p className="text-sm text-slate-500 mb-4">
-          File Excel cần có sheet "DSSV_DK_HƯỚNG ĐỀ TÀI" hoặc "SVDK_TheoLink". Dòng đầu là header.
+          File Excel cần có sheet:
+          <br />
+          • DSSV_ĐK_HƯỚNG ĐỀ TÀI
+          <br />
+          • SVĐK_TheoLink
         </p>
 
         <div className="mb-4">
           <input
             type="file"
             accept=".xlsx,.xls"
-            onChange={e => setFile(e.target.files[0] || null)}
+            onChange={e => {
+              setFile(e.target.files[0] || null);
+              setResult(null);
+              setErrorMsg(null);
+            }}
             className="text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-600 hover:file:bg-blue-100"
           />
         </div>
@@ -500,23 +523,33 @@ function ImportModal({ onClose, queryClient }) {
           {importMut.isPending ? 'Đang nhập...' : 'Nhập'}
         </button>
 
-        {importMut.isError && (
+        {/* ERROR DETAIL */}
+        {errorMsg && (
           <div className="bg-red-50 text-red-700 text-sm px-4 py-3 rounded-lg mt-4">
-            Lỗi khi nhập. Vui lòng thử lại.
+            {errorMsg}
           </div>
         )}
 
+        {/* SUCCESS */}
         {result && (
-          <div className="mt-4">
+          <div className="mt-4 space-y-3">
             <div className="bg-green-50 text-green-700 text-sm px-4 py-3 rounded-lg">
               Đã nhập {result.imported} bản ghi thành công.
             </div>
+
+            {/* ERRORS LIST */}
             {result.errors?.length > 0 && (
-              <div className="mt-3 text-sm text-slate-700">
-                <p className="font-semibold mb-1">{result.errors.length} lỗi:</p>
-                <ul className="list-disc list-inside text-slate-500 space-y-0.5">
+              <div className="text-sm text-slate-700 max-h-40 overflow-y-auto border border-slate-200 rounded-lg p-3">
+                <p className="font-semibold mb-2 text-red-600">
+                  {result.errors.length} lỗi:
+                </p>
+                <ul className="list-disc list-inside text-slate-500 space-y-1">
                   {result.errors.map((err, i) => (
-                    <li key={i}>{err.sheet ? `[${err.sheet}] ` : ''}{err.message}</li>
+                    <li key={i}>
+                      {err.sheet ? `[${err.sheet}] ` : ''}
+                      {err.group ? `(Group: ${err.group}) ` : ''}
+                      {err.message}
+                    </li>
                   ))}
                 </ul>
               </div>
