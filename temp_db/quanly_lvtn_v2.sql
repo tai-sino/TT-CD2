@@ -11,7 +11,9 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
 
-use quanly_lvtn_v2;
+DROP DATABASE IF EXISTS `quanly_lvtn_v2`;
+CREATE DATABASE IF NOT EXISTS `quanly_lvtn_v2` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+USE quanly_lvtn_v2;
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -108,11 +110,11 @@ CREATE TABLE `giangvien` (
 --
 
 INSERT INTO `giangvien` (`maGV`, `tenGV`, `email`, `soDienThoai`, `hocVi`, `matKhau`, `created_at`, `updated_at`) VALUES
-('GV001', 'Võ Quốc Bảo', 'bao.vo@stu.edu.vn', '0906789012', 'ThS', '123', '2026-04-10 03:17:41', '2026-04-10 03:17:41'),
-('GV002', 'Ngô Thanh Tùng', 'tung.ngo@stu.edu.vn', '0907890123', 'TS', '123', '2026-04-10 03:17:41', '2026-04-10 03:17:41'),
-('GV003', 'Bùi Thị Mai', 'mai.bui@stu.edu.vn', '0908901234', 'ThS', '123', '2026-04-10 03:17:41', '2026-04-10 03:17:41'),
-('GV004', 'Huỳnh Văn Khoa', 'khoa.huynh@stu.edu.vn', '0909012345', 'TS', '123', '2026-04-10 03:17:41', '2026-04-10 03:17:41'),
-('GV005', 'Đặng Minh Đức', 'duc.dang@stu.edu.vn', '0910123456', 'PGS.TS', '123', '2026-04-10 03:17:41', '2026-04-10 03:17:41');
+('GV001', 'Dương Văn Đeo', 'duongvandeo@stu.edu.vn', '0906789012', 'ThS', '123', '2026-04-10 03:17:41', '2026-04-10 03:17:41'),
+('GV002', 'Trần Văn Hùng', 'tranvanhung@stu.edu.vn', '0907890123', 'TS', '123', '2026-04-10 03:17:41', '2026-04-10 03:17:41'),
+('GV003', 'Ngô Xuân Bách', 'ngoxuanbach@stu.edu.vn', '0908901234', 'ThS', '123', '2026-04-10 03:17:41', '2026-04-10 03:17:41'),
+('GV004', 'Đoàn Trình Dục', 'doantrinhduc@stu.edu.vn', '0909012345', 'TS', '123', '2026-04-10 03:17:41', '2026-04-10 03:17:41'),
+('GV005', 'Bùi Nhật Bằng', 'buinhatbang@stu.edu.vn', '0910123456', 'PGS.TS', '123', '2026-04-10 03:17:41', '2026-04-10 03:17:41');
 
 -- --------------------------------------------------------
 
