@@ -137,11 +137,11 @@ class TopicRegistrationFormController extends Controller
                 foreach ($header as $i => $col) {
                     $col = trim((string) $col);
                     if (stripos($col, 'MSSV') !== false) $idx['mssv'] = $i;
-                    elseif (stripos($col, 'HỌ TÊN') !== false) $idx['hoTen'] = $i;
+                    elseif (stripos($col, 'HỌ TÊN SINH VIÊN') !== false) $idx['hoTen'] = $i;
                     elseif (stripos($col, 'LỚP') !== false) $idx['lop'] = $i;
                     elseif (stripos($col, 'GVHD') !== false && stripos($col, 'nhập') === false) $idx['gvhd'] = $i;
                     elseif (stripos($col, 'Nơi công tác') !== false) $idx['gvhd_workplace'] = $i;
-                    elseif (stripos($col, 'tên đề tài') !== false) $idx['tenDeTai'] = $i;
+                    elseif (stripos($col, 'Tên đề tài (GVHD nhập thông tin') !== false) $idx['tenDeTai'] = $i;
                     elseif (stripos($col, 'GHI CHÚ') !== false) $idx['ghiChu'] = $i;
                 }
                 if ($idx['mssv'] === null || $idx['hoTen'] === null) {
@@ -211,13 +211,13 @@ class TopicRegistrationFormController extends Controller
                 foreach ($header as $i => $col) {
                     $col = trim((string) $col);
                     if (stripos($col, 'Timestamp') !== false) $idx['timestamp'] = $i;
-                    elseif (stripos($col, 'Email') !== false) $idx['email'] = $i;
+                    elseif (stripos($col, 'Email Address') !== false) $idx['email'] = $i;
                     elseif (stripos($col, 'Họ và tên sinh viên 1') !== false) $idx['hoTen1'] = $i;
                     elseif (stripos($col, 'Lớp sinh viên 1') !== false) $idx['lop1'] = $i;
                     elseif (stripos($col, 'Mã sinh viên 1') !== false) $idx['mssv1'] = $i;
                     elseif (stripos($col, 'Số điện thoại sinh viên 1') !== false) $idx['sdt1'] = $i;
                     elseif (stripos($col, 'Số Nhóm') !== false) $idx['soNhom'] = $i;
-                    elseif (stripos($col, 'Có làm chung nhóm') !== false) $idx['lamChungNhom'] = $i;
+                    elseif (stripos($col, 'Có làm chung nhóm với sinh viên khác không?') !== false) $idx['lamChungNhom'] = $i;
                 }
                 if ($idx['mssv1'] === null || $idx['hoTen1'] === null) {
                     $errors[] = ['sheet' => 'SVĐK_TheoLink', 'message' => 'Không tìm thấy cột Mã sinh viên 1 hoặc Họ và tên sinh viên 1'];

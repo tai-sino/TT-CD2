@@ -20,7 +20,7 @@ const menuItems = [
   { label: 'Giảng viên', path: '/admin/giang-vien', icon: HiOutlineAcademicCap },
   { label: 'Nhập liệu', path: '/admin/nhap-lieu', icon: HiOutlinePencilSquare },
   { label: 'Phân Công GVHD/GVPB', path: '/admin/phan-cong', icon: HiOutlineUserGroup },
-  { label: 'Đề tài', path: '/de-tai', icon: HiOutlineDocumentText },
+  { label: 'Giữa kỳ', path: '/admin/giua-ky', icon: HiOutlineDocumentText },
   { label: 'Hội đồng', path: '/admin/hoi-dong', icon: HiOutlineBuildingOffice2 },
   { label: 'Điểm tổng kết', path: '/admin/diem', icon: HiOutlineChartBar },
   { label: 'Cài đặt', path: '/admin/cai-dat', icon: HiOutlineCog6Tooth },

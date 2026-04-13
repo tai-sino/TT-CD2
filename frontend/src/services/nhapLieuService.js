@@ -17,7 +17,5 @@ export function deleteRecord(id) {
 }
 
 export function importExcel(formData) {
-  return api.post('/nhap-lieu-import-excel', formData, {
-    headers: { 'Content-Type': 'multipart/form-data' },
-  });
+  return api.post('/nhap-lieu-import-excel', formData);
 }
