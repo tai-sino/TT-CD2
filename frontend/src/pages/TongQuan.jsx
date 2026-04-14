@@ -1,147 +1,183 @@
-
-
 import { useEffect, useState } from "react";
 import Lottie from "lottie-react";
-import studentWithLaptop from '../../public/assets/student with laptop.json';
-import { getGiaiDoan, getDeTaiStats, getStudentStats } from '../services/dashboardService';
+import studentWithLaptop from "../../public/assets/student with laptop.json";
+import { Bar } from "react-chartjs-2";
+import { getOverallStats } from "../services/dashboardService";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
 
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 export default function TongQuan() {
-	
-	const [stats, setStats] = useState({
-		total: 0,
-		students: 0,
-		finished: 0,
-		presentations: 0,
-	});
+  const [stats, setStats] = useState({
+    presentations: 0,
+    total: 0,
+    students: 0,
+    finished: 0,
+  });
+  const [isLoading, setIsLoading] = useState(true);
 
-	useEffect(() => {
-		async function fetchStats() {
-			try {
-				// Giai đoạn hiện tại
-				const giaiDoanRes = await getGiaiDoan();
-				let presentations = 0;
-				if (giaiDoanRes && giaiDoanRes.giaiDoan) {
-					presentations = Number(giaiDoanRes.giaiDoan);
-				}
+  useEffect(() => {
+    async function fetchStats() {
+      setIsLoading(true);
+      try {
+        const data = await getOverallStats();
+        setStats({
+          presentations: data.giaidoan_hientai || 0,
+          total: data.sodetai || 0,
+          students: data.sosinhvien || 0,
+          finished: data.detai_daxong || 0,
+        });
+      } catch {
+        setStats({ presentations: 0, total: 0, students: 0, finished: 0 });
+      }
+      setIsLoading(false);
+    }
+    fetchStats();
+  }, []);
 
-				// Số đề tài, đề tài đã xong
-				let total = 0, finished = 0;
-				try {
-					const deTaiStats = await getDeTaiStats();
-					total = deTaiStats?.total || 0;
-					finished = deTaiStats?.finished || 0;
-				} catch {}
+  const [aboutMe, setAboutMe] = useState(() => {
+    try {
+      const userStr = localStorage.getItem("user");
+      if (!userStr) return null;
+      const user = typeof userStr === "string" ? JSON.parse(userStr) : userStr;
+      return {
+        maGV: user.id,
+        tenGV: user.name,
+        email: user.email,
+        vaiTro: user.role,
+        type: user.type,
+      };
+    } catch {
+      return null;
+    }
+  });
 
-				// Số sinh viên
-				let students = 0;
-				try {
-					const studentStats = await getStudentStats();
-					students = studentStats?.total || 0;
-				} catch {}
+  useEffect(() => {
+    if (!aboutMe && !localStorage.getItem("token")) {
+      // window.location.href = "/login";
+    }
+  }, [aboutMe]);
 
-				setStats({
-					total,
-					students,
-					finished,
-					presentations,
-				});
-			} catch {
-				setStats({ total: 0, students: 0, finished: 0, presentations: 0 });
-			}
-		}
-		fetchStats();
-	}, []);
+  if (!aboutMe) return null;
 
+  return (
+    <div>
+      {/* Banner chào mừng */}
+      <div className="flex justify-between items-center bg-blue-600 text-white rounded-lg px-4 py-3 mb-5">
+        <div>
+          <h2 className="font-bold text-base md:text-lg">
+            Xin chào, {aboutMe?.tenGV || "N/A"}!
+          </h2>
+          <div className="text-blue-100 text-sm mt-1 space-y-0.5">
+            <div>Mã giảng viên: {aboutMe?.maGV || "N/A"}</div>
+            <div className="hidden sm:block">Email: {aboutMe?.email || "N/A"}</div>
+            <div>Vai trò: {aboutMe?.vaiTro || "N/A"}</div>
+          </div>
+        </div>
+        <div className="w-24 md:w-36 shrink-0">
+          <Lottie animationData={studentWithLaptop} loop={true} />
+        </div>
+      </div>
 
-	// Lấy thông tin người dùng từ localStorage (theo cấu trúc JSON mới)
-	const [aboutMe, setAboutMe] = useState(() => {
-		try {
-			
-			const userStr = localStorage.getItem("user");
-			if (!userStr) return null;
-			const user = typeof userStr === "string" ? JSON.parse(userStr) : userStr;
-			
-			return {
-				maGV: user.id,
-				tenGV: user.name,
-				email: user.email,
-				vaiTro: user.role,
-				type: user.type,
-			};
-		} catch {
-			return null;
-		}
-	});
+      {/* Hàng thống kê tổng quan */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        {isLoading
+          ? Array(4).fill(0).map((_, idx) => (
+              <div
+                key={idx}
+                className="bg-white border border-slate-200 rounded-lg p-3 shadow-sm flex flex-col justify-between min-h-[90px]"
+              >
+                <div className="w-3/5 h-4 bg-slate-200 rounded animate-pulse mb-2" />
+                <div className="w-10 h-7 bg-slate-200 rounded animate-pulse mt-auto" />
+              </div>
+            ))
+          : [
+              { label: "Giai đoạn hiện tại", value: stats.presentations },
+              { label: "Số đề tài", value: stats.total },
+              { label: "Số sinh viên", value: stats.students },
+              { label: "Đề tài đã xong", value: stats.finished },
+            ].map((item) => (
+              <div
+                key={item.label}
+                className="bg-white border border-slate-200 rounded-lg p-3 shadow-sm flex flex-col justify-between min-h-[90px]"
+              >
+                <div className="text-sm text-slate-500 mb-1">{item.label}</div>
+                <div className="text-2xl font-semibold text-blue-600 mt-auto">
+                  {item.value}
+                </div>
+              </div>
+            ))}
+      </div>
 
-	useEffect(() => {
-		if (!aboutMe && !localStorage.getItem("token")) {
-			// window.location.href = "/login";
-		}
-	}, [aboutMe]);
+      {/* Khu vực 2 cột: Thông báo & Biểu đồ */}
+      <div className="flex flex-col lg:flex-row gap-6 items-start">
+        {/* Cột 1: Thông báo */}
+        <div className="w-full lg:w-1/3">
+          <h3 className="font-semibold mb-3">Thông báo & Nhắc nhở</h3>
+          <ul className="bg-white rounded-lg shadow-sm p-4 min-h-[120px]">
+            {isLoading ? (
+              <li>
+                <div className="w-4/5 h-4 bg-slate-200 rounded animate-pulse mb-2" />
+                <div className="w-3/5 h-3 bg-slate-200 rounded animate-pulse mt-2" />
+              </li>
+            ) : (
+              <li className="text-sm text-slate-500">Chưa có thông báo nào.</li>
+            )}
+          </ul>
+        </div>
 
-
-	if (!aboutMe) return null;
-
-	return (
-		<div className="dashboard-page">
-			<div
-				className="dashboard-banner"
-				style={{
-					background: "var(--primary-color, #2563eb)",
-					padding: "12px 16px",
-					borderRadius: "6px",
-					marginBottom: "20px",
-					width: "100%",
-					color: "#fff",
-					display: "flex",
-					justifyContent: "space-between",
-					alignItems: "center",
-				}}
-			>
-				<div>
-					<h2 className="font-bold">Xin chào, {aboutMe?.tenGV || "N/A"}!</h2>
-					<div style={{ color: "#f1f1f1" }}>
-						<div>Mã giảng viên: {aboutMe?.maGV || "N/A"}</div>
-						<div>Email: {aboutMe?.email || "N/A"}</div>
-						<div>Vai trò: {aboutMe?.vaiTro || "N/A"}</div>
-					</div>
-				</div>
-				<div className="dashboard-banner-lottie" style={{ width: "150px" }}>
-					<Lottie animationData={studentWithLaptop} loop={true} />
-				</div>
-			</div>
-
-			<div className="stat-cards-row" style={{ display: "flex", gap: 16, marginBottom: 24 }}>
-				{[
-					{ label: "Giai đoạn hiện tại", value: stats.presentations },
-					{ label: "Số đề tài", value: stats.total },
-					{ label: "Số sinh viên", value: stats.students },
-					{ label: "Đề tài đã xong", value: stats.finished },
-				].map((item, idx) => (
-					<div
-						key={item.label}
-						className="stat-card"
-						style={{
-							flex: 1,
-							display: "flex",
-							flexDirection: "column",
-							justifyContent: "space-between",
-							alignItems: "start",
-							border: "1px solid #e5e7eb",
-							borderRadius: 8,
-							background: "#fff",
-							padding: 12,
-							minHeight: 90,
-                            // boxShadow: "0 2px 4px rgba(37, 99, 235, 0.1)",
-                            boxShadow: "2px 2px 4px rgba(0,0,0,0.1)"
-						}}
-					>
-						<div className="stat-label text-slate-500" style={{  marginBottom: 4, textAlign: "left", width: "100%" }}>{item.label}</div>
-						<div className="stat-value" style={{ fontSize: 26, fontWeight: 600, color: "#2563eb", marginTop: "auto", textAlign: "left", width: "100%" }}>{item.value}</div>
-					</div>
-				))}
-			</div>
-		</div>
-	);
+        {/* Cột 2: Biểu đồ */}
+        <div className="w-full lg:w-2/3">
+          <h3 className="font-semibold mb-3">Biểu đồ tổng quan</h3>
+          <div className="bg-white rounded-lg shadow-sm p-4 min-h-[240px] flex items-center justify-center">
+            {isLoading ? (
+              <div className="w-4/5 h-44 bg-slate-200 rounded-lg animate-pulse" />
+            ) : (
+              <Bar
+                data={{
+                  labels: [
+                    "Giai đoạn hiện tại",
+                    "Số đề tài",
+                    "Số sinh viên",
+                    "Đề tài đã xong",
+                  ],
+                  datasets: [
+                    {
+                      label: "Thống kê tổng quan",
+                      data: [
+                        stats.presentations,
+                        stats.total,
+                        stats.students,
+                        stats.finished,
+                      ],
+                      backgroundColor: ["#2563eb", "#22d3ee", "#f59e42", "#10b981"],
+                      borderRadius: 6,
+                    },
+                  ],
+                }}
+                options={{
+                  responsive: true,
+                  plugins: {
+                    legend: { display: false },
+                    title: { display: false },
+                  },
+                  scales: {
+                    y: { beginAtZero: true, grace: "10%" },
+                  },
+                }}
+              />
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }

@@ -6,6 +6,7 @@ use App\Http\Controllers\SinhVienController;
 use App\Http\Controllers\GiangVienController;
 use App\Http\Controllers\KyLvtnController;
 use App\Http\Controllers\TopicRegistrationFormController;
+use Illuminate\Support\Facades\DB;
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -45,4 +46,20 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/de-tai', [\App\Http\Controllers\DeTaiController::class, 'store']);
     Route::put('/de-tai/{id}', [\App\Http\Controllers\DeTaiController::class, 'update']);
     Route::delete('/de-tai/{id}', [\App\Http\Controllers\DeTaiController::class, 'destroy']);
+
+
+    // API thống kê tổng quan cho dashboard
+    Route::get('/stats', function () {
+        // Sử dụng Model Eloquent thay vì DB facade
+        $giaidoan = \App\Models\CauHinh::where('key', 'giaiDoan')->value('value');
+        $sodetai = \App\Models\DeTai::count();
+        $sosinhvien = \App\Models\SinhVien::count();
+        $detai_daxong = \App\Models\DeTai::where('trangthai', 'dat')->count(); // Cột này cần tồn tại
+        return response()->json([
+            'giaidoan_hientai' => (int) $giaidoan,
+            'sodetai' => $sodetai,
+            'sosinhvien' => $sosinhvien,
+            'detai_daxong' => $detai_daxong,
+        ]);
+    });
 });

@@ -1,0 +1,104 @@
+{
+  "info": {
+    "_postman_id": "ttcd2-be-collection-2026",
+    "name": "TTCD2_BE",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "auth",
+      "item": [
+        {
+          "name": "login",
+          "request": {
+            "method": "POST",
+            "url": { "raw": "{{baseUrl}}/api/login", "host": ["{{baseUrl}}"], "path": ["api", "login"] },
+            "description": "POST /api/login"
+          },
+          "response": []
+        },
+        {
+          "name": "me",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/me", "host": ["{{baseUrl}}"], "path": ["api", "me"] },
+            "description": "GET /api/me (auth required)"
+          },
+          "response": []
+        },
+        {
+          "name": "logout",
+          "request": {
+            "method": "POST",
+            "url": { "raw": "{{baseUrl}}/api/logout", "host": ["{{baseUrl}}"], "path": ["api", "logout"] },
+            "description": "POST /api/logout (auth required)"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "students",
+      "item": [
+        { "name": "import", "request": { "method": "POST", "url": { "raw": "{{baseUrl}}/api/students/import", "host": ["{{baseUrl}}"], "path": ["api", "students", "import"] }, "description": "POST /api/students/import (auth required)" }, "response": [] },
+        { "name": "list", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/students", "host": ["{{baseUrl}}"], "path": ["api", "students"] }, "description": "GET /api/students (auth required)" }, "response": [] },
+        { "name": "create", "request": { "method": "POST", "url": { "raw": "{{baseUrl}}/api/students", "host": ["{{baseUrl}}"], "path": ["api", "students"] }, "description": "POST /api/students (auth required)" }, "response": [] },
+        { "name": "update", "request": { "method": "PUT", "url": { "raw": "{{baseUrl}}/api/students/:mssv", "host": ["{{baseUrl}}"], "path": ["api", "students", ":mssv"] }, "description": "PUT /api/students/{mssv} (auth required)" }, "response": [] },
+        { "name": "delete", "request": { "method": "DELETE", "url": { "raw": "{{baseUrl}}/api/students/:mssv", "host": ["{{baseUrl}}"], "path": ["api", "students", ":mssv"] }, "description": "DELETE /api/students/{mssv} (auth required)" }, "response": [] }
+      ]
+    },
+    {
+      "name": "giang-vien",
+      "item": [
+        { "name": "list", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/giang-vien", "host": ["{{baseUrl}}"], "path": ["api", "giang-vien"] }, "description": "GET /api/giang-vien (auth required)" }, "response": [] },
+        { "name": "create", "request": { "method": "POST", "url": { "raw": "{{baseUrl}}/api/giang-vien", "host": ["{{baseUrl}}"], "path": ["api", "giang-vien"] }, "description": "POST /api/giang-vien (auth required)" }, "response": [] },
+        { "name": "update", "request": { "method": "PUT", "url": { "raw": "{{baseUrl}}/api/giang-vien/:maGV", "host": ["{{baseUrl}}"], "path": ["api", "giang-vien", ":maGV"] }, "description": "PUT /api/giang-vien/{maGV} (auth required)" }, "response": [] },
+        { "name": "delete", "request": { "method": "DELETE", "url": { "raw": "{{baseUrl}}/api/giang-vien/:maGV", "host": ["{{baseUrl}}"], "path": ["api", "giang-vien", ":maGV"] }, "description": "DELETE /api/giang-vien/{maGV} (auth required)" }, "response": [] }
+      ]
+    },
+    {
+      "name": "ky-lvtn",
+      "item": [
+        { "name": "list", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/ky-lvtn", "host": ["{{baseUrl}}"], "path": ["api", "ky-lvtn"] }, "description": "GET /api/ky-lvtn (auth required)" }, "response": [] },
+        { "name": "create", "request": { "method": "POST", "url": { "raw": "{{baseUrl}}/api/ky-lvtn", "host": ["{{baseUrl}}"], "path": ["api", "ky-lvtn"] }, "description": "POST /api/ky-lvtn (auth required)" }, "response": [] },
+        { "name": "update", "request": { "method": "PUT", "url": { "raw": "{{baseUrl}}/api/ky-lvtn/:id", "host": ["{{baseUrl}}"], "path": ["api", "ky-lvtn", ":id"] }, "description": "PUT /api/ky-lvtn/{id} (auth required)" }, "response": [] }
+      ]
+    },
+    {
+      "name": "nhap-lieu",
+      "item": [
+        { "name": "list", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/nhap-lieu", "host": ["{{baseUrl}}"], "path": ["api", "nhap-lieu"] }, "description": "GET /api/nhap-lieu (auth required)" }, "response": [] },
+        { "name": "create", "request": { "method": "POST", "url": { "raw": "{{baseUrl}}/api/nhap-lieu", "host": ["{{baseUrl}}"], "path": ["api", "nhap-lieu"] }, "description": "POST /api/nhap-lieu (auth required)" }, "response": [] },
+        { "name": "update", "request": { "method": "PUT", "url": { "raw": "{{baseUrl}}/api/nhap-lieu/:id", "host": ["{{baseUrl}}"], "path": ["api", "nhap-lieu", ":id"] }, "description": "PUT /api/nhap-lieu/{id} (auth required)" }, "response": [] },
+        { "name": "delete", "request": { "method": "DELETE", "url": { "raw": "{{baseUrl}}/api/nhap-lieu/:id", "host": ["{{baseUrl}}"], "path": ["api", "nhap-lieu", ":id"] }, "description": "DELETE /api/nhap-lieu/{id} (auth required)" }, "response": [] },
+        { "name": "approve", "request": { "method": "POST", "url": { "raw": "{{baseUrl}}/api/topic-registration-form/:id/approve", "host": ["{{baseUrl}}"], "path": ["api", "topic-registration-form", ":id", "approve"] }, "description": "POST /api/topic-registration-form/{id}/approve (auth required)" }, "response": [] },
+        { "name": "import-excel", "request": { "method": "POST", "url": { "raw": "{{baseUrl}}/api/nhap-lieu-import-excel", "host": ["{{baseUrl}}"], "path": ["api", "nhap-lieu-import-excel"] }, "description": "POST /api/nhap-lieu-import-excel (auth required)" }, "response": [] }
+      ]
+    },
+    {
+      "name": "cau-hinh",
+      "item": [
+        { "name": "giai-doan", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/giai-doan", "host": ["{{baseUrl}}"], "path": ["api", "giai-doan"] }, "description": "GET /api/giai-doan (auth required)" }, "response": [] }
+      ]
+    },
+    {
+      "name": "de-tai",
+      "item": [
+        { "name": "list", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/de-tai", "host": ["{{baseUrl}}"], "path": ["api", "de-tai"] }, "description": "GET /api/de-tai (auth required)" }, "response": [] },
+        { "name": "show", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/de-tai/:id", "host": ["{{baseUrl}}"], "path": ["api", "de-tai", ":id"] }, "description": "GET /api/de-tai/{id} (auth required)" }, "response": [] },
+        { "name": "create", "request": { "method": "POST", "url": { "raw": "{{baseUrl}}/api/de-tai", "host": ["{{baseUrl}}"], "path": ["api", "de-tai"] }, "description": "POST /api/de-tai (auth required)" }, "response": [] },
+        { "name": "update", "request": { "method": "PUT", "url": { "raw": "{{baseUrl}}/api/de-tai/:id", "host": ["{{baseUrl}}"], "path": ["api", "de-tai", ":id"] }, "description": "PUT /api/de-tai/{id} (auth required)" }, "response": [] },
+        { "name": "delete", "request": { "method": "DELETE", "url": { "raw": "{{baseUrl}}/api/de-tai/:id", "host": ["{{baseUrl}}"], "path": ["api", "de-tai", ":id"] }, "description": "DELETE /api/de-tai/{id} (auth required)" }, "response": [] }
+      ]
+    },
+    {
+      "name": "dashboard",
+      "item": [
+        { "name": "stats", "request": { "method": "GET", "url": { "raw": "{{baseUrl}}/api/stats", "host": ["{{baseUrl}}"], "path": ["api", "stats"] }, "description": "GET /api/stats (auth required)" }, "response": [] }
+      ]
+    }
+  ],
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8000" }
+  ]
+}

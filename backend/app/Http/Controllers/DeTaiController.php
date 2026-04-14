@@ -36,7 +36,29 @@ class DeTaiController extends Controller
         // Sắp xếp mới nhất
         $query->orderByDesc('maDeTai');
         $pageSize = $request->input('per_page', 15);
+
+        
+
         $result = $query->paginate($pageSize);
+
+        // Lấy danh sách mã đề tài trên trang này
+        $maDeTaiArr = collect($result->items())->pluck('maDeTai')->all();
+        // Lấy sinh viên theo mã đề tài
+        $sinhVienMap = [];
+        if (!empty($maDeTaiArr)) {
+            $sinhViens = \App\Models\SinhVien::whereIn('maDeTai', $maDeTaiArr)->get();
+            foreach ($sinhViens as $sv) {
+                $sinhVienMap[$sv->maDeTai][] = [
+                    'mssv' => $sv->mssv,
+                    'hoTen' => $sv->hoTen,
+                ];
+            }
+        }
+        // Gắn thuộc tính sinhViens cho từng đề tài
+        $result->getCollection()->transform(function ($deTai) use ($sinhVienMap) {
+            $deTai->sinhViens = $sinhVienMap[$deTai->maDeTai] ?? [];
+            return $deTai;
+        });
         return response()->json($result);
     }
 
@@ -83,6 +105,9 @@ class DeTaiController extends Controller
             'thuTuTrongHD' => 'nullable|integer',
             'ghiChu' => 'nullable|string',
             'trangThai' => 'nullable|string|max:50',
+            'diemGiuaKy' => 'nullable|numeric',
+            'nhanXetGiuaKy' => 'nullable|string',
+            'trangThaiGiuaKy' => 'nullable|string',
         ]);
         $detai->update($validated);
         return response()->json($detai);

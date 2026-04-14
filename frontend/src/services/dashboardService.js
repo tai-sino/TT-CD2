@@ -20,3 +20,8 @@ export async function getStudentStats() {
   const total = res.data?.total || res.data?.meta?.total || 0;
   return { total };
 }
+
+export async function getOverallStats() {
+  const res = await api.get('/stats');
+  return res.data;
+}

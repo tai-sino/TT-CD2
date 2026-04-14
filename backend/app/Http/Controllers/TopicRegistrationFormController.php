@@ -45,7 +45,7 @@ class TopicRegistrationFormController extends Controller
             'diemChu' => null,
         ]);
 
-          // Cập nhật trạng thái
+        // Cập nhật trạng thái
         $form->status = 'da_duyet';
         $form->save();
 
@@ -62,9 +62,9 @@ class TopicRegistrationFormController extends Controller
             $s = $request->search;
             $query->where(function ($q) use ($s) {
                 $q->where('student1_id', 'like', "%$s%")
-                  ->orWhere('student1_name', 'like', "%$s%")
-                  ->orWhere('student2_id', 'like', "%$s%")
-                  ->orWhere('student2_name', 'like', "%$s%");
+                    ->orWhere('student1_name', 'like', "%$s%")
+                    ->orWhere('student2_id', 'like', "%$s%")
+                    ->orWhere('student2_name', 'like', "%$s%");
             });
         }
 
@@ -151,7 +151,7 @@ class TopicRegistrationFormController extends Controller
         return response()->json(['message' => 'Da xoa']);
     }
 
-   public function importExcel(Request $request)
+    public function importExcel(Request $request)
     {
         $request->validate([
             'file' => 'required|file|mimes:xlsx,xls',
@@ -362,7 +362,7 @@ class TopicRegistrationFormController extends Controller
                                 continue;
                             }
 
-                            usort($students, fn ($a, $b) => strcmp($a['mssv'], $b['mssv']));
+                            usort($students, fn($a, $b) => strcmp($a['mssv'], $b['mssv']));
 
                             foreach ($students as $sv) {
                                 SinhVien::updateOrCreate(
@@ -483,7 +483,7 @@ class TopicRegistrationFormController extends Controller
         }
     }
 
-     private function normalizeExcelText($value): string
+    private function normalizeExcelText($value): string
     {
         $value = is_null($value) ? '' : (string) $value;
         $value = preg_replace("/\r?\n/u", ' ', $value);
