@@ -1,13 +1,13 @@
 
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getDeTais } from '../services/deTaiService';
 import { getKyLvtn } from '../services/kyLvtnService';
 import { updateGiuaKy } from '../services/giuaKyService';
 import { getLecturers } from '../services/giangVienService';
 
-export default function GiuaKy() {
+	export default function GiuaKy() {
 	const queryClient = useQueryClient();
 	const [editDeTai, setEditDeTai] = useState(null);
 	const [editForm, setEditForm] = useState({ diemGiuaKy: '', nhanXetGiuaKy: '' });
@@ -25,6 +25,22 @@ export default function GiuaKy() {
 	const [kyId, setKyId] = useState('');
 	const [search, setSearch] = useState('');
 	const [page, setPage] = useState(1);
+
+	// Lấy mã GV hiện tại từ localStorage (hoặc thay đổi nếu bạn lấy từ nơi khác)
+	const getCurrentMaGV = () => {
+		try {
+			const user = JSON.parse(localStorage.getItem('user'));
+			return user ? user.id : '';
+		} catch {
+			return '';
+		}
+	};
+	const [selectedGV, setSelectedGV] = useState(getCurrentMaGV());
+
+	// Nếu user đăng nhập thay đổi, cập nhật lại selectedGV
+	useEffect(() => {
+		setSelectedGV(getCurrentMaGV());
+	}, []);
 
 	// Lấy danh sách kỳ LVTN
 	const { data: kyList } = useQuery({
@@ -48,10 +64,9 @@ export default function GiuaKy() {
 		return map;
 	}, [lecturerList]);
 
-	// Lấy danh sách đề tài (phân trang theo đề tài)
 	const { data: deTaiData, isLoading } = useQuery({
-		queryKey: ['deTais', { ky_id: kyId, q: search, page }],
-		queryFn: () => getDeTais({ ky_id: kyId || undefined, q: search || undefined, page }),
+		queryKey: ['deTais', { ky_id: kyId, q: search, page, maGV: selectedGV }],
+		queryFn: () => getDeTais({ ky_id: kyId || undefined, q: search || undefined, page, maGV: selectedGV || undefined }),
 	});
 
 	const tableData = deTaiData?.data || [];
@@ -72,6 +87,19 @@ export default function GiuaKy() {
 						<option key={k.id} value={k.id}>{k.ten}</option>
 					))}
 				</select>
+
+				{/* Dropdown lọc theo giảng viên */}
+				<select
+					value={selectedGV}
+					onChange={e => { setSelectedGV(e.target.value); setPage(1); }}
+					className="border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white"
+				>
+					<option value="">Tất cả giảng viên</option>
+					{lecturerList?.data?.map(gv => (
+						<option key={gv.maGV} value={gv.maGV}>{gv.tenGV}</option>
+					))}
+				</select>
+
 				<input
 					value={search}
 					onChange={e => setSearch(e.target.value)}
