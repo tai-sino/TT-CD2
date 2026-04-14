@@ -35,11 +35,11 @@ import { getLecturers } from '../services/giangVienService';
 			return '';
 		}
 	};
-	const [selectedGV, setSelectedGV] = useState(getCurrentMaGV());
+	const [selectedGVHD, setSelectedGVHD] = useState(getCurrentMaGV());
 
 	// Nếu user đăng nhập thay đổi, cập nhật lại selectedGV
 	useEffect(() => {
-		setSelectedGV(getCurrentMaGV());
+		setSelectedGVHD(getCurrentMaGV());
 	}, []);
 
 	// Lấy danh sách kỳ LVTN
@@ -65,8 +65,8 @@ import { getLecturers } from '../services/giangVienService';
 	}, [lecturerList]);
 
 	const { data: deTaiData, isLoading } = useQuery({
-		queryKey: ['deTais', { ky_id: kyId, q: search, page, maGV: selectedGV }],
-		queryFn: () => getDeTais({ ky_id: kyId || undefined, q: search || undefined, page, maGV: selectedGV || undefined }),
+		queryKey: ['deTais', { ky_id: kyId, q: search, page, maGV_HD: selectedGVHD }],
+		queryFn: () => getDeTais({ ky_id: kyId || undefined, q: search || undefined, page, maGV_HD: selectedGVHD || undefined }),
 	});
 
 	const tableData = deTaiData?.data || [];
@@ -88,13 +88,13 @@ import { getLecturers } from '../services/giangVienService';
 					))}
 				</select>
 
-				{/* Dropdown lọc theo giảng viên */}
+				{/* Dropdown lọc theo GVHD */}
 				<select
-					value={selectedGV}
-					onChange={e => { setSelectedGV(e.target.value); setPage(1); }}
+					value={selectedGVHD}
+					onChange={e => { setSelectedGVHD(e.target.value); setPage(1); }}
 					className="border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white"
 				>
-					<option value="">Tất cả giảng viên</option>
+					<option value="">Tất cả GVHD</option>
 					{lecturerList?.data?.map(gv => (
 						<option key={gv.maGV} value={gv.maGV}>{gv.tenGV}</option>
 					))}
