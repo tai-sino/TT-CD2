@@ -141,12 +141,12 @@ export default function SinhVien() {
           className="border border-slate-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none flex-1 min-w-[200px]"
         />
 
-        <button
+        {/* <button
           onClick={() => setShowImportModal(true)}
           className="bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors"
         >
           Nhập Excel
-        </button>
+        </button> */}
         <button
           onClick={openCreate}
           className="border border-slate-200 text-slate-700 hover:bg-slate-50 text-sm font-semibold px-4 py-2 rounded-lg transition-colors"
