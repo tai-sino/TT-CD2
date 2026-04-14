@@ -156,7 +156,7 @@ export default function PhanCong() {
               ))}
             </select>
           </div>
-          <div className="mb-3">
+          {/* <div className="mb-3">
             <label className="block text-sm font-medium mb-1">Trạng thái</label>
             <select
               value={editForm.trangThai}
@@ -167,7 +167,7 @@ export default function PhanCong() {
               <option value="ChuaPhanCong">Chưa phân công</option>
               <option value="DaPhanCong">Đã phân công</option>
             </select>
-          </div>
+          </div> */}
           {editError && <div className="text-red-500 text-sm mb-2">{editError}</div>}
           <div className="flex justify-end gap-2 mt-4">
             <button onClick={() => setEditItem(null)} className="px-4 py-2 rounded border text-slate-600">Hủy</button>

@@ -14,3 +14,8 @@ export async function getStudentStats() {
   const res = await api.get('/students/stats');
   return res.data;
 }
+
+export async function getOverallStats() {
+  const res = await api.get('/stats');
+  return res.data;
+}

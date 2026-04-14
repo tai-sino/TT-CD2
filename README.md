@@ -13,14 +13,14 @@
 
 ## Phân công cv
 
-| STT | Thành viên                 | Vai trò        | Module/Controller/Trang phụ trách                                                                                                           |
-| --- | ---------------------------- | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | **Trần Quốc Khánh** | Backend         | Xây dựng DB, API, AuthController, GiangVienController, KyLvtnController, phân quyền, CauHinhController                                    |
-| 2   | **Lê Tiến Phát**    | Backend         | DeTaiController, SinhVienController, TopicRegistrationFormController, các API liên quan đề tài & sinh viên                              |
-| 3   | **Siêu Ngọc Tài**   | DevOps, Backend | Tinh chỉnh DB, migration, seed, docker, deploy, module import file, kiểm tra & fix lỗi                                                     |
-| 4   | **Nguyễn Tuấn Anh**  | Frontend        | Trang: LoginPage, TongQuan, GiangVien, NhapLieu, hỗ trợ responsive                                                                         |
-| 5   | **Võ Thiên Phú**    | Frontend        | Trang: PhanCong, SinhVien, GiuaKy, hỗ trợ responsive (cho toàn bộ)                                                                        |
-| 6   | **Hồ Khôi Phục**    | Frontend        | Kiểm thử, search/ filter, phân trang, test thao tác, fix bug, tinh chỉnh style & tối ưu hiển thị dữ liệu của bảng, import file |
+| STT | Thành viên                 | Vai trò        | Module/Controller/Trang phụ trách                                                                                               |
+| --- | ---------------------------- | --------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | **Trần Quốc Khánh** | Backend         | Xây dựng DB, API, AuthController, GiangVienController, KyLvtnController, phân quyền, CauHinhController                        |
+| 2   | **Lê Tiến Phát**    | Backend         | DeTaiController, SinhVienController, TopicRegistrationFormController, các API liên quan đề tài & sinh viên                  |
+| 3   | **Siêu Ngọc Tài**   | DevOps, Backend | Tinh chỉnh DB, migration, seed, docker, deploy, module import file, kiểm tra & fix lỗi                                         |
+| 4   | **Nguyễn Tuấn Anh**  | Frontend        | Trang: LoginPage, TongQuan, GiangVien, NhapLieu, hỗ trợ responsive                                                             |
+| 5   | **Võ Thiên Phú**    | Frontend        | Trang: PhanCong, SinhVien, GiuaKy, hỗ trợ responsive (cho toàn bộ)                                                            |
+| 6   | **Hồ Khôi Phục**    | Frontend        | Search/ filter, phân trang, test thao tác, fix bug, tinh chỉnh style & tối ưu hiển thị dữ liệu của bảng, import file |
 
 - Lưu ý, cả BE và FE phải push kèm file ``.env.example`` và bổ sung nội dung cho file ``readme.md`` trong BE hoặc FE
 
