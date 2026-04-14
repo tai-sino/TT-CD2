@@ -80,11 +80,11 @@ export default function NhapLieu() {
 
   return (
     <div>
-      <div className="flex items-start sm:items-center justify-between mb-4 flex-wrap gap-3">
+      <div className="flex items-center justify-between mb-4">
         <h1 className="text-xl font-semibold text-slate-900">
           Nhập liệu đăng ký đề tài
         </h1>
-        <div className="flex gap-2 flex-wrap">
+        <div className="flex gap-2">
           <button
             onClick={() => setShowImport(true)}
             className="bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors"
@@ -100,7 +100,7 @@ export default function NhapLieu() {
         </div>
       </div>
 
-      <div className="flex gap-3 mb-4 flex-wrap">
+      <div className="flex gap-3 mb-4">
         <input
           type="text"
           placeholder="Tìm MSSV, tên sinh viên..."

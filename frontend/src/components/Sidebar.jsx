@@ -35,7 +35,7 @@ const roleLabels = {
   sv: 'Sinh viên',
 };
 
-export default function Sidebar({ isOpen, onClose }) {
+export default function Sidebar() {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, clearAuth } = useAuth();
@@ -58,26 +58,10 @@ export default function Sidebar({ isOpen, onClose }) {
     navigate('/login');
   };
 
-  const handleNavigate = (path) => {
-    navigate(path);
-    onClose?.();
-  };
-
   return (
-    <div
-      className={`fixed left-0 top-0 w-64 h-screen bg-white border-r border-slate-200 flex flex-col z-40 transition-transform duration-300
-        ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-        md:translate-x-0`}
-    >
-      <div className="px-6 py-6 border-b border-slate-200 flex items-center justify-between">
+    <div className="fixed left-0 top-0 w-64 h-screen bg-white border-r border-slate-200 flex flex-col">
+      <div className="px-6 py-6 border-b border-slate-200">
         <span className="text-lg font-semibold text-slate-800">QL Luận văn</span>
-        <button
-          onClick={onClose}
-          className="md:hidden text-slate-400 hover:text-slate-600 p-1"
-          aria-label="Đóng menu"
-        >
-          ✕
-        </button>
       </div>
 
       <nav className="flex-1 overflow-y-auto py-4">
@@ -87,7 +71,7 @@ export default function Sidebar({ isOpen, onClose }) {
           return (
             <div
               key={item.path}
-              onClick={() => handleNavigate(item.path)}
+              onClick={() => navigate(item.path)}
               className={`flex items-center gap-3 px-6 py-3 text-sm cursor-pointer transition-colors ${
                 isActive
                   ? 'bg-blue-50 text-blue-600 border-l-4 border-l-blue-600 font-medium'
