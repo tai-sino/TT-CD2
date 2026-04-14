@@ -13,14 +13,14 @@
 
 ## Phân công cv
 
-| STT | Thành viên                 | Vai trò              | Công việc chính                                                                                                                         |
-| --- | ---------------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| 1   | **Trần Quốc Khánh** | Team Leader + Backend | Chuyển đổi, xây dựng database, API, auth/permission, các module (CRUD)                                                              |
-| 2   | **Lê Tiến Phát**    | Backend Developer     | Kiểm tra, sửa lỗi và hoàn thiện các module, API, xử lí import/export file                                                         |
-| 3   | **Nguyễn Tuấn Anh**  | Frontend Developer    | Dựng layout, routing, kết nối API, làm các trang và luồng điều hướng                                                           |
-| 4   | **Võ Thiên Phú**    | Frontend Developer    | Tinh chỉnh responsive màn hình, modal, tối ưu UI/UX, chức năng nhập/ xuất file                                                    |
-| 5   | **Hồ Khôi Phục**    | Frontend Developer    | Kiểm tra hoạt động chức năng**search, filter, pagination, ...** test luồng thao tác, fix bug FE                            |
-| 6   | **Siêu Ngọc Tài**   | DevOps + Tester       | Kiểm tra các câu hình**Docker, Web, môi trường (.env)**, kiểm thử API và UI, viết **README, tài liệu cài đặt** |
+| STT | Thành viên                 | Vai trò        | Module/Controller/Trang phụ trách                                                                                                           |
+| --- | ---------------------------- | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | **Trần Quốc Khánh** | Backend         | Xây dựng DB, API, AuthController, GiangVienController, KyLvtnController, phân quyền, CauHinhController                                    |
+| 2   | **Lê Tiến Phát**    | Backend         | DeTaiController, SinhVienController, TopicRegistrationFormController, các API liên quan đề tài & sinh viên                              |
+| 3   | **Siêu Ngọc Tài**   | DevOps, Backend | Tinh chỉnh DB, migration, seed, docker, deploy, module import file, kiểm tra & fix lỗi                                                     |
+| 4   | **Nguyễn Tuấn Anh**  | Frontend        | Trang: LoginPage, TongQuan, GiangVien, NhapLieu, hỗ trợ responsive                                                                         |
+| 5   | **Võ Thiên Phú**    | Frontend        | Trang: PhanCong, SinhVien, GiuaKy, hỗ trợ responsive (cho toàn bộ)                                                                        |
+| 6   | **Hồ Khôi Phục**    | Frontend        | Kiểm thử, search/ filter, phân trang, test thao tác, fix bug, tinh chỉnh style & tối ưu hiển thị dữ liệu của bảng, import file |
 
 - Lưu ý, cả BE và FE phải push kèm file ``.env.example`` và bổ sung nội dung cho file ``readme.md`` trong BE hoặc FE
 
@@ -58,6 +58,7 @@ php artisan serve --port=8000
 - Link frontend: `https://quan-ly-luan-van-tn.vercel.app`
 
 ## Thông tin tài khoản test (V2)
+
 ![Acc_Image](screenshot/image_v2.png)
 
 ## Thông tin tài khoản test (V1)

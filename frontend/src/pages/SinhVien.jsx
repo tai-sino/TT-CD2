@@ -201,7 +201,7 @@ export default function SinhVien() {
         </table>
       </div>
 
-      {total > 0 && (
+      {total > perPage && (
         <div className="flex items-center justify-between mt-4">
           <span className="text-sm text-slate-500">Hiển thị {start}-{end} / {total} sinh viên</span>
           <div className="flex gap-1">
