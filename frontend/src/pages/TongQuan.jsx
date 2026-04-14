@@ -43,13 +43,11 @@ export default function TongQuan() {
     fetchStats();
   }, []);
 
-  // Lấy thông tin người dùng từ localStorage (theo cấu trúc JSON mới)
   const [aboutMe, setAboutMe] = useState(() => {
     try {
       const userStr = localStorage.getItem("user");
       if (!userStr) return null;
       const user = typeof userStr === "string" ? JSON.parse(userStr) : userStr;
-
       return {
         maGV: user.id,
         tenGV: user.name,
@@ -71,125 +69,48 @@ export default function TongQuan() {
   if (!aboutMe) return null;
 
   return (
-    <div className="dashboard-page">
+    <div>
       {/* Banner chào mừng */}
-      <div
-        className="dashboard-banner"
-        style={{
-          background: "var(--primary-color, #2563eb)",
-          padding: "12px 16px",
-          borderRadius: "6px",
-          marginBottom: "20px",
-          width: "100%",
-          color: "#fff",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
+      <div className="flex justify-between items-center bg-blue-600 text-white rounded-lg px-4 py-3 mb-5">
         <div>
-          <h2 className="font-bold">Xin chào, {aboutMe?.tenGV || "N/A"}!</h2>
-          <div style={{ color: "#f1f1f1" }}>
+          <h2 className="font-bold text-base md:text-lg">
+            Xin chào, {aboutMe?.tenGV || "N/A"}!
+          </h2>
+          <div className="text-blue-100 text-sm mt-1 space-y-0.5">
             <div>Mã giảng viên: {aboutMe?.maGV || "N/A"}</div>
-            <div>Email: {aboutMe?.email || "N/A"}</div>
+            <div className="hidden sm:block">Email: {aboutMe?.email || "N/A"}</div>
             <div>Vai trò: {aboutMe?.vaiTro || "N/A"}</div>
           </div>
         </div>
-        <div className="dashboard-banner-lottie" style={{ width: "150px" }}>
+        <div className="w-24 md:w-36 shrink-0">
           <Lottie animationData={studentWithLaptop} loop={true} />
         </div>
       </div>
 
       {/* Hàng thống kê tổng quan */}
-      <div
-        className="stat-cards-row"
-        style={{ display: "flex", gap: 16, marginBottom: 24 }}
-      >
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         {isLoading
-          ? Array(4)
-              .fill(0)
-              .map((_, idx) => (
-                <div
-                  key={idx}
-                  className="stat-card"
-                  style={{
-                    flex: 1,
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "space-between",
-                    alignItems: "start",
-                    border: "1px solid #e5e7eb",
-                    borderRadius: 8,
-                    background: "#fff",
-                    padding: 12,
-                    minHeight: 90,
-                    boxShadow: "2px 2px 4px rgba(0,0,0,0.1)",
-                  }}
-                >
-                  <div
-                    style={{
-                      width: "60%",
-                      height: 16,
-                      background: "#e5e7eb",
-                      borderRadius: 4,
-                      marginBottom: 8,
-                      animation:
-                        "skeleton-loading 1.2s infinite linear alternate",
-                    }}
-                  />
-                  <div
-                    style={{
-                      width: 40,
-                      height: 28,
-                      background: "#e5e7eb",
-                      borderRadius: 4,
-                      marginTop: "auto",
-                      animation:
-                        "skeleton-loading 1.2s infinite linear alternate",
-                    }}
-                  />
-                </div>
-              ))
+          ? Array(4).fill(0).map((_, idx) => (
+              <div
+                key={idx}
+                className="bg-white border border-slate-200 rounded-lg p-3 shadow-sm flex flex-col justify-between min-h-[90px]"
+              >
+                <div className="w-3/5 h-4 bg-slate-200 rounded animate-pulse mb-2" />
+                <div className="w-10 h-7 bg-slate-200 rounded animate-pulse mt-auto" />
+              </div>
+            ))
           : [
               { label: "Giai đoạn hiện tại", value: stats.presentations },
               { label: "Số đề tài", value: stats.total },
               { label: "Số sinh viên", value: stats.students },
               { label: "Đề tài đã xong", value: stats.finished },
-            ].map((item, idx) => (
+            ].map((item) => (
               <div
                 key={item.label}
-                className="stat-card"
-                style={{
-                  flex: 1,
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-between",
-                  alignItems: "start",
-                  border: "1px solid #e5e7eb",
-                  borderRadius: 8,
-                  background: "#fff",
-                  padding: 12,
-                  minHeight: 90,
-                  boxShadow: "2px 2px 4px rgba(0,0,0,0.1)",
-                }}
+                className="bg-white border border-slate-200 rounded-lg p-3 shadow-sm flex flex-col justify-between min-h-[90px]"
               >
-                <div
-                  className="stat-label text-slate-500"
-                  style={{ marginBottom: 4, textAlign: "left", width: "100%" }}
-                >
-                  {item.label}
-                </div>
-                <div
-                  className="stat-value"
-                  style={{
-                    fontSize: 26,
-                    fontWeight: 600,
-                    color: "#2563eb",
-                    marginTop: "auto",
-                    textAlign: "left",
-                    width: "100%",
-                  }}
-                >
+                <div className="text-sm text-slate-500 mb-1">{item.label}</div>
+                <div className="text-2xl font-semibold text-blue-600 mt-auto">
                   {item.value}
                 </div>
               </div>
@@ -197,78 +118,28 @@ export default function TongQuan() {
       </div>
 
       {/* Khu vực 2 cột: Thông báo & Biểu đồ */}
-      <div style={{ display: "flex", gap: 24, alignItems: "flex-start" }}>
-        {/* Cột 1: Danh sách thông báo */}
-        <div style={{ flex: 1, minWidth: 320 }}>
-          <h3 style={{ fontWeight: 600, marginBottom: 12 }}>
-            Thông báo & Nhắc nhở
-          </h3>
-          <ul
-            style={{
-              background: "#fff",
-              borderRadius: 8,
-              boxShadow: "1px 1px 4px rgba(0,0,0,0.06)",
-              padding: 16,
-              minHeight: 120,
-            }}
-          >
+      <div className="flex flex-col lg:flex-row gap-6 items-start">
+        {/* Cột 1: Thông báo */}
+        <div className="w-full lg:w-1/3">
+          <h3 className="font-semibold mb-3">Thông báo & Nhắc nhở</h3>
+          <ul className="bg-white rounded-lg shadow-sm p-4 min-h-[120px]">
             {isLoading ? (
               <li>
-                <div
-                  style={{
-                    width: "80%",
-                    height: 18,
-                    background: "#e5e7eb",
-                    borderRadius: 4,
-                    animation:
-                      "skeleton-loading 1.2s infinite linear alternate",
-                  }}
-                />
-                <div
-                  style={{
-                    width: "60%",
-                    height: 12,
-                    background: "#e5e7eb",
-                    borderRadius: 4,
-                    marginTop: 8,
-                    animation:
-                      "skeleton-loading 1.2s infinite linear alternate",
-                  }}
-                />
+                <div className="w-4/5 h-4 bg-slate-200 rounded animate-pulse mb-2" />
+                <div className="w-3/5 h-3 bg-slate-200 rounded animate-pulse mt-2" />
               </li>
             ) : (
-              <li>Chưa có thông báo nào.</li>
+              <li className="text-sm text-slate-500">Chưa có thông báo nào.</li>
             )}
           </ul>
         </div>
 
-        {/* Cột 2: Biểu đồ tổng quan */}
-        <div style={{ flex: 2, minWidth: 360 }}>
-          <h3 style={{ fontWeight: 600, marginBottom: 12 }}>
-            Biểu đồ tổng quan
-          </h3>
-          <div
-            style={{
-              background: "#fff",
-              borderRadius: 8,
-              boxShadow: "1px 1px 4px rgba(0,0,0,0.06)",
-              padding: 16,
-              minHeight: 240,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
+        {/* Cột 2: Biểu đồ */}
+        <div className="w-full lg:w-2/3">
+          <h3 className="font-semibold mb-3">Biểu đồ tổng quan</h3>
+          <div className="bg-white rounded-lg shadow-sm p-4 min-h-[240px] flex items-center justify-center">
             {isLoading ? (
-              <div
-                style={{
-                  width: "80%",
-                  height: 180,
-                  background: "#e5e7eb",
-                  borderRadius: 8,
-                  animation: "skeleton-loading 1.2s infinite linear alternate",
-                }}
-              />
+              <div className="w-4/5 h-44 bg-slate-200 rounded-lg animate-pulse" />
             ) : (
               <Bar
                 data={{
@@ -287,12 +158,7 @@ export default function TongQuan() {
                         stats.students,
                         stats.finished,
                       ],
-                      backgroundColor: [
-                        "#2563eb",
-                        "#22d3ee",
-                        "#f59e42",
-                        "#10b981",
-                      ],
+                      backgroundColor: ["#2563eb", "#22d3ee", "#f59e42", "#10b981"],
                       borderRadius: 6,
                     },
                   ],
@@ -304,10 +170,7 @@ export default function TongQuan() {
                     title: { display: false },
                   },
                   scales: {
-                    y: {
-                      beginAtZero: true,
-                      grace: "10%",
-                    },
+                    y: { beginAtZero: true, grace: "10%" },
                   },
                 }}
               />
@@ -315,13 +178,6 @@ export default function TongQuan() {
           </div>
         </div>
       </div>
-      {/* CSS cho skeleton loading */}
-      <style>{`
-				@keyframes skeleton-loading {
-					0% { background-color: #e5e7eb; }
-					100% { background-color: #f3f4f6; }
-				}
-			`}</style>
     </div>
   );
 }

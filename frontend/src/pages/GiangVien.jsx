@@ -56,7 +56,7 @@ export default function GiangVien() {
     <div>
       <h1 className="text-xl font-semibold text-slate-900 mb-6">Quản lý Giảng viên</h1>
 
-      <div className="flex items-center gap-4 mb-4">
+      <div className="flex items-center gap-4 mb-4 flex-wrap">
         <input
           type="text"
           placeholder="Tìm theo tên, email..."
