@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { FaBan } from "react-icons/fa";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { HiOutlineXMark } from "react-icons/hi2";
 import { approveTopicRegistrationForm } from "../services/deTaiService";
@@ -42,6 +43,27 @@ const initialForm = {
 };
 
 export default function NhapLieu() {
+  const [aboutMe] = useState(() => {
+    try {
+      const userStr = localStorage.getItem('user');
+      if (!userStr) return null;
+      const user = typeof userStr === 'string' ? JSON.parse(userStr) : userStr;
+      return { ...user, vaiTro: user.role };
+    } catch {
+      return null;
+    }
+  });
+
+  // Chặn truy cập nếu không đúng role (đặt trong thân function component)
+  if (!aboutMe || aboutMe.vaiTro !== 'ThuKy') {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[300px] text-slate-500">
+        <FaBan size={48} className="mb-2 text-red-400" />
+        <div className="text-lg font-semibold">Bạn không có quyền truy cập trang này</div>
+      </div>
+    );
+  }
+
   const queryClient = useQueryClient();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
