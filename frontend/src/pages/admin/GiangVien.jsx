@@ -100,8 +100,8 @@ export default function GiangVien() {
             ) : filtered.length === 0 ? (
               <tr>
                 <td colSpan={8} className="px-4 py-16 text-center">
-                  <p className="text-slate-500 font-semibold">Chua co giang vien</p>
-                  <p className="text-sm text-slate-400 mt-1">Them giang vien dau tien de bat dau su dung he thong.</p>
+                  <div className="text-slate-500 font-semibold">Chua co giang vien</div>
+                  <div className="text-sm text-slate-400 mt-1">Them giang vien dau tien de bat dau su dung he thong.</div>
                 </td>
               </tr>
             ) : (
