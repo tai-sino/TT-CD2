@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Models\GiangVien;
 
 class TopicRegistrationFormController extends Controller
 {
@@ -45,7 +46,7 @@ class TopicRegistrationFormController extends Controller
             'diemChu' => null,
         ]);
 
-          // Cập nhật trạng thái
+        // Cập nhật trạng thái
         $form->status = 'da_duyet';
         $form->save();
 
@@ -62,9 +63,9 @@ class TopicRegistrationFormController extends Controller
             $s = $request->search;
             $query->where(function ($q) use ($s) {
                 $q->where('student1_id', 'like', "%$s%")
-                  ->orWhere('student1_name', 'like', "%$s%")
-                  ->orWhere('student2_id', 'like', "%$s%")
-                  ->orWhere('student2_name', 'like', "%$s%");
+                    ->orWhere('student1_name', 'like', "%$s%")
+                    ->orWhere('student2_id', 'like', "%$s%")
+                    ->orWhere('student2_name', 'like', "%$s%");
             });
         }
 
@@ -151,7 +152,7 @@ class TopicRegistrationFormController extends Controller
         return response()->json(['message' => 'Da xoa']);
     }
 
-   public function importExcel(Request $request)
+    public function importExcel(Request $request)
     {
         $request->validate([
             'file' => 'required|file|mimes:xlsx,xls',
@@ -219,7 +220,17 @@ class TopicRegistrationFormController extends Controller
                                     'lop' => $lop !== '' ? $lop : null,
                                 ]
                             );
-
+                            $maGvHd = null;
+                            if ($gvhd !== '') {
+                                // Tìm Giảng viên trong DB dựa vào tên
+                                $giangVien = GiangVien::where('tenGV', 'LIKE', '%' . $gvhd . '%')->first();
+                                if ($giangVien) {
+                                    $maGvHd = $giangVien->maGV; // Lấy ra mã GV
+                                } else {
+                                    // Ghi log lại nếu không tìm thấy thầy cô
+                                    $ghiChu = $ghiChu . ' (Lỗi: Không tìm thấy mã GV cho ' . $gvhd . ')';
+                                }
+                            }
                             $noteParts = array_filter([
                                 $hhHv !== '' ? 'HH-HV: ' . $hhHv : null,
                                 $ghiChu !== '' ? 'Ghi chú: ' . $ghiChu : null,
@@ -242,7 +253,7 @@ class TopicRegistrationFormController extends Controller
                                     'student2_name' => null,
                                     'student2_class' => null,
                                     'student2_email' => null,
-                                    'gvhd_code' => $gvhd !== '' ? $gvhd : null,
+                                    'gvhd_code' => $maGvHd,
                                     'gvhd_workplace' => $gvhdWorkplace !== '' ? $gvhdWorkplace : null,
                                     'gvpb_code' => null,
                                     'note' => count($noteParts) ? implode(' | ', $noteParts) : null,
@@ -360,7 +371,7 @@ class TopicRegistrationFormController extends Controller
                                 continue;
                             }
 
-                            usort($students, fn ($a, $b) => strcmp($a['mssv'], $b['mssv']));
+                            usort($students, fn($a, $b) => strcmp($a['mssv'], $b['mssv']));
 
                             foreach ($students as $sv) {
                                 SinhVien::updateOrCreate(
@@ -481,7 +492,7 @@ class TopicRegistrationFormController extends Controller
         }
     }
 
-     private function normalizeExcelText($value): string
+    private function normalizeExcelText($value): string
     {
         $value = is_null($value) ? '' : (string) $value;
         $value = preg_replace("/\r?\n/u", ' ', $value);
