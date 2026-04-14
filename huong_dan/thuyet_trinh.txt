@@ -1,0 +1,99 @@
+THUYẾT TRÌNH ĐỒ ÁN: QUẢN LÝ LUẬN VĂN TỐT NGHIỆP
+
+---
+
+I. GIỚI THIỆU CHUNG DỰ ÁN
+
+
+Thành viên nhóm:
+  1. Trần Quốc Khánh (Team Leader + Backend)
+  2. Lê Tiến Phát (Backend Developer)
+  3. Siêu Ngọc Tài (DevOps + Tester)
+  4. Nguyễn Tuấn Anh (Frontend Developer)
+  5. Võ Thiên Phú (Frontend Developer)
+  6. Hồ Khôi Phục (Frontend Developer)
+---
+
+II. PHÂN CÔNG VÀ KỊCH BẢN THUYẾT TRÌNH
+
+1. **Trần Quốc Khánh (Team Leader + Backend)**
+Nội dung thuyết trình:
+"Với vai trò Team Leader, tôi chịu trách nhiệm thiết kế kiến trúc tổng thể của hệ thống, đặc biệt là cấu trúc Cơ sở dữ liệu để đảm bảo tính toàn vẹn và mở rộng."
+"Về phần Backend, tôi đã xây dựng hệ thống quản lý quyền (Permission) và xác thực (Authentication). Tôi trực tiếp triển khai các API lõi cho các module (CRUD), đảm bảo luồng dữ liệu giữa giáo viên, sinh viên và hội đồng diễn ra thông suốt."
+Kết quả:
+* "Xây dựng thành công hệ thống Backend ổn định với kiến trúc RESTful API."
+* "Thiết lập hệ thống phân quyền 3 lớp (Admin - Giảng viên - Sinh viên) hoạt động chính xác và bảo mật."
+* "Cơ sở dữ liệu được chuẩn hóa, đảm bảo không có dữ liệu dư thừa và truy xuất nhanh."
+
+2. **Lê Tiến Phát (Backend Developer)**
+Nội dung thuyết trình:
+"Nhiệm vụ chính của tôi là đảm bảo tính ổn định và chính xác cho hệ thống Backend. Tôi tập trung vào việc kiểm thử các endpoint, phát hiện và khắc phục các lỗi logic trong quá trình xử lý dữ liệu."
+"Bên cạnh đó, tôi thực hiện việc hoàn thiện các module bổ trợ và tối ưu hóa mã nguồn API để tăng tốc độ phản hồi cho ứng dụng."
+Kết quả:
+* "Hoàn thiện hệ thống API đầy đủ cho tất cả các tính năng quản lý luận văn."
+* "Giảm thiểu tối đa các lỗi logic (logic bugs) thông qua quá trình refactor và tối ưu hóa mã nguồn."
+* "Đảm bảo các module Backend phối hợp đồng bộ, không xảy ra xung đột khi tích hợp."
+
+3. **Nguyễn Tuấn Anh (Frontend Developer)**
+Nội dung thuyết trình:
+"Tôi đảm nhận việc xây dựng nền tảng giao diện cho dự án. Cụ thể là triển khai layout tổng thể, thiết lập hệ thống định tuyến (Routing) để đảm bảo trải nghiệm chuyển trang mượt mà."
+"Tôi cũng phụ trách việc kết nối giao diện với API Backend, hiện thực hóa các trang chức năng và xây dựng luồng điều hướng logic cho người dùng từ trang chủ đến các trang quản lý chi tiết."
+Kết quả:
+* "Khung sườn ứng dụng Web (Base layout) hoàn chỉnh với hệ thống định tuyến (Routing) thông minh."
+* "Dữ liệu từ Backend được hiển thị trực quan, chính xác trên các trang danh sách và chi tiết."
+* "Đảm bảo sự liên kết logic giữa các thao tác bấm và kết quả nhận về từ hệ thống."
+
+4. **Võ Thiên Phú (Frontend Developer)**
+Nội dung thuyết trình:
+"Trọng tâm công việc của tôi là tối ưu hóa trải nghiệm người dùng (UI/UX). Tôi đã tinh chỉnh tính đáp ứng (Responsive) để hệ thống hoạt động tốt trên nhiều kích thước màn hình khác nhau."
+"Ngoài ra, tôi thiết kế và xử lý các thành phần tương tác như Modal, thông báo và các hiệu ứng giao diện, giúp các thao tác của người dùng trở nên trực quan và chuyên nghiệp hơn."
+Kết quả:
+* "Giao diện hiện đại, dễ sử dụng với tỉ lệ hiển thị chuẩn trên cả Laptop, Tablet và Mobile."
+* "Các thành phần Modal (cửa sổ bật lên) và Form nhập liệu hoạt động mượt mà, thân thiện với người dùng."
+* "Nâng cao điểm số trải nghiệm người dùng (UX) thông qua việc tối ưu tốc độ phản hồi giao diện."
+
+5. **Hồ Khôi Phục (Frontend Developer)**
+Nội dung thuyết trình:
+"Tôi chịu trách nhiệm về các tính năng tương tác dữ liệu phức tạp phía Frontend như Tìm kiếm (Search), Bộ lọc (Filter) và Phân trang (Pagination). Đây là những tính năng quan trọng giúp người dùng quản lý lượng lớn luận văn dễ dàng hơn."
+"Song song đó, tôi thực hiện kiểm tra kỹ lưỡng các luồng thao tác người dùng để phát hiện và xử lý triệt để các lỗi giao diện (Fix bug FE)."
+Kết quả:
+* "Người dùng có thể tìm kiếm và lọc thông tin luận văn theo nhiều tiêu chí chỉ trong vài giây."
+* "Hệ thống phân trang giúp tải dữ liệu lớn mà không gây giật lag trình duyệt."
+* "Hậu kiểm và xử lý dứt điểm các lỗi hiển thị phát sinh trong quá trình phát triển."
+
+6. **Siêu Ngọc Tài (DevOps + Tester)**
+Nội dung thuyết trình:
+"Để đảm bảo dự án có thể triển khai ổn định, tôi đã cấu hình Docker hóa ứng dụng và quản lý các biến môi trường (.env) an toàn. Tôi thiết lập môi trường chạy thử nghiệm để đội ngũ có thể phối hợp hiệu quả."
+"Trong vai trò Tester, tôi thực hiện kiểm thử toàn diện từ API đến giao diện (UI). Cuối cùng, tôi hoàn thiện bộ tài liệu hướng dẫn cài đặt và tệp README trên GitHub để hỗ trợ việc bàn giao và vận hành hệ thống."
+Kết quả:
+* "Container hóa dự án bằng Docker, giúp việc triển khai (deploy) chỉ mất vài phút trên bất kỳ môi trường nào."
+* "Bộ tài liệu kỹ thuật chi tiết, giúp người khác dễ dàng cài đặt và hiểu rõ cấu trúc dự án."
+* "Đảm bảo sản phẩm cuối cùng đạt độ ổn định cao nhất trước khi trình chiếu nhờ quy trình kiểm thử nghiêm ngặt."
+
+---
+
+Gợi ý thêm khi thuyết trình:
+Khi nói đến phần của mình, mỗi thành viên có thể mở trực tiếp trang web hoặc đoạn mã (code) tương ứng trên GitHub để minh họa.
+Ví dụ: Bạn Khánh có thể show file schema database, bạn Tài show file docker-compose.yml.
+
+---
+
+III. KẾT QUẢ ĐẠT ĐƯỢC
+- Backend: Hoàn thiện các API chính, phân quyền cơ bản, quản lý giảng viên, sinh viên, đề tài, hội đồng, chấm điểm.
+- Frontend: Hoàn thiện các trang chính, giao diện trực quan, responsive, thao tác cơ bản.
+- Deploy thành công trên Render/Vercel, có thể truy cập online.
+
+IV. NHỮNG CHỨC NĂNG CHƯA HOÀN THÀNH & ĐỊNH HƯỚNG
+- Quản lý điểm chi tiết từng thành viên hội đồng.
+- Tích hợp thông báo real-time.
+- Quản lý phân quyền nâng cao.
+- Tích hợp upload file luận văn, xuất file thống kê.
+- Tối ưu giao diện mobile, nâng cao trải nghiệm người dùng.
+
+---
+
+**Cảm ơn thầy/cô và các bạn đã lắng nghe!**
+
+---
+
+*Lưu ý: Mỗi thành viên chuẩn bị phần trình bày theo kịch bản trên, có thể demo trực tiếp hoặc trình chiếu slide, nhấn mạnh phần mình phụ trách, kết quả đạt được và hướng phát triển tiếp.*

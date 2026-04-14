@@ -105,6 +105,9 @@ class DeTaiController extends Controller
             'thuTuTrongHD' => 'nullable|integer',
             'ghiChu' => 'nullable|string',
             'trangThai' => 'nullable|string|max:50',
+            'diemGiuaKy' => 'nullable|numeric',
+            'nhanXetGiuaKy' => 'nullable|string',
+            'trangThaiGiuaKy' => 'nullable|string',
         ]);
         $detai->update($validated);
         return response()->json($detai);

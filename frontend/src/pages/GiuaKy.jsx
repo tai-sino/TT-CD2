@@ -13,38 +13,31 @@ import { getLecturers } from '../services/giangVienService';
 	// Chuẩn hóa lại cấu trúc dữ liệu theo mẫu JSON mapping
 	const defaultForm = {
 		tenDeTai: '',
-		tenGVHD: '',
-		thuyetMinh_Dat: '',
-		thuyetMinh_KhongDat: '',
-		ndDieuChinh: '',
-		uuDiem: '',
-		thieuSot: '',
-		cauHoi: '',
 		sinhVien: [
 			{
 				hoTen: '',
 				mssv: '',
-				lop: '',
-				diemPhanTich: '',
-				diemThietKe: '',
-				diemHienThuc: '',
-				diemBaoCao: '',
-				diemTongCong: '',
-				diemFinal: '',
-				deNghi: ''
+				lop: ''
 			}
-		]
+		],
+		diemGiuaKy: '',
+		nhanXetGiuaKy: ''
 	};
 	const [editForm, setEditForm] = useState(defaultForm);
 	const [showEditModal, setShowEditModal] = useState(false);
 	// Mutation cập nhật giữa kỳ
+	const [saveSuccess, setSaveSuccess] = useState(false);
 	const updateMut = useMutation({
 		mutationFn: ({ deTaiId, data }) => updateGiuaKy(deTaiId, data),
 		onSuccess: () => {
-			setShowEditModal(false);
-			setEditDeTai(null);
-			setEditForm(defaultForm);
+			setSaveSuccess(true);
 			queryClient.invalidateQueries(['deTais']);
+			setTimeout(() => {
+				setShowEditModal(false);
+				setEditDeTai(null);
+				setEditForm(defaultForm);
+				setSaveSuccess(false);
+			}, 1500);
 		},
 	});
 	const [kyId, setKyId] = useState('');
@@ -263,25 +256,17 @@ import { getLecturers } from '../services/giangVienService';
 			{showEditModal && (
 				<div className="fixed inset-0 bg-black/50 bg-opacity-30 flex items-center justify-center z-50">
 					<div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
-						<h2 className="text-lg font-semibold mb-4">Nhập điểm & nhận xét giữa kỳ</h2>
+						<h2 className="text-lg font-semibold mb-4">Nhập điểm giữa kỳ</h2>
 						{/* Các trường chung */}
 						<div className="mb-3 grid grid-cols-1 gap-2">
 							<label className="block text-xs font-medium text-slate-600 mb-1">Tên đề tài</label>
-							<input className="border border-slate-300 rounded px-2 py-1 text-sm w-full focus:outline-blue-500" value={editForm.tenDeTai} onChange={e => setEditForm(f => ({ ...f, tenDeTai: e.target.value }))} />
-							<label className="block text-xs font-medium text-slate-600 mb-1 mt-2">Tên GVHD</label>
-							<div className="border border-slate-200 rounded px-2 py-1 text-sm w-full bg-slate-100 text-slate-700">{editForm.tenGVHD}</div>
-							<label className="block text-xs font-medium text-slate-600 mb-1 mt-2">Ưu điểm</label>
-							<input className="border border-slate-300 rounded px-2 py-1 text-sm w-full focus:outline-blue-500" value={editForm.uuDiem} onChange={e => setEditForm(f => ({ ...f, uuDiem: e.target.value }))} />
-							<label className="block text-xs font-medium text-slate-600 mb-1 mt-2">Thiếu sót</label>
-							<input className="border border-slate-300 rounded px-2 py-1 text-sm w-full focus:outline-blue-500" value={editForm.thieuSot} onChange={e => setEditForm(f => ({ ...f, thieuSot: e.target.value }))} />
-							<label className="block text-xs font-medium text-slate-600 mb-1 mt-2">Câu hỏi</label>
-							<input className="border border-slate-300 rounded px-2 py-1 text-sm w-full focus:outline-blue-500" value={editForm.cauHoi} onChange={e => setEditForm(f => ({ ...f, cauHoi: e.target.value }))} />
+							<div className="border border-slate-200 rounded px-2 py-1 text-sm w-full bg-slate-100 text-slate-700">{editForm.tenDeTai}</div>
 						</div>
-						{/* Form nhập cho từng sinh viên */}
+						{/* Danh sách sinh viên */}
 						<div className="mb-3">
+							<label className="block text-xs font-medium text-slate-600 mb-1">Danh sách sinh viên</label>
 							{editForm.sinhVien && editForm.sinhVien.map((sv, idx) => (
 								<div key={idx} className="mb-2 border border-slate-200 rounded p-2 bg-slate-50">
-									<div className="font-semibold text-slate-700 mb-2 text-sm">Sinh viên {idx + 1}</div>
 									<div className="flex gap-2 mb-2">
 										<div className="flex-1">
 											<label className="block text-xs text-slate-500">MSSV</label>
@@ -292,47 +277,38 @@ import { getLecturers } from '../services/giangVienService';
 											<div className="font-medium text-slate-800 text-sm bg-white rounded px-2 py-1 border border-slate-100">{sv.hoTen}</div>
 										</div>
 									</div>
-									<label className="block text-xs font-medium text-slate-600 mb-1 mt-2">Phân tích vấn đề</label>
-									<input className="border border-slate-300 rounded px-2 py-1 text-sm w-full focus:outline-blue-500" type="number" min="0" max="10" step="0.01" value={sv.diemPhanTich} onChange={e => setEditForm(f => { const sinhVien = [...f.sinhVien]; sinhVien[idx].diemPhanTich = e.target.value; return { ...f, sinhVien }; })} />
-									<label className="block text-xs font-medium text-slate-600 mb-1 mt-2">Thiết kế vấn đề</label>
-									<input className="border border-slate-300 rounded px-2 py-1 text-sm w-full focus:outline-blue-500" type="number" min="0" max="10" step="0.01" value={sv.diemThietKe} onChange={e => setEditForm(f => { const sinhVien = [...f.sinhVien]; sinhVien[idx].diemThietKe = e.target.value; return { ...f, sinhVien }; })} />
-									<label className="block text-xs font-medium text-slate-600 mb-1 mt-2">Hiện thực vấn đề</label>
-									<input className="border border-slate-300 rounded px-2 py-1 text-sm w-full focus:outline-blue-500" type="number" min="0" max="10" step="0.01" value={sv.diemHienThuc} onChange={e => setEditForm(f => { const sinhVien = [...f.sinhVien]; sinhVien[idx].diemHienThuc = e.target.value; return { ...f, sinhVien }; })} />
-									<label className="block text-xs font-medium text-slate-600 mb-1 mt-2">Kiểm tra sản phẩm</label>
-									<input className="border border-slate-300 rounded px-2 py-1 text-sm w-full focus:outline-blue-500" type="number" min="0" max="10" step="0.01" value={sv.diemBaoCao} onChange={e => setEditForm(f => { const sinhVien = [...f.sinhVien]; sinhVien[idx].diemBaoCao = e.target.value; return { ...f, sinhVien }; })} />
 								</div>
 							))}
 						</div>
 						<div className="mb-3">
-							<label className="block text-sm mb-1">Nhận xét giữa kỳ</label>
-							{/* Nhận xét tổng thể (nếu muốn) */}
-							{/* Có thể bổ sung nhận xét tổng thể nếu muốn */}
+							<label className="block text-xs font-medium text-slate-600 mb-1">Điểm giữa kỳ</label>
+							<input className="border border-slate-300 rounded px-2 py-1 text-sm w-full focus:outline-blue-500" type="number" min="0" max="10" step="0.01" value={editForm.diemGiuaKy || ''} onChange={e => setEditForm(f => ({ ...f, diemGiuaKy: e.target.value }))} />
 						</div>
+						<div className="mb-3">
+							<label className="block text-xs font-medium text-slate-600 mb-1">Nhận xét giữa kỳ</label>
+							<textarea className="border border-slate-300 rounded px-2 py-1 text-sm w-full focus:outline-blue-500" rows={3} value={editForm.nhanXetGiuaKy || ''} onChange={e => setEditForm(f => ({ ...f, nhanXetGiuaKy: e.target.value }))} />
+						</div>
+						
 						<div className="flex gap-2 justify-end mt-4">
 							<button
 							  className="px-4 py-2 rounded bg-slate-200 hover:bg-slate-300"
 							  onClick={() => setShowEditModal(false)}
 							>Hủy</button>
 							<button
-								className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
-								disabled={updateMut.isLoading}
+								className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-60"
+								disabled={updateMut.isLoading || saveSuccess}
 								onClick={() => {
-									// Lưu toàn bộ form chuẩn hóa
-									updateMut.mutate({
-										deTaiId: editDeTai?.maDeTai,
-										data: editForm,
-									});
+									if (!updateMut.isLoading && !saveSuccess) {
+										updateMut.mutate({
+											deTaiId: editDeTai?.maDeTai,
+											data: editForm,
+										});
+									}
+									
 								}}
-							>Lưu</button>
-							<button
-								className="px-4 py-2 rounded bg-green-600 text-white hover:bg-green-700"
-								onClick={() => {
-									// Giả lập xuất file docx
-									const soSV = editForm.sinhVien?.length || 1;
-									const template = soSV === 2 ? 'template_chamdiem_hd_2sv.docx' : 'template_chamdiem_hd_1sv.docx';
-									alert(`Sẽ xuất file .docx theo mẫu: ${template} (tính năng đang phát triển)\n\nDữ liệu mẫu:\n` + JSON.stringify(editForm, null, 2));
-								}}
-							>Xuất file .docx</button>
+							>
+								{saveSuccess ? 'Đã lưu!' : updateMut.isLoading ? 'Đang lưu...' : 'Lưu'}
+							</button>
 						</div>
 						{updateMut.isError && <div className="text-red-500 mt-2 text-sm">Có lỗi xảy ra, vui lòng thử lại.</div>}
 					</div>
