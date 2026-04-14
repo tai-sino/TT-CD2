@@ -122,6 +122,18 @@ class SinhVienController extends Controller
         return response()->json(['data' => $sv]);
     }
 
+    public function lopList(Request $request)
+    {
+        $query = SinhVien::whereNotNull('lop')->where('lop', '!=', '');
+
+        if ($request->filled('ky_id')) {
+            $query->where('ky_lvtn_id', $request->ky_id);
+        }
+
+        $lops = $query->distinct()->pluck('lop')->sort()->values();
+        return response()->json($lops);
+    }
+
     public function destroy($mssv)
     {
         $sv = SinhVien::where('mssv', $mssv)->first();

@@ -113,6 +113,30 @@ class DeTaiController extends Controller
         return response()->json($detai);
     }
 
+    public function chamDiemHD(Request $request, $id)
+    {
+        $detai = DeTai::find($id);
+        if (!$detai) return response()->json(['message' => 'Not found'], 404);
+        $validated = $request->validate([
+            'diemHuongDan' => 'nullable|numeric|min:0|max:10',
+            'nhanXetHuongDan' => 'nullable|string',
+        ]);
+        $detai->update($validated);
+        return response()->json($detai);
+    }
+
+    public function chamDiemPB(Request $request, $id)
+    {
+        $detai = DeTai::find($id);
+        if (!$detai) return response()->json(['message' => 'Not found'], 404);
+        $validated = $request->validate([
+            'diemPhanBien' => 'nullable|numeric|min:0|max:10',
+            'nhanXetPhanBien' => 'nullable|string',
+        ]);
+        $detai->update($validated);
+        return response()->json($detai);
+    }
+
     // Xoá đề tài
     public function destroy($id)
     {

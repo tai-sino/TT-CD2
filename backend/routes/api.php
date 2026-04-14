@@ -15,6 +15,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 
     Route::post('/students/import', [SinhVienController::class, 'import']);
+    Route::get('/students/lop-list', [SinhVienController::class, 'lopList']);
     Route::get('/students', [SinhVienController::class, 'index']);
     Route::post('/students', [SinhVienController::class, 'store']);
     Route::put('/students/{mssv}', [SinhVienController::class, 'update']);
@@ -45,6 +46,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/de-tai/{id}', [\App\Http\Controllers\DeTaiController::class, 'show']);
     Route::post('/de-tai', [\App\Http\Controllers\DeTaiController::class, 'store']);
     Route::put('/de-tai/{id}', [\App\Http\Controllers\DeTaiController::class, 'update']);
+    Route::put('/de-tai/{id}/cham-diem-hd', [\App\Http\Controllers\DeTaiController::class, 'chamDiemHD']);
+    Route::put('/de-tai/{id}/cham-diem-pb', [\App\Http\Controllers\DeTaiController::class, 'chamDiemPB']);
     Route::delete('/de-tai/{id}', [\App\Http\Controllers\DeTaiController::class, 'destroy']);
 
 

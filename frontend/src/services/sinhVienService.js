@@ -29,3 +29,8 @@ export async function deleteStudent(mssv) {
   const res = await api.delete(`/students/${mssv}`);
   return res.data;
 }
+
+export async function getLopList(params) {
+  const res = await api.get('/students/lop-list', { params });
+  return res.data;
+}
