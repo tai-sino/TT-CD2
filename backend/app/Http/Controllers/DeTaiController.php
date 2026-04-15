@@ -7,6 +7,7 @@ use App\Models\DeTai;
 use App\Models\SinhVien;
 use App\Models\GiangVien;
 use PhpOffice\PhpWord\TemplateProcessor;
+use PhpOffice\PhpWord\Settings;
 
 class DeTaiController extends Controller
 {
@@ -240,6 +241,7 @@ class DeTaiController extends Controller
             return response()->json(['message' => 'Template không tồn tại, chạy scripts/prepare_templates.php trước'], 500);
         }
 
+        Settings::setTempDir(storage_path('app'));
         $tp = new TemplateProcessor($templateFile);
 
         $tp->setValue('ten_de_tai', $detai->tenDeTai ?? '');
@@ -280,7 +282,8 @@ class DeTaiController extends Controller
             $tp->setValue('lop', $sv ? $sv->lop : '');
         }
 
-        $tempFile = $tp->save();
+        $tempFile = storage_path('app/temp_HD_' . $detai->maDeTai . '_' . time() . '.docx');
+        $tp->saveAs($tempFile);
         $filename = 'Phieu_cham_HD_' . $detai->maDeTai . '.docx';
         return response()->download($tempFile, $filename)->deleteFileAfterSend(true);
     }
@@ -304,6 +307,7 @@ class DeTaiController extends Controller
             return response()->json(['message' => 'Template không tồn tại, chạy scripts/prepare_templates.php trước'], 500);
         }
 
+        Settings::setTempDir(storage_path('app'));
         $tp = new TemplateProcessor($templateFile);
 
         $tp->setValue('ten_de_tai', $detai->tenDeTai ?? '');
@@ -344,7 +348,8 @@ class DeTaiController extends Controller
             $tp->setValue('lop', $sv ? $sv->lop : '');
         }
 
-        $tempFile = $tp->save();
+        $tempFile = storage_path('app/temp_PB_' . $detai->maDeTai . '_' . time() . '.docx');
+        $tp->saveAs($tempFile);
         $filename = 'Phieu_cham_PB_' . $detai->maDeTai . '.docx';
         return response()->download($tempFile, $filename)->deleteFileAfterSend(true);
     }
