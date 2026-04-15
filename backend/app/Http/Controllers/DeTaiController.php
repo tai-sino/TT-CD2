@@ -261,14 +261,18 @@ class DeTaiController extends Controller
         $tp->setValue('nam', $now->year);
 
         if (count($svList) >= 2) {
-            $sv1 = $svList[0];
-            $sv2 = $svList[1];
-            $tp->setValue('ho_ten_sv_01', $sv1->hoTen ?? '');
-            $tp->setValue('mssv_01', $sv1->mssv ?? '');
-            $tp->setValue('lop_01', $sv1->lop ?? '');
-            $tp->setValue('ho_ten_sv_02', $sv2->hoTen ?? '');
-            $tp->setValue('mssv_02', $sv2->mssv ?? '');
-            $tp->setValue('lop_02', $sv2->lop ?? '');
+            $sv1 = $svList->get(0);
+            $sv2 = $svList->get(1);
+            if ($sv1) {
+                $tp->setValue('ho_ten_sv_01', $sv1->hoTen ?? '');
+                $tp->setValue('mssv_01', $sv1->mssv ?? '');
+                $tp->setValue('lop_01', $sv1->lop ?? '');
+            }
+            if ($sv2) {
+                $tp->setValue('ho_ten_sv_02', $sv2->hoTen ?? '');
+                $tp->setValue('mssv_02', $sv2->mssv ?? '');
+                $tp->setValue('lop_02', $sv2->lop ?? '');
+            }
         } else {
             $sv = $svList->first();
             $tp->setValue('ho_ten_sv', $sv ? $sv->hoTen : '');
@@ -321,14 +325,18 @@ class DeTaiController extends Controller
         $tp->setValue('nam', $now->year);
 
         if (count($svList) >= 2) {
-            $sv1 = $svList[0];
-            $sv2 = $svList[1];
-            $tp->setValue('ho_ten_sv_01', $sv1->hoTen ?? '');
-            $tp->setValue('mssv_01', $sv1->mssv ?? '');
-            $tp->setValue('lop_01', $sv1->lop ?? '');
-            $tp->setValue('ho_ten_sv_02', $sv2->hoTen ?? '');
-            $tp->setValue('mssv_02', $sv2->mssv ?? '');
-            $tp->setValue('lop_02', $sv2->lop ?? '');
+            $sv1 = $svList->get(0);
+            $sv2 = $svList->get(1);
+            if ($sv1) {
+                $tp->setValue('ho_ten_sv_01', $sv1->hoTen ?? '');
+                $tp->setValue('mssv_01', $sv1->mssv ?? '');
+                $tp->setValue('lop_01', $sv1->lop ?? '');
+            }
+            if ($sv2) {
+                $tp->setValue('ho_ten_sv_02', $sv2->hoTen ?? '');
+                $tp->setValue('mssv_02', $sv2->mssv ?? '');
+                $tp->setValue('lop_02', $sv2->lop ?? '');
+            }
         } else {
             $sv = $svList->first();
             $tp->setValue('ho_ten_sv', $sv ? $sv->hoTen : '');
