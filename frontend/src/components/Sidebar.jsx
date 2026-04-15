@@ -22,8 +22,8 @@ const menuItems = [
   { label: 'Nhập liệu', path: '/admin/nhap-lieu', icon: HiOutlinePencilSquare },
   { label: 'Phân Công GVHD/GVPB', path: '/admin/phan-cong', icon: HiOutlineUserGroup },
   { label: 'Giữa kỳ', path: '/admin/giua-ky', icon: HiOutlineDocumentText },
-  { label: 'Hội đồng', path: '/admin/hoi-dong', icon: HiOutlineBuildingOffice2 },
   { label: 'Chấm điểm HD/PB', path: '/admin/cham-diem', icon: HiOutlineChartBar },
+  { label: 'Hội đồng', path: '/admin/hoi-dong', icon: HiOutlineBuildingOffice2 },
   { label: 'Cài đặt', path: '/admin/cai-dat', icon: HiOutlineCog6Tooth },
 ];
 
