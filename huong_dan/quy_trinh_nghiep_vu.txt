@@ -1,0 +1,83 @@
+# QUY TRÌNH NGHIỆP VỤ HỆ THỐNG QUẢN LÝ LVTN KHOA CNTT
+
+## 1. Đối tượng sử dụng
+- **Thư ký khoa (Admin)**: Quản trị toàn bộ hệ thống, thiết lập kỳ LVTN, phân công GVHD/GVPB, lập hội đồng, xuất danh sách.
+- **Giảng viên hướng dẫn (GVHD)**: Nhận SV, giao đề tài, chấm điểm 50%, xuất phiếu chấm.
+- **Giảng viên phản biện (GVPB)**: Nhận đề tài phản biện, chấm điểm, xuất phiếu chấm.
+- **Sinh viên (SV)**: Xem đề tài, in tờ nhiệm vụ.
+
+## 2. Quy trình tổng thể
+1. **Tạo kỳ LVTN** (Admin)
+   - Tạo kỳ mới, thiết lập các mốc thời gian (nhận đề tài, chấm 50%, phản biện, bảo vệ).
+2. **Import danh sách sinh viên** (Admin)
+   - Nhận file Excel từ phòng đào tạo, import vào hệ thống (MSSV, tên, lớp, email).
+3. **Phân công GVHD** (Admin)
+   - Gán SV cho GVHD (tối đa 10 SV/GV), hỗ trợ auto/manual assign.
+4. **GVHD giao đề tài** (GVHD)
+   - Giao đề tài cho SV (1 hoặc 2 SV/đề tài), nhập tên đề tài, mô tả, mục tiêu, output.
+5. **SV in tờ nhiệm vụ** (SV)
+   - SV xem và in tờ nhiệm vụ (file .docx, 1SV hoặc 2SV).
+6. **GVHD chấm 50%** (GVHD)
+   - Chấm điểm giữa kỳ, xuất phiếu chấm (Mẫu 01.01 cho nhóm, 01.02 cho cá nhân).
+7. **Phân công GVPB** (Admin)
+   - Gán GVPB cho từng đề tài.
+8. **GVPB chấm phản biện** (GVPB)
+   - Chấm điểm, xuất phiếu chấm (Mẫu 02.01 cho nhóm, 02.02 cho cá nhân).
+9. **Lập hội đồng bảo vệ** (Admin)
+   - Tạo hội đồng (ngày, phòng, số, chủ tịch, thư ký, thành viên).
+10. **Xếp lịch bảo vệ** (Admin)
+    - Gán đề tài vào hội đồng, sắp xếp thứ tự trình bày.
+11. **Xuất danh sách bảo vệ** (Admin)
+    - Xuất danh sách SV, đề tài, hội đồng, thời gian, phòng.
+
+## 3. Mô tả nghiệp vụ chi tiết theo vai trò
+### 3.1. Thư ký khoa (Admin)
+- Tạo/kết thúc kỳ LVTN, thiết lập mốc thời gian.
+- Import danh sách SV từ Excel.
+- Quản lý danh sách SV, GV.
+- Phân công GVHD, GVPB cho SV/đề tài.
+- Lập hội đồng bảo vệ, phân công đề tài vào hội đồng.
+- Xuất các danh sách, biểu mẫu theo yêu cầu.
+
+### 3.2. Giảng viên hướng dẫn (GVHD)
+- Xem danh sách SV được phân công.
+- Giao đề tài cho SV (1 hoặc 2 SV/đề tài).
+- Chấm điểm 50% (giữa kỳ), nhận xét, xuất phiếu chấm.
+
+### 3.3. Giảng viên phản biện (GVPB)
+- Xem danh sách đề tài phản biện.
+- Chấm điểm, nhận xét, xuất phiếu chấm.
+
+### 3.4. Sinh viên (SV)
+- Xem thông tin đề tài, GVHD, GVPB.
+- In tờ nhiệm vụ LVTN.
+
+## 4. Danh sách module chức năng
+1. **Auth**: Đăng nhập, phân quyền, quên mật khẩu.
+2. **User Management**: Quản lý user, phân vai trò.
+3. **Student**: Import, quản lý danh sách SV.
+4. **Lecturer**: Quản lý danh sách GV.
+5. **Assignment**: Phân công GVHD, GVPB.
+6. **Topic**: Tạo đề tài, gán SV.
+7. **Evaluation**: Chấm điểm GVHD, GVPB.
+8. **Council**: Tạo hội đồng, thêm thành viên.
+9. **Defense Schedule**: Xếp lịch bảo vệ, gán đề tài vào hội đồng.
+10. **Export**: Xuất file docx, excel.
+
+## 5. Mapping với biểu mẫu file Word
+- **Phiếu chấm GVHD**: Mẫu 01.01 (nhóm), 01.02 (cá nhân)
+- **Phiếu chấm GVPB**: Mẫu 02.01 (nhóm), 02.02 (cá nhân)
+- **Tờ nhiệm vụ SV**: Form_NhiemvuLVTN.doc
+
+## 6. Luồng dữ liệu chính
+- Import Excel → Phân công GVHD → Giao đề tài → SV thực hiện → GVHD chấm 50% → Phân công GVPB → GVPB chấm → Lập hội đồng → Xếp lịch bảo vệ → Xuất danh sách
+
+## 7. Lưu ý triển khai
+- Mỗi GVHD tối đa 10 SV/kỳ.
+- Các mốc thời gian phải được thiết lập rõ ràng.
+- Chấm điểm, xuất file theo đúng mẫu quy định.
+- Hệ thống phân quyền chặt chẽ, mỗi vai trò chỉ truy cập đúng chức năng.
+- Hỗ trợ import/export Excel, export file Word theo template.
+
+---
+Tham khảo chi tiết thêm trong các file: intro.txt, intro_kernel.txt, PROJECT.md, ROADMAP.md.
