@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Models\GiangVien;
 
 class TopicRegistrationFormController extends Controller
 {
@@ -219,7 +220,17 @@ class TopicRegistrationFormController extends Controller
                                     'lop' => $lop !== '' ? $lop : null,
                                 ]
                             );
-
+                            $maGvHd = null;
+                            if ($gvhd !== '') {
+                                // Tìm Giảng viên trong DB dựa vào tên
+                                $giangVien = GiangVien::where('tenGV', 'LIKE', '%' . $gvhd . '%')->first();
+                                if ($giangVien) {
+                                    $maGvHd = $giangVien->maGV; // Lấy ra mã GV
+                                } else {
+                                    // Ghi log lại nếu không tìm thấy thầy cô
+                                    $ghiChu = $ghiChu . ' (Lỗi: Không tìm thấy mã GV cho ' . $gvhd . ')';
+                                }
+                            }
                             $noteParts = array_filter([
                                 $hhHv !== '' ? 'HH-HV: ' . $hhHv : null,
                                 $ghiChu !== '' ? 'Ghi chú: ' . $ghiChu : null,
@@ -242,7 +253,7 @@ class TopicRegistrationFormController extends Controller
                                     'student2_name' => null,
                                     'student2_class' => null,
                                     'student2_email' => null,
-                                    'gvhd_code' => $gvhd !== '' ? $gvhd : null,
+                                    'gvhd_code' => $maGvHd,
                                     'gvhd_workplace' => $gvhdWorkplace !== '' ? $gvhdWorkplace : null,
                                     'gvpb_code' => null,
                                     'note' => count($noteParts) ? implode(' | ', $noteParts) : null,
