@@ -60,7 +60,7 @@ Route::middleware('auth:sanctum')->group(function () {
         $giaidoan = \App\Models\CauHinh::where('key', 'giaiDoan')->value('value');
         $sodetai = \App\Models\DeTai::count();
         $sosinhvien = \App\Models\SinhVien::count();
-        $detai_daxong = \App\Models\DeTai::where('trangthai', 'dat')->count(); // Cột này cần tồn tại
+        $detai_daxong = \App\Models\DeTai::where('trangThai', 'dat')->count(); // Cột này cần tồn tại
         return response()->json([
             'giaidoan_hientai' => (int) $giaidoan,
             'sodetai' => $sodetai,
