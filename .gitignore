@@ -123,6 +123,9 @@ ipch/
 # Laravel backend
 backend/vendor/
 backend/storage/
+!backend/storage/app/
+!backend/storage/app/templates/
+!backend/storage/app/templates/*.docx
 backend/.env
 backend/bootstrap/cache/
 backend/node_modules/
@@ -440,7 +443,8 @@ FodyWeavers.xsd
 *.msm
 *.msp
 .*/
-!.planning/
+.planning/
+CLAUDE.md
 
 
 # docs - khong push len github

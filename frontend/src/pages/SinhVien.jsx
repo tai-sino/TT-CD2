@@ -4,7 +4,7 @@ import {
   useReactTable, getCoreRowModel, getPaginationRowModel, flexRender,
 } from '@tanstack/react-table';
 import { HiOutlineXMark, HiOutlineExclamationTriangle } from 'react-icons/hi2';
-import { getStudents, importStudents, createStudent, updateStudent, deleteStudent } from '../services/sinhVienService';
+import { getStudents, importStudents, createStudent, updateStudent, deleteStudent, getLopList } from '../services/sinhVienService';
 import { getKyLvtn } from '../services/kyLvtnService';
 import { getLecturers } from '../services/giangVienService';
 
@@ -31,6 +31,11 @@ export default function SinhVien() {
   const { data: gvList } = useQuery({
     queryKey: ['giangvien'],
     queryFn: getLecturers,
+  });
+
+  const { data: lopListData } = useQuery({
+    queryKey: ['sinhvien-lop-list', kyId],
+    queryFn: () => getLopList(kyId ? { ky_id: kyId } : {}),
   });
 
   const { data: svData, isLoading } = useQuery({
@@ -67,11 +72,7 @@ export default function SinhVien() {
     pageCount: Math.ceil(total / perPage),
   });
 
-  const lopList = useMemo(() => {
-    if (!tableData.length) return [];
-    const set = new Set(tableData.map(s => s.lop).filter(Boolean));
-    return [...set];
-  }, [tableData]);
+  const lopList = lopListData || [];
 
   const deleteMut = useMutation({
     mutationFn: (mssv) => deleteStudent(mssv),
@@ -102,7 +103,7 @@ export default function SinhVien() {
       <div className="flex items-center gap-4 mb-4 flex-wrap">
         <select
           value={kyId}
-          onChange={e => { setKyId(e.target.value); setPage(1); }}
+          onChange={e => { setKyId(e.target.value); setPage(1); setLop(''); }}
           className="border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white"
         >
           <option value="">Tất cả kỳ</option>
@@ -141,12 +142,13 @@ export default function SinhVien() {
           className="border border-slate-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none flex-1 min-w-[200px]"
         />
 
-        {/* <button
+        <button
           onClick={() => setShowImportModal(true)}
           className="bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors"
         >
           Nhập Excel
-        </button> */}
+        </button>
+
         <button
           onClick={openCreate}
           className="border border-slate-200 text-slate-700 hover:bg-slate-50 text-sm font-semibold px-4 py-2 rounded-lg transition-colors"

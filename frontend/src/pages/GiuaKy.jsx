@@ -1,50 +1,52 @@
-
-
 import { useState, useMemo, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getDeTais } from '../services/deTaiService';
 import { getKyLvtn } from '../services/kyLvtnService';
-import { updateGiuaKy } from '../services/giuaKyService';
+import { chamDiemGK } from '../services/giuaKyService';
 import { getLecturers } from '../services/giangVienService';
 
-	export default function GiuaKy() {
+const tieuChiLabels = [
+  'Phân tích yêu cầu',
+  'Thiết kế hệ thống',
+  'Hiện thực',
+  'Báo cáo / thuyết minh',
+  'Trình bày / demo',
+];
+
+const defaultTieuChi = { tc1: '', tc2: '', tc3: '', tc4: '', tc5: '' };
+
+function tinhTong(tieuChi) {
+  const vals = Object.values(tieuChi).map(v => parseFloat(v) || 0);
+  if (vals.length === 0) return 0;
+  const sum = vals.reduce((a, b) => a + b, 0);
+  return Math.round((sum / vals.length) * 10) / 10;
+}
+
+export default function GiuaKy() {
 	const queryClient = useQueryClient();
 	const [editDeTai, setEditDeTai] = useState(null);
-	// Chuẩn hóa lại cấu trúc dữ liệu theo mẫu JSON mapping
-	const defaultForm = {
-		tenDeTai: '',
-		sinhVien: [
-			{
-				hoTen: '',
-				mssv: '',
-				lop: ''
-			}
-		],
-		diemGiuaKy: '',
-		nhanXetGiuaKy: ''
-	};
-	const [editForm, setEditForm] = useState(defaultForm);
+	const [editForm, setEditForm] = useState({});
 	const [showEditModal, setShowEditModal] = useState(false);
-	// Mutation cập nhật giữa kỳ
 	const [saveSuccess, setSaveSuccess] = useState(false);
+
 	const updateMut = useMutation({
-		mutationFn: ({ deTaiId, data }) => updateGiuaKy(deTaiId, data),
+		mutationFn: ({ deTaiId, data }) => chamDiemGK(deTaiId, data),
 		onSuccess: () => {
 			setSaveSuccess(true);
 			queryClient.invalidateQueries(['deTais']);
 			setTimeout(() => {
 				setShowEditModal(false);
 				setEditDeTai(null);
-				setEditForm(defaultForm);
+				setEditForm({});
 				setSaveSuccess(false);
 			}, 1500);
 		},
 	});
+
 	const [kyId, setKyId] = useState('');
 	const [search, setSearch] = useState('');
 	const [page, setPage] = useState(1);
 
-	// Lấy mã GV hiện tại từ localStorage (hoặc thay đổi nếu bạn lấy từ nơi khác)
 	const getCurrentMaGV = () => {
 		try {
 			const user = JSON.parse(localStorage.getItem('user'));
@@ -55,24 +57,20 @@ import { getLecturers } from '../services/giangVienService';
 	};
 	const [selectedGVHD, setSelectedGVHD] = useState(getCurrentMaGV());
 
-	// Nếu user đăng nhập thay đổi, cập nhật lại selectedGV
 	useEffect(() => {
 		setSelectedGVHD(getCurrentMaGV());
 	}, []);
 
-	// Lấy danh sách kỳ LVTN
 	const { data: kyList } = useQuery({
 		queryKey: ['kyLvtn'],
 		queryFn: getKyLvtn,
 	});
 
-	// Lấy danh sách giảng viên
 	const { data: lecturerList } = useQuery({
 		queryKey: ['giangVien'],
 		queryFn: getLecturers,
 	});
 
-	// Map mã GVHD -> tên GVHD
 	const gvhdMap = useMemo(() => {
 		if (!lecturerList?.data) return {};
 		const map = {};
@@ -83,13 +81,40 @@ import { getLecturers } from '../services/giangVienService';
 	}, [lecturerList]);
 
 	const { data: deTaiData, isLoading } = useQuery({
-		queryKey: ['deTais', { ky_id: kyId, q: search, page, maGV_HD: selectedGVHD }],
-		queryFn: () => getDeTais({ ky_id: kyId || undefined, q: search || undefined, page, maGV_HD: selectedGVHD || undefined }),
+		queryKey: ['deTais', { ky_lvtn_id: kyId, q: search, page, maGV_HD: selectedGVHD }],
+		queryFn: () => getDeTais({ ky_lvtn_id: kyId || undefined, q: search || undefined, page, maGV_HD: selectedGVHD || undefined }),
 	});
 
 	const tableData = deTaiData?.data || [];
 	const total = deTaiData?.total || 0;
 	const perPage = deTaiData?.per_page || 15;
+
+	function openEdit(deTai) {
+		setEditDeTai(deTai);
+		let tieuChi = { ...defaultTieuChi };
+		let nhanXet = deTai.nhanXetGiuaKy ?? '';
+
+		if (deTai.tieuChiGK) {
+			tieuChi = { ...defaultTieuChi, ...deTai.tieuChiGK };
+		}
+
+		const tong = tinhTong(tieuChi);
+		setEditForm({ tieu_chi: tieuChi, tong_diem: tong, nhan_xet: nhanXet });
+		setSaveSuccess(false);
+		setShowEditModal(true);
+	}
+
+	function handleTieuChiChange(key, val) {
+		setEditForm(f => {
+			const tieuChi = { ...f.tieu_chi, [key]: val };
+			const tong = tinhTong(tieuChi);
+			return { ...f, tieu_chi: tieuChi, tong_diem: tong };
+		});
+	}
+
+	const trangThaiDisplay = { dat: 'Đạt', khong_dat: 'Không đạt' };
+	const hasInput = Object.values(editForm.tieu_chi || {}).some(v => v !== '');
+	const trangThaiGiuaKy = hasInput ? (editForm.tong_diem >= 5 ? 'Đạt' : 'Không đạt') : null;
 
 	return (
 		<div>
@@ -106,7 +131,6 @@ import { getLecturers } from '../services/giangVienService';
 					))}
 				</select>
 
-				{/* Dropdown lọc theo GVHD */}
 				<select
 					value={selectedGVHD}
 					onChange={e => { setSelectedGVHD(e.target.value); setPage(1); }}
@@ -134,7 +158,7 @@ import { getLecturers } from '../services/giangVienService';
 							<th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">GVHD</th>
 							<th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Sinh viên</th>
 							<th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Điểm giữa kỳ</th>
-							<th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Nhận xét giữa kỳ</th>
+							<th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Trạng thái</th>
 							<th className="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Thao tác</th>
 						</tr>
 					</thead>
@@ -157,157 +181,160 @@ import { getLecturers } from '../services/giangVienService';
 								</td>
 							</tr>
 						) : (
-							tableData.map(deTai => (
-								<tr key={deTai.maDeTai} className="hover:bg-slate-50">
-									<td className="px-4 py-3 text-sm text-slate-700 border-t border-slate-100 font-semibold whitespace-nowrap align-middle">{deTai.tenDeTai}</td>
-									<td className="px-4 py-3 text-sm text-slate-700 border-t border-slate-100 whitespace-nowrap align-middle">
-									  {deTai.maGV_HD && gvhdMap[deTai.maGV_HD]
-									    ? gvhdMap[deTai.maGV_HD]
-									    : (deTai.maGV_HD || <span className="text-slate-400 italic">Chưa có</span>)}
-									</td>
-									<td className="px-4 py-3 text-sm text-slate-700 border-t border-slate-100 align-middle">
-										{Array.isArray(deTai.sinhViens) && deTai.sinhViens.length > 0 ? (
-											<div className="flex flex-col gap-1">
-												{deTai.sinhViens.map(sv => (
-													<span key={sv.mssv} className="block text-slate-700">
-														{sv.hoTen} (<span className="font-medium text-slate-800">{sv.mssv}</span>)
-													</span>
-												))}
-											</div>
-										) : <span className="text-slate-400 italic">Chưa có</span>}
-									</td>
-									<td className="px-4 py-3 text-sm text-slate-700 border-t border-slate-100 text-center align-middle">
-										{deTai.diemGiuaKy !== undefined && deTai.diemGiuaKy !== null
-											? <span className="font-semibold text-blue-600">{deTai.diemGiuaKy}</span>
-											: <span className="text-slate-400 italic">Chưa có</span>}
-									</td>
-									<td className="px-4 py-3 text-sm text-slate-700 border-t border-slate-100 align-middle">
-										{deTai.nhanXetGiuaKy
-											? <span className="block text-slate-700 whitespace-pre-line">{deTai.nhanXetGiuaKy}</span>
-											: <span className="text-slate-400 italic">Chưa có</span>}
-									</td>
-									<td className="px-4 py-3 text-sm text-slate-700 border-t border-slate-100 align-middle">
-										<button
-											className="text-sm text-blue-600 hover:text-blue-800 font-semibold"
-											onClick={() => {
-												setEditDeTai(deTai);
-												// Chuẩn bị form theo mẫu JSON mapping
-												const svs = Array.isArray(deTai.sinhViens) ? deTai.sinhViens.map(sv => ({
-													hoTen: sv.hoTen || '',
-													mssv: sv.mssv || '',
-													lop: sv.lop || '',
-													diemPhanTich: sv.diemPhanTich || '',
-													diemThietKe: sv.diemThietKe || '',
-													diemHienThuc: sv.diemHienThuc || '',
-													diemBaoCao: sv.diemBaoCao || '',
-													diemTongCong: sv.diemTongCong || '',
-													diemFinal: sv.diemFinal || '',
-													deNghi: sv.deNghi || ''
-												})) : [];
-												// Lấy tên GVHD từ map nếu có
-												let tenGVHD = deTai.tenGVHD || '';
-												if (!tenGVHD && deTai.maGV_HD && gvhdMap[deTai.maGV_HD]) tenGVHD = gvhdMap[deTai.maGV_HD];
-												setEditForm({
-													tenDeTai: deTai.tenDeTai || '',
-													tenGVHD,
-													thuyetMinh_Dat: deTai.thuyetMinh_Dat || '',
-													thuyetMinh_KhongDat: deTai.thuyetMinh_KhongDat || '',
-													ndDieuChinh: deTai.ndDieuChinh || '',
-													uuDiem: deTai.uuDiem || '',
-													thieuSot: deTai.thieuSot || '',
-													cauHoi: deTai.cauHoi || '',
-													sinhVien: svs.length > 0 ? svs : defaultForm.sinhVien,
-												});
-												setShowEditModal(true);
-											}}
-										>Xử lý</button>
-									</td>
-								</tr>
-							))
+							tableData.map(deTai => {
+								const trangThai = deTai.trangThaiGiuaKy;
+								return (
+									<tr key={deTai.maDeTai} className="hover:bg-slate-50">
+										<td className="px-4 py-3 text-sm text-slate-700 border-t border-slate-100 font-semibold whitespace-nowrap align-middle">{deTai.tenDeTai}</td>
+										<td className="px-4 py-3 text-sm text-slate-700 border-t border-slate-100 whitespace-nowrap align-middle">
+											{deTai.maGV_HD && gvhdMap[deTai.maGV_HD]
+												? gvhdMap[deTai.maGV_HD]
+												: (deTai.maGV_HD || <span className="text-slate-400 italic">Chưa có</span>)}
+										</td>
+										<td className="px-4 py-3 text-sm text-slate-700 border-t border-slate-100 align-middle">
+											{Array.isArray(deTai.sinhViens) && deTai.sinhViens.length > 0 ? (
+												<div className="flex flex-col gap-1">
+													{deTai.sinhViens.map(sv => (
+														<span key={sv.mssv} className="block text-slate-700">
+															{sv.hoTen} (<span className="font-medium text-slate-800">{sv.mssv}</span>)
+														</span>
+													))}
+												</div>
+											) : <span className="text-slate-400 italic">Chưa có</span>}
+										</td>
+										<td className="px-4 py-3 text-sm text-slate-700 border-t border-slate-100 text-center align-middle">
+											{deTai.diemGiuaKy !== undefined && deTai.diemGiuaKy !== null
+												? <span className="font-semibold text-blue-600">{deTai.diemGiuaKy}</span>
+												: <span className="text-slate-400 italic">Chưa có</span>}
+										</td>
+										<td className="px-4 py-3 border-t border-slate-100 align-middle">
+											{trangThai ? (
+												<span className={`px-2 py-1 rounded text-xs font-medium ${trangThai === 'dat' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'}`}>
+													{trangThaiDisplay[trangThai] ?? trangThai}
+												</span>
+											) : <span className="text-slate-400 italic text-sm">Chưa có</span>}
+										</td>
+										<td className="px-4 py-3 text-sm text-slate-700 border-t border-slate-100 align-middle">
+											<button
+												className="text-sm text-blue-600 hover:text-blue-800 font-semibold"
+												onClick={() => openEdit(deTai)}
+											>Xử lý</button>
+										</td>
+									</tr>
+								);
+							})
 						)}
 					</tbody>
 				</table>
 			</div>
+
 			{total > perPage && (
-			<div className="flex items-center justify-between mt-4">
-				<span className="text-sm text-slate-500">Hiển thị {(page - 1) * perPage + 1}-{Math.min(page * perPage, total)} / {total} đề tài</span>
-				<div className="flex gap-1">
-					<button
-						onClick={() => setPage(p => Math.max(1, p - 1))}
-						disabled={page === 1}
-						className="px-3 py-1 text-sm border border-slate-200 rounded hover:bg-slate-50 disabled:opacity-50"
-					>Trước</button>
-					{[...Array(Math.ceil(total / perPage))].map((_, i) => (
+				<div className="flex items-center justify-between mt-4">
+					<span className="text-sm text-slate-500">Hiển thị {(page - 1) * perPage + 1}-{Math.min(page * perPage, total)} / {total} đề tài</span>
+					<div className="flex gap-1">
 						<button
-							key={i}
-							onClick={() => setPage(i + 1)}
-							className={`px-3 py-1 text-sm border rounded ${page === i + 1 ? 'bg-blue-500 text-white border-blue-500' : 'border-slate-200 hover:bg-slate-50'}`}
-						>{i + 1}</button>
-					))}
-					<button
-						onClick={() => setPage(p => Math.min(Math.ceil(total / perPage), p + 1))}
-						disabled={page >= Math.ceil(total / perPage)}
-						className="px-3 py-1 text-sm border border-slate-200 rounded hover:bg-slate-50 disabled:opacity-50"
-					>Sau</button>
+							onClick={() => setPage(p => Math.max(1, p - 1))}
+							disabled={page === 1}
+							className="px-3 py-1 text-sm border border-slate-200 rounded hover:bg-slate-50 disabled:opacity-50"
+						>Trước</button>
+						{[...Array(Math.ceil(total / perPage))].map((_, i) => (
+							<button
+								key={i}
+								onClick={() => setPage(i + 1)}
+								className={`px-3 py-1 text-sm border rounded ${page === i + 1 ? 'bg-blue-500 text-white border-blue-500' : 'border-slate-200 hover:bg-slate-50'}`}
+							>{i + 1}</button>
+						))}
+						<button
+							onClick={() => setPage(p => Math.min(Math.ceil(total / perPage), p + 1))}
+							disabled={page >= Math.ceil(total / perPage)}
+							className="px-3 py-1 text-sm border border-slate-200 rounded hover:bg-slate-50 disabled:opacity-50"
+						>Sau</button>
+					</div>
 				</div>
-			</div>
 			)}
 
-			{showEditModal && (
+			{showEditModal && editDeTai && (
 				<div className="fixed inset-0 bg-black/50 bg-opacity-30 flex items-center justify-center z-50">
-					<div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
-						<h2 className="text-lg font-semibold mb-4">Nhập điểm giữa kỳ</h2>
-						{/* Các trường chung */}
-						<div className="mb-3 grid grid-cols-1 gap-2">
-							<label className="block text-xs font-medium text-slate-600 mb-1">Tên đề tài</label>
-							<div className="border border-slate-200 rounded px-2 py-1 text-sm w-full bg-slate-100 text-slate-700">{editForm.tenDeTai}</div>
-						</div>
-						{/* Danh sách sinh viên */}
-						<div className="mb-3">
-							<label className="block text-xs font-medium text-slate-600 mb-1">Danh sách sinh viên</label>
-							{editForm.sinhVien && editForm.sinhVien.map((sv, idx) => (
-								<div key={idx} className="mb-2 border border-slate-200 rounded p-2 bg-slate-50">
-									<div className="flex gap-2 mb-2">
-										<div className="flex-1">
-											<label className="block text-xs text-slate-500">MSSV</label>
-											<div className="font-medium text-slate-800 text-sm bg-white rounded px-2 py-1 border border-slate-100">{sv.mssv}</div>
-										</div>
-										<div className="flex-1">
-											<label className="block text-xs text-slate-500">Họ tên</label>
-											<div className="font-medium text-slate-800 text-sm bg-white rounded px-2 py-1 border border-slate-100">{sv.hoTen}</div>
-										</div>
+					<div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
+						<h2 className="text-lg font-semibold mb-1">Nhập điểm giữa kỳ</h2>
+						<p className="text-sm text-slate-500 mb-4">{editDeTai.tenDeTai}</p>
+
+						{Array.isArray(editDeTai.sinhViens) && editDeTai.sinhViens.length > 0 && (
+							<div className="mb-4 bg-slate-50 rounded p-3">
+								<p className="text-xs font-medium text-slate-500 mb-1">Sinh viên</p>
+								{editDeTai.sinhViens.map(sv => (
+									<p key={sv.mssv} className="text-sm text-slate-700">{sv.hoTen} — {sv.mssv}</p>
+								))}
+							</div>
+						)}
+
+						<div className="mb-4">
+							<p className="text-xs font-medium text-slate-600 mb-2">Tiêu chí chấm điểm (0–10)</p>
+							{tieuChiLabels.map((label, i) => {
+								const key = `tc${i + 1}`;
+								return (
+									<div key={key} className="flex items-center gap-3 mb-2">
+										<label className="text-sm text-slate-600 flex-1">{label}</label>
+										<input
+											type="number"
+											min="0"
+											max="10"
+											step="0.5"
+											value={editForm.tieu_chi?.[key] ?? ''}
+											onChange={e => handleTieuChiChange(key, e.target.value)}
+											className="border border-slate-300 rounded px-2 py-1 text-sm w-20 focus:outline-blue-500"
+										/>
 									</div>
-								</div>
-							))}
+								);
+							})}
+							<div className="flex items-center gap-3 mt-3 pt-3 border-t border-slate-200">
+								<span className="text-sm font-medium text-slate-700 flex-1">Tổng điểm (trung bình)</span>
+								<span className="text-base font-bold text-blue-600 w-20 text-center">
+									{editForm.tong_diem ?? 0}
+								</span>
+							</div>
+							<div className="flex items-center gap-3 mt-2">
+								<span className="text-sm text-slate-600 flex-1">Trạng thái</span>
+								{trangThaiGiuaKy && (
+									<span className={`px-2 py-1 rounded text-xs font-medium ${trangThaiGiuaKy === 'Đạt' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'}`}>
+										{trangThaiGiuaKy}
+									</span>
+								)}
+							</div>
 						</div>
-						<div className="mb-3">
-							<label className="block text-xs font-medium text-slate-600 mb-1">Điểm giữa kỳ</label>
-							<input className="border border-slate-300 rounded px-2 py-1 text-sm w-full focus:outline-blue-500" type="number" min="0" max="10" step="0.01" value={editForm.diemGiuaKy || ''} onChange={e => setEditForm(f => ({ ...f, diemGiuaKy: e.target.value }))} />
+
+						<div className="mb-4">
+							<label className="block text-xs font-medium text-slate-600 mb-1">Nhận xét</label>
+							<textarea
+								rows={3}
+								value={editForm.nhan_xet ?? ''}
+								onChange={e => setEditForm(f => ({ ...f, nhan_xet: e.target.value }))}
+								className="border border-slate-300 rounded px-2 py-1 text-sm w-full focus:outline-blue-500"
+							/>
 						</div>
-						<div className="mb-3">
-							<label className="block text-xs font-medium text-slate-600 mb-1">Nhận xét giữa kỳ</label>
-							<textarea className="border border-slate-300 rounded px-2 py-1 text-sm w-full focus:outline-blue-500" rows={3} value={editForm.nhanXetGiuaKy || ''} onChange={e => setEditForm(f => ({ ...f, nhanXetGiuaKy: e.target.value }))} />
-						</div>
-						
+
 						<div className="flex gap-2 justify-end mt-4">
 							<button
-							  className="px-4 py-2 rounded bg-slate-200 hover:bg-slate-300"
-							  onClick={() => setShowEditModal(false)}
+								className="px-4 py-2 rounded bg-slate-200 hover:bg-slate-300 text-sm"
+								onClick={() => setShowEditModal(false)}
 							>Hủy</button>
 							<button
-								className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-60"
-								disabled={updateMut.isLoading || saveSuccess}
+								className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 text-sm disabled:opacity-60"
+								disabled={updateMut.isPending || saveSuccess}
 								onClick={() => {
-									if (!updateMut.isLoading && !saveSuccess) {
+									if (!updateMut.isPending && !saveSuccess) {
 										updateMut.mutate({
 											deTaiId: editDeTai?.maDeTai,
-											data: editForm,
+											data: {
+												tieu_chi: editForm.tieu_chi,
+												tong_diem: editForm.tong_diem,
+												nhan_xet: editForm.nhan_xet,
+											},
 										});
 									}
-									
 								}}
 							>
-								{saveSuccess ? 'Đã lưu!' : updateMut.isLoading ? 'Đang lưu...' : 'Lưu'}
+								{saveSuccess ? 'Đã lưu!' : updateMut.isPending ? 'Đang lưu...' : 'Lưu'}
 							</button>
 						</div>
 						{updateMut.isError && <div className="text-red-500 mt-2 text-sm">Có lỗi xảy ra, vui lòng thử lại.</div>}
@@ -317,4 +344,3 @@ import { getLecturers } from '../services/giangVienService';
 		</div>
 	);
 }
-                              

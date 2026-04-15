@@ -9,6 +9,8 @@ class TopicRegistrationForm extends Model
     protected $table = 'topic_registrations_form';
     public $timestamps = false;
 
+    const UPDATED_AT = 'updated_at';
+
     protected $fillable = [
         'topic_title',
         'topic_description',

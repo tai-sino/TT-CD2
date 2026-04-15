@@ -11,9 +11,11 @@ class DeTai extends Model
 
     protected $fillable = [
         'tenDeTai', 'moTa', 'maGV_HD', 'maGV_PB', 'maHoiDong', 'ky_lvtn_id',
-        'diemGiuaKy', 'trangThaiGiuaKy', 'nhanXetGiuaKy',
-        'diemHuongDan', 'nhanXetHuongDan', 'diemPhanBien', 'nhanXetPhanBien',
-           'diemHoiDong', 'diemTongKet', 'trangThai',
+        'thuTuTrongHD', 'ghiChu', 'diemChu',
+        'diemGiuaKy', 'trangThaiGiuaKy', 'nhanXetGiuaKy', 'tieuChiGK',
+        'diemHuongDan', 'nhanXetHuongDan', 'tieuChiHD',
+        'diemPhanBien', 'nhanXetPhanBien', 'tieuChiPB',
+        'diemHoiDong', 'diemTongKet', 'trangThai',
     ];
 
     protected $casts = [
@@ -22,6 +24,9 @@ class DeTai extends Model
         'diemPhanBien' => 'float',
         'diemHoiDong' => 'float',
         'diemTongKet' => 'float',
+        'tieuChiHD' => 'array',
+        'tieuChiPB' => 'array',
+        'tieuChiGK' => 'array',
     ];
 
     public function giangVienHD()

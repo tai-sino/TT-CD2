@@ -12,7 +12,6 @@ class SinhVienController extends Controller
     {
         $request->validate([
             'file' => 'required|file|mimes:xlsx,xls',
-            'ky_lvtn_id' => 'required|exists:ky_lvtn,id',
         ]);
 
         $spreadsheet = IOFactory::load($request->file('file')->getPathname());
@@ -43,7 +42,6 @@ class SinhVienController extends Controller
                 'hoTen' => $hoTen,
                 'lop' => $lop ?: null,
                 'email' => $email ?: null,
-                'ky_lvtn_id' => $request->ky_lvtn_id,
             ]);
             $imported++;
         }
@@ -90,7 +88,6 @@ class SinhVienController extends Controller
             'hoTen' => 'required',
             'email' => 'nullable|email|unique:sinhvien,email',
             'lop' => 'nullable',
-            'ky_lvtn_id' => 'required|exists:ky_lvtn,id',
         ]);
 
         $sv = SinhVien::create([
@@ -98,7 +95,6 @@ class SinhVienController extends Controller
             'hoTen' => $request->hoTen,
             'email' => $request->email,
             'lop' => $request->lop,
-            'ky_lvtn_id' => $request->ky_lvtn_id,
         ]);
 
         return response()->json(['data' => $sv], 201);
@@ -115,17 +111,27 @@ class SinhVienController extends Controller
             'hoTen' => 'required',
             'email' => 'nullable|email|unique:sinhvien,email,' . $mssv . ',mssv',
             'lop' => 'nullable',
-            'ky_lvtn_id' => 'nullable|exists:ky_lvtn,id',
         ]);
 
         $sv->update([
             'hoTen' => $request->hoTen,
             'email' => $request->email,
             'lop' => $request->lop,
-            'ky_lvtn_id' => $request->ky_lvtn_id ?? $sv->ky_lvtn_id,
         ]);
 
         return response()->json(['data' => $sv]);
+    }
+
+    public function lopList(Request $request)
+    {
+        $query = SinhVien::whereNotNull('lop')->where('lop', '!=', '');
+
+        if ($request->filled('ky_id')) {
+            $query->where('ky_lvtn_id', $request->ky_id);
+        }
+
+        $lops = $query->distinct()->pluck('lop')->sort()->values();
+        return response()->json($lops);
     }
 
     public function destroy($mssv)

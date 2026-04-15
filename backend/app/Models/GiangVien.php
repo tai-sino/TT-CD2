@@ -15,7 +15,7 @@ class GiangVien extends Authenticatable
     protected $keyType = 'string';
 
     protected $fillable = [
-        'maGV', 'tenGV', 'email', 'soDienThoai', 'hocVi', 'matKhau',
+        'maGV', 'tenGV', 'email', 'soDienThoai', 'hocVi', 'matKhau', 'isAdmin',
     ];
 
     protected $hidden = ['matKhau'];

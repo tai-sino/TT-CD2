@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -12,7 +12,7 @@ import PhanCong from './pages/PhanCong';
 import NhapLieu from './pages/NhapLieu';
 import GiuaKy from './pages/GiuaKy';
 import HoiDong from './pages/HoiDong';
-import Diem from './pages/Diem';
+import ChamDiem from './pages/ChamDiem';
 import CaiDat from './pages/CaiDat';
 
 
@@ -33,7 +33,7 @@ function App() {
                 <Route path="/admin/phan-cong" element={<PhanCong />} />
                 <Route path="/admin/giua-ky" element={<GiuaKy />} />
                 <Route path="/admin/hoi-dong" element={<HoiDong />} />
-                <Route path="/admin/diem" element={<Diem />} />
+                <Route path="/admin/cham-diem" element={<ChamDiem />} />
                 <Route path="/admin/cai-dat" element={<CaiDat />} />
 
               </Route>
