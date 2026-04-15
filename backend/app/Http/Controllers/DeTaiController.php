@@ -121,6 +121,11 @@ class DeTaiController extends Controller
         $detai = DeTai::find($id);
         if (!$detai) return response()->json(['message' => 'Not found'], 404);
 
+        $user = auth()->user();
+        if ($user->role !== 'ThuKy' && $detai->maGV_HD !== $user->maGV) {
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
+
         if ($request->has('tieu_chi')) {
             $request->validate([
                 'tieu_chi' => 'required|array',
@@ -148,6 +153,11 @@ class DeTaiController extends Controller
         $detai = DeTai::find($id);
         if (!$detai) return response()->json(['message' => 'Not found'], 404);
 
+        $user = auth()->user();
+        if ($user->role !== 'ThuKy' && $detai->maGV_PB !== $user->maGV) {
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
+
         if ($request->has('tieu_chi')) {
             $request->validate([
                 'tieu_chi' => 'required|array',
@@ -174,6 +184,11 @@ class DeTaiController extends Controller
     {
         $detai = DeTai::find($id);
         if (!$detai) return response()->json(['message' => 'Not found'], 404);
+
+        $user = auth()->user();
+        if ($user->role !== 'ThuKy' && $detai->maGV_HD !== $user->maGV) {
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
 
         $request->validate([
             'tieu_chi' => 'required|array',
@@ -219,6 +234,10 @@ class DeTaiController extends Controller
             $templateFile = $templateDir . '/Mau_01_01.docx';
         } else {
             $templateFile = $templateDir . '/Mau_01_02.docx';
+        }
+
+        if (!file_exists($templateFile)) {
+            return response()->json(['message' => 'Template không tồn tại, chạy scripts/prepare_templates.php trước'], 500);
         }
 
         $tp = new TemplateProcessor($templateFile);
@@ -277,6 +296,10 @@ class DeTaiController extends Controller
             $templateFile = $templateDir . '/Mau_02_02.docx';
         }
 
+        if (!file_exists($templateFile)) {
+            return response()->json(['message' => 'Template không tồn tại, chạy scripts/prepare_templates.php trước'], 500);
+        }
+
         $tp = new TemplateProcessor($templateFile);
 
         $tp->setValue('ten_de_tai', $detai->tenDeTai ?? '');
@@ -324,12 +347,15 @@ class DeTaiController extends Controller
             0 => 'Không', 1 => 'Một', 2 => 'Hai', 3 => 'Ba', 4 => 'Bốn',
             5 => 'Năm', 6 => 'Sáu', 7 => 'Bảy', 8 => 'Tám', 9 => 'Chín', 10 => 'Mười',
         ];
+        $decMap = [
+            1 => 'một', 2 => 'hai', 3 => 'ba', 4 => 'bốn', 5 => 'năm',
+            6 => 'sáu', 7 => 'bảy', 8 => 'tám', 9 => 'chín',
+        ];
         $floor = (int) $diem;
-        $dec = round($diem - $floor, 1);
-        if ($dec == 0) {
+        $decDigit = (int) round(($diem - $floor) * 10);
+        if ($decDigit === 0) {
             return ($map[$floor] ?? $floor) . ' điểm';
         }
-        $decStr = $dec == 0.5 ? 'năm' : str_replace('0.', '', (string)$dec);
-        return ($map[$floor] ?? $floor) . ' phẩy ' . $decStr . ' điểm';
+        return ($map[$floor] ?? $floor) . ' phẩy ' . ($decMap[$decDigit] ?? $decDigit) . ' điểm';
     }
 }
