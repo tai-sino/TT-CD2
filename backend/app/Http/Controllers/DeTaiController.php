@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\DeTai;
+use App\Models\SinhVien;
+use App\Models\GiangVien;
+use PhpOffice\PhpWord\TemplateProcessor;
 
 class DeTaiController extends Controller
 {
@@ -201,5 +204,132 @@ class DeTaiController extends Controller
         if (!$detai) return response()->json(['message' => 'Not found'], 404);
         $detai->delete();
         return response()->json(['message' => 'Deleted']);
+    }
+
+    public function exportGVHD($id)
+    {
+        $detai = DeTai::find($id);
+        if (!$detai) return response()->json(['message' => 'Not found'], 404);
+
+        $svList = SinhVien::where('maDeTai', $id)->get();
+        $gvhd = GiangVien::find($detai->maGV_HD);
+
+        $templateDir = storage_path('app/templates');
+        if (count($svList) >= 2) {
+            $templateFile = $templateDir . '/Mau_01_01.docx';
+        } else {
+            $templateFile = $templateDir . '/Mau_01_02.docx';
+        }
+
+        $tp = new TemplateProcessor($templateFile);
+
+        $tp->setValue('ten_de_tai', $detai->tenDeTai ?? '');
+        $tp->setValue('ten_gvhd', $gvhd ? $gvhd->tenGV : '');
+
+        $tieuChi = $detai->tieuChiHD ?? [];
+        for ($i = 1; $i <= 5; $i++) {
+            $tp->setValue('tc' . $i, $tieuChi['tc' . $i] ?? '');
+        }
+
+        $diem = $detai->diemHuongDan ?? '';
+        $tp->setValue('diem_tong', $diem);
+        $tp->setValue('diem_chu', $diem !== '' ? $this->diemSangChu((float)$diem) : '');
+        $tp->setValue('nhan_xet', $detai->nhanXetHuongDan ?? '');
+
+        $now = now();
+        $tp->setValue('ngay', $now->day);
+        $tp->setValue('thang', $now->month);
+        $tp->setValue('nam', $now->year);
+
+        if (count($svList) >= 2) {
+            $sv1 = $svList[0];
+            $sv2 = $svList[1];
+            $tp->setValue('ho_ten_sv_01', $sv1->hoTen ?? '');
+            $tp->setValue('mssv_01', $sv1->mssv ?? '');
+            $tp->setValue('lop_01', $sv1->lop ?? '');
+            $tp->setValue('ho_ten_sv_02', $sv2->hoTen ?? '');
+            $tp->setValue('mssv_02', $sv2->mssv ?? '');
+            $tp->setValue('lop_02', $sv2->lop ?? '');
+        } else {
+            $sv = $svList->first();
+            $tp->setValue('ho_ten_sv', $sv ? $sv->hoTen : '');
+            $tp->setValue('mssv', $sv ? $sv->mssv : '');
+            $tp->setValue('lop', $sv ? $sv->lop : '');
+        }
+
+        $tempFile = $tp->save();
+        $filename = 'Phieu_cham_HD_' . $detai->maDeTai . '.docx';
+        return response()->download($tempFile, $filename)->deleteFileAfterSend(true);
+    }
+
+    public function exportGVPB($id)
+    {
+        $detai = DeTai::find($id);
+        if (!$detai) return response()->json(['message' => 'Not found'], 404);
+
+        $svList = SinhVien::where('maDeTai', $id)->get();
+        $gvpb = GiangVien::find($detai->maGV_PB);
+
+        $templateDir = storage_path('app/templates');
+        if (count($svList) >= 2) {
+            $templateFile = $templateDir . '/Mau_02_01.docx';
+        } else {
+            $templateFile = $templateDir . '/Mau_02_02.docx';
+        }
+
+        $tp = new TemplateProcessor($templateFile);
+
+        $tp->setValue('ten_de_tai', $detai->tenDeTai ?? '');
+        $tp->setValue('ten_gvpb', $gvpb ? $gvpb->tenGV : '');
+
+        $tieuChi = $detai->tieuChiPB ?? [];
+        for ($i = 1; $i <= 5; $i++) {
+            $tp->setValue('tc' . $i, $tieuChi['tc' . $i] ?? '');
+        }
+
+        $diem = $detai->diemPhanBien ?? '';
+        $tp->setValue('diem_tong', $diem);
+        $tp->setValue('diem_chu', $diem !== '' ? $this->diemSangChu((float)$diem) : '');
+        $tp->setValue('nhan_xet', $detai->nhanXetPhanBien ?? '');
+
+        $now = now();
+        $tp->setValue('ngay', $now->day);
+        $tp->setValue('thang', $now->month);
+        $tp->setValue('nam', $now->year);
+
+        if (count($svList) >= 2) {
+            $sv1 = $svList[0];
+            $sv2 = $svList[1];
+            $tp->setValue('ho_ten_sv_01', $sv1->hoTen ?? '');
+            $tp->setValue('mssv_01', $sv1->mssv ?? '');
+            $tp->setValue('lop_01', $sv1->lop ?? '');
+            $tp->setValue('ho_ten_sv_02', $sv2->hoTen ?? '');
+            $tp->setValue('mssv_02', $sv2->mssv ?? '');
+            $tp->setValue('lop_02', $sv2->lop ?? '');
+        } else {
+            $sv = $svList->first();
+            $tp->setValue('ho_ten_sv', $sv ? $sv->hoTen : '');
+            $tp->setValue('mssv', $sv ? $sv->mssv : '');
+            $tp->setValue('lop', $sv ? $sv->lop : '');
+        }
+
+        $tempFile = $tp->save();
+        $filename = 'Phieu_cham_PB_' . $detai->maDeTai . '.docx';
+        return response()->download($tempFile, $filename)->deleteFileAfterSend(true);
+    }
+
+    private function diemSangChu($diem)
+    {
+        $map = [
+            0 => 'Không', 1 => 'Một', 2 => 'Hai', 3 => 'Ba', 4 => 'Bốn',
+            5 => 'Năm', 6 => 'Sáu', 7 => 'Bảy', 8 => 'Tám', 9 => 'Chín', 10 => 'Mười',
+        ];
+        $floor = (int) $diem;
+        $dec = round($diem - $floor, 1);
+        if ($dec == 0) {
+            return ($map[$floor] ?? $floor) . ' điểm';
+        }
+        $decStr = $dec == 0.5 ? 'năm' : str_replace('0.', '', (string)$dec);
+        return ($map[$floor] ?? $floor) . ' phẩy ' . $decStr . ' điểm';
     }
 }
