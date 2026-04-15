@@ -117,11 +117,26 @@ class DeTaiController extends Controller
     {
         $detai = DeTai::find($id);
         if (!$detai) return response()->json(['message' => 'Not found'], 404);
-        $validated = $request->validate([
-            'diemHuongDan' => 'nullable|numeric|min:0|max:10',
-            'nhanXetHuongDan' => 'nullable|string',
-        ]);
-        $detai->update($validated);
+
+        if ($request->has('tieu_chi')) {
+            $request->validate([
+                'tieu_chi' => 'required|array',
+                'tieu_chi.*' => 'numeric|min:0|max:10',
+                'tong_diem' => 'required|numeric|min:0|max:10',
+                'nhan_xet' => 'nullable|string',
+            ]);
+            $detai->tieuChiHD = $request->tieu_chi;
+            $detai->diemHuongDan = $request->tong_diem;
+            $detai->nhanXetHuongDan = $request->nhan_xet;
+            $detai->save();
+        } else {
+            $validated = $request->validate([
+                'diemHuongDan' => 'nullable|numeric|min:0|max:10',
+                'nhanXetHuongDan' => 'nullable|string',
+            ]);
+            $detai->update($validated);
+        }
+
         return response()->json($detai);
     }
 
@@ -129,11 +144,53 @@ class DeTaiController extends Controller
     {
         $detai = DeTai::find($id);
         if (!$detai) return response()->json(['message' => 'Not found'], 404);
-        $validated = $request->validate([
-            'diemPhanBien' => 'nullable|numeric|min:0|max:10',
-            'nhanXetPhanBien' => 'nullable|string',
+
+        if ($request->has('tieu_chi')) {
+            $request->validate([
+                'tieu_chi' => 'required|array',
+                'tieu_chi.*' => 'numeric|min:0|max:10',
+                'tong_diem' => 'required|numeric|min:0|max:10',
+                'nhan_xet' => 'nullable|string',
+            ]);
+            $detai->tieuChiPB = $request->tieu_chi;
+            $detai->diemPhanBien = $request->tong_diem;
+            $detai->nhanXetPhanBien = $request->nhan_xet;
+            $detai->save();
+        } else {
+            $validated = $request->validate([
+                'diemPhanBien' => 'nullable|numeric|min:0|max:10',
+                'nhanXetPhanBien' => 'nullable|string',
+            ]);
+            $detai->update($validated);
+        }
+
+        return response()->json($detai);
+    }
+
+    public function chamDiemGK(Request $request, $id)
+    {
+        $detai = DeTai::find($id);
+        if (!$detai) return response()->json(['message' => 'Not found'], 404);
+
+        $request->validate([
+            'tieu_chi' => 'required|array',
+            'tieu_chi.*' => 'numeric|min:0|max:10',
+            'tong_diem' => 'required|numeric|min:0|max:10',
+            'nhan_xet' => 'nullable|string',
+            'trang_thai' => 'nullable|string',
         ]);
-        $detai->update($validated);
+
+        $trangThai = $request->trang_thai;
+        if (!$trangThai) {
+            $trangThai = $request->tong_diem >= 5 ? 'dat' : 'khong_dat';
+        }
+
+        $detai->tieuChiGK = $request->tieu_chi;
+        $detai->diemGiuaKy = $request->tong_diem;
+        $detai->nhanXetGiuaKy = $request->nhan_xet;
+        $detai->trangThaiGiuaKy = $trangThai;
+        $detai->save();
+
         return response()->json($detai);
     }
 
