@@ -81,8 +81,8 @@ export default function GiuaKy() {
 	}, [lecturerList]);
 
 	const { data: deTaiData, isLoading } = useQuery({
-		queryKey: ['deTais', { ky_id: kyId, q: search, page, maGV_HD: selectedGVHD }],
-		queryFn: () => getDeTais({ ky_id: kyId || undefined, q: search || undefined, page, maGV_HD: selectedGVHD || undefined }),
+		queryKey: ['deTais', { ky_lvtn_id: kyId, q: search, page, maGV_HD: selectedGVHD }],
+		queryFn: () => getDeTais({ ky_lvtn_id: kyId || undefined, q: search || undefined, page, maGV_HD: selectedGVHD || undefined }),
 	});
 
 	const tableData = deTaiData?.data || [];
@@ -112,7 +112,9 @@ export default function GiuaKy() {
 		});
 	}
 
-	const trangThaiGiuaKy = editForm.tong_diem >= 5 ? 'Đạt' : 'Không đạt';
+	const trangThaiDisplay = { dat: 'Đạt', khong_dat: 'Không đạt' };
+	const hasInput = Object.values(editForm.tieu_chi || {}).some(v => v !== '');
+	const trangThaiGiuaKy = hasInput ? (editForm.tong_diem >= 5 ? 'Đạt' : 'Không đạt') : null;
 
 	return (
 		<div>
@@ -207,8 +209,8 @@ export default function GiuaKy() {
 										</td>
 										<td className="px-4 py-3 border-t border-slate-100 align-middle">
 											{trangThai ? (
-												<span className={`px-2 py-1 rounded text-xs font-medium ${trangThai === 'Đạt' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'}`}>
-													{trangThai}
+												<span className={`px-2 py-1 rounded text-xs font-medium ${trangThai === 'dat' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'}`}>
+													{trangThaiDisplay[trangThai] ?? trangThai}
 												</span>
 											) : <span className="text-slate-400 italic text-sm">Chưa có</span>}
 										</td>
@@ -293,9 +295,11 @@ export default function GiuaKy() {
 							</div>
 							<div className="flex items-center gap-3 mt-2">
 								<span className="text-sm text-slate-600 flex-1">Trạng thái</span>
-								<span className={`px-2 py-1 rounded text-xs font-medium ${trangThaiGiuaKy === 'Đạt' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'}`}>
-									{trangThaiGiuaKy}
-								</span>
+								{trangThaiGiuaKy && (
+									<span className={`px-2 py-1 rounded text-xs font-medium ${trangThaiGiuaKy === 'Đạt' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'}`}>
+										{trangThaiGiuaKy}
+									</span>
+								)}
 							</div>
 						</div>
 
