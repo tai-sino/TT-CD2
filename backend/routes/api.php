@@ -48,6 +48,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/de-tai/{id}', [\App\Http\Controllers\DeTaiController::class, 'update']);
     Route::put('/de-tai/{id}/cham-diem-hd', [\App\Http\Controllers\DeTaiController::class, 'chamDiemHD']);
     Route::put('/de-tai/{id}/cham-diem-pb', [\App\Http\Controllers\DeTaiController::class, 'chamDiemPB']);
+    Route::put('/de-tai/{id}/cham-diem-gk', [\App\Http\Controllers\DeTaiController::class, 'chamDiemGK']);
     Route::delete('/de-tai/{id}', [\App\Http\Controllers\DeTaiController::class, 'destroy']);
 
 
