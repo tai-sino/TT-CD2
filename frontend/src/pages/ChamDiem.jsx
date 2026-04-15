@@ -1,8 +1,25 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getDeTais, chamDiemHD, chamDiemPB } from '../services/deTaiService';
+import { getDeTais, chamDiemHD, chamDiemPB, exportWordGVHD, exportWordGVPB } from '../services/deTaiService';
 import { getKyLvtn } from '../services/kyLvtnService';
 import { getLecturers } from '../services/giangVienService';
+
+const tieuChiLabels = [
+  'Phân tích yêu cầu',
+  'Thiết kế hệ thống',
+  'Hiện thực',
+  'Báo cáo / thuyết minh',
+  'Trình bày / demo',
+];
+
+const defaultTieuChi = { tc1: '', tc2: '', tc3: '', tc4: '', tc5: '' };
+
+function tinhTong(tieuChi) {
+  const vals = Object.values(tieuChi).map(v => parseFloat(v) || 0);
+  if (vals.length === 0) return 0;
+  const sum = vals.reduce((a, b) => a + b, 0);
+  return Math.round((sum / vals.length) * 10) / 10;
+}
 
 export default function ChamDiem() {
   const queryClient = useQueryClient();
@@ -29,6 +46,7 @@ export default function ChamDiem() {
   const [editForm, setEditForm] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [exportingId, setExportingId] = useState(null);
 
   const { data: kyList } = useQuery({ queryKey: ['kyLvtn'], queryFn: getKyLvtn });
   const { data: lecturerList } = useQuery({ queryKey: ['giangVien'], queryFn: getLecturers });
@@ -81,20 +99,56 @@ export default function ChamDiem() {
 
   function openEdit(dt) {
     setEditDeTai(dt);
-    if (tab === 'hd') {
-      setEditForm({ diemHuongDan: dt.diemHuongDan ?? '', nhanXetHuongDan: dt.nhanXetHuongDan ?? '' });
-    } else {
-      setEditForm({ diemPhanBien: dt.diemPhanBien ?? '', nhanXetPhanBien: dt.nhanXetPhanBien ?? '' });
+    let tieuChi = { ...defaultTieuChi };
+    let nhanXet = '';
+
+    if (tab === 'hd' && dt.tieuChiHD) {
+      tieuChi = { ...defaultTieuChi, ...dt.tieuChiHD };
+      nhanXet = dt.nhanXetHuongDan ?? '';
+    } else if (tab === 'pb' && dt.tieuChiPB) {
+      tieuChi = { ...defaultTieuChi, ...dt.tieuChiPB };
+      nhanXet = dt.nhanXetPhanBien ?? '';
     }
+
+    const tong = tinhTong(tieuChi);
+    setEditForm({ tieu_chi: tieuChi, tong_diem: tong, nhan_xet: nhanXet });
     setSaveSuccess(false);
     setShowModal(true);
   }
 
+  function handleTieuChiChange(key, val) {
+    setEditForm(f => {
+      const tieuChi = { ...f.tieu_chi, [key]: val };
+      const tong = tinhTong(tieuChi);
+      return { ...f, tieu_chi: tieuChi, tong_diem: tong };
+    });
+  }
+
   function handleSave() {
+    const payload = {
+      tieu_chi: editForm.tieu_chi,
+      tong_diem: editForm.tong_diem,
+      nhan_xet: editForm.nhan_xet,
+    };
     if (tab === 'hd') {
-      hdMut.mutate({ id: editDeTai.maDeTai, data: editForm });
+      hdMut.mutate({ id: editDeTai.maDeTai, data: payload });
     } else {
-      pbMut.mutate({ id: editDeTai.maDeTai, data: editForm });
+      pbMut.mutate({ id: editDeTai.maDeTai, data: payload });
+    }
+  }
+
+  async function handleExport(dt) {
+    setExportingId(dt.maDeTai);
+    try {
+      if (tab === 'hd') {
+        await exportWordGVHD(dt.maDeTai);
+      } else {
+        await exportWordGVPB(dt.maDeTai);
+      }
+    } catch {
+      alert('Xuất file thất bại, vui lòng thử lại.');
+    } finally {
+      setExportingId(null);
     }
   }
 
@@ -192,6 +246,7 @@ export default function ChamDiem() {
                 const diem = tab === 'hd' ? dt.diemHuongDan : dt.diemPhanBien;
                 const nhanXet = tab === 'hd' ? dt.nhanXetHuongDan : dt.nhanXetPhanBien;
                 const maGV = tab === 'hd' ? dt.maGV_HD : dt.maGV_PB;
+                const daDiem = diem !== null && diem !== undefined;
                 return (
                   <tr key={dt.maDeTai} className="hover:bg-slate-50">
                     <td className="px-4 py-3 text-sm text-slate-700 border-t border-slate-100 font-medium">{dt.tenDeTai}</td>
@@ -206,7 +261,7 @@ export default function ChamDiem() {
                       ) : <span className="text-slate-400 italic">Chưa có</span>}
                     </td>
                     <td className="px-4 py-3 text-sm border-t border-slate-100 text-center">
-                      {diem !== null && diem !== undefined
+                      {daDiem
                         ? <span className="font-semibold text-blue-600">{diem}</span>
                         : <span className="text-slate-400 italic">Chưa chấm</span>}
                     </td>
@@ -214,12 +269,23 @@ export default function ChamDiem() {
                       {nhanXet || <span className="text-slate-400 italic">Chưa có</span>}
                     </td>
                     <td className="px-4 py-3 border-t border-slate-100">
-                      <button
-                        onClick={() => openEdit(dt)}
-                        className="text-sm text-blue-600 hover:text-blue-800 font-medium"
-                      >
-                        Chấm điểm
-                      </button>
+                      <div className="flex gap-2 items-center">
+                        <button
+                          onClick={() => openEdit(dt)}
+                          className="text-sm text-blue-600 hover:text-blue-800 font-medium whitespace-nowrap"
+                        >
+                          Chấm điểm
+                        </button>
+                        {daDiem && (
+                          <button
+                            onClick={() => handleExport(dt)}
+                            disabled={exportingId === dt.maDeTai}
+                            className="text-sm text-green-600 hover:text-green-800 font-medium whitespace-nowrap disabled:opacity-50"
+                          >
+                            {exportingId === dt.maDeTai ? 'Đang tải...' : 'Xuất Word'}
+                          </button>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 );
@@ -258,7 +324,7 @@ export default function ChamDiem() {
 
       {showModal && editDeTai && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
             <h2 className="text-lg font-semibold mb-1">
               {tab === 'hd' ? 'Chấm điểm hướng dẫn' : 'Chấm điểm phản biện'}
             </h2>
@@ -273,33 +339,39 @@ export default function ChamDiem() {
               </div>
             )}
 
-            <div className="mb-3">
-              <label className="block text-xs font-medium text-slate-600 mb-1">
-                {tab === 'hd' ? 'Điểm hướng dẫn' : 'Điểm phản biện'} (0–10)
-              </label>
-              <input
-                type="number"
-                min="0"
-                max="10"
-                step="0.1"
-                value={tab === 'hd' ? editForm.diemHuongDan : editForm.diemPhanBien}
-                onChange={e => {
-                  const key = tab === 'hd' ? 'diemHuongDan' : 'diemPhanBien';
-                  setEditForm(f => ({ ...f, [key]: e.target.value }));
-                }}
-                className="border border-slate-300 rounded px-3 py-2 text-sm w-full focus:outline-blue-500"
-              />
+            <div className="mb-4">
+              <p className="text-xs font-medium text-slate-600 mb-2">Tiêu chí chấm điểm (0–10)</p>
+              {tieuChiLabels.map((label, i) => {
+                const key = `tc${i + 1}`;
+                return (
+                  <div key={key} className="flex items-center gap-3 mb-2">
+                    <label className="text-sm text-slate-600 flex-1">{label}</label>
+                    <input
+                      type="number"
+                      min="0"
+                      max="10"
+                      step="0.5"
+                      value={editForm.tieu_chi?.[key] ?? ''}
+                      onChange={e => handleTieuChiChange(key, e.target.value)}
+                      className="border border-slate-300 rounded px-2 py-1 text-sm w-20 focus:outline-blue-500"
+                    />
+                  </div>
+                );
+              })}
+              <div className="flex items-center gap-3 mt-3 pt-3 border-t border-slate-200">
+                <span className="text-sm font-medium text-slate-700 flex-1">Tổng điểm (trung bình)</span>
+                <span className="text-base font-bold text-blue-600 w-20 text-center">
+                  {editForm.tong_diem ?? 0}
+                </span>
+              </div>
             </div>
 
             <div className="mb-4">
               <label className="block text-xs font-medium text-slate-600 mb-1">Nhận xét</label>
               <textarea
                 rows={4}
-                value={tab === 'hd' ? editForm.nhanXetHuongDan : editForm.nhanXetPhanBien}
-                onChange={e => {
-                  const key = tab === 'hd' ? 'nhanXetHuongDan' : 'nhanXetPhanBien';
-                  setEditForm(f => ({ ...f, [key]: e.target.value }));
-                }}
+                value={editForm.nhan_xet ?? ''}
+                onChange={e => setEditForm(f => ({ ...f, nhan_xet: e.target.value }))}
                 className="border border-slate-300 rounded px-3 py-2 text-sm w-full focus:outline-blue-500"
               />
             </div>
