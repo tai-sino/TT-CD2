@@ -15,8 +15,8 @@
 
 | STT | Thành viên                 | Vai trò | Module/Controller/Trang phụ trách                                                                                               |
 | --- | ---------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | **Trần Quốc Khánh** | Backend  | Xây dựng DB, AuthController, GiangVienController, phân quyền, CauHinhController                                               |
-| 2   | **Lê Tiến Phát**    | Backend  | DeTaiController, SinhVienController, KyLvtnController, các API liên quan                                                       |
+| 1   | **Trần Quốc Khánh** | Backend  | AuthController, GiangVienController, phân quyền, CauHinhController, các API                                               |
+| 2   | **Lê Tiến Phát**    | Backend  | DeTaiController, SinhVienController, KyLvtnController, xây dựng DB                                                    |
 | 3   | **Siêu Ngọc Tài**   | Backend  | Tinh chỉnh DB, migration, seed, docker, deploy, TopicRegistrationFormController, module import file, kiểm tra & fix lỗi        |
 | 4   | **Nguyễn Tuấn Anh**  | Frontend | Trang: LoginPage, TongQuan, GiangVien, NhapLieu, hỗ trợ responsive                                                             |
 | 5   | **Võ Thiên Phú**    | Frontend | Trang: PhanCong, SinhVien, GiuaKy, hỗ trợ responsive (cho toàn bộ)                                                            |
