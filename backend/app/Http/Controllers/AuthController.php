@@ -27,7 +27,20 @@ class AuthController extends Controller
         $token = $user->createToken('auth_token')->plainTextToken;
 
         // Lấy vai trò duy nhất ưu tiên theo bảng thanhvien_hoidong
-        $tvhd = ThanhVienHoiDong::where('maGV', $user->maGV)->first();
+        $role = null;
+        if ($user->isAdmin) {
+            $role = 'ThuKy';
+        } else {
+            $tvhd = ThanhVienHoiDong::where('maGV', $user->maGV)->first();
+            if ($tvhd) {
+                $role = $tvhd->vaiTro;
+            } elseif (DeTai::where('maGV_HD', $user->maGV)->exists()) {
+                $role = 'gvhd';
+            } elseif (DeTai::where('maGV_PB', $user->maGV)->exists()) {
+                $role = 'gvpb';
+            }
+        }
+
         return response()->json([
             'token' => $token,
             'user' => [
@@ -35,7 +48,7 @@ class AuthController extends Controller
                 'name' => $user->tenGV,
                 'email' => $user->email,
                 'type' => 'giangvien',
-                'role' => $tvhd ? $tvhd->vaiTro : null,
+                'role' => $role,
             ],
         ]);
     }
@@ -44,13 +57,18 @@ class AuthController extends Controller
     {
         $user = $request->user();
 
-        $tvhd = ThanhVienHoiDong::where('maGV', $user->maGV)->first();
-        $role = $tvhd ? $tvhd->vaiTro : null;
-
-        // Xác định role dựa trên đề tài nếu chưa có vai trò hội đồng
-        if (!$role) {
-            if (DeTai::where('maGV_HD', $user->maGV)->exists()) $role = 'gvhd';
-            elseif (DeTai::where('maGV_PB', $user->maGV)->exists()) $role = 'gvpb';
+        $role = null;
+        if ($user->isAdmin) {
+            $role = 'ThuKy';
+        } else {
+            $tvhd = ThanhVienHoiDong::where('maGV', $user->maGV)->first();
+            if ($tvhd) {
+                $role = $tvhd->vaiTro;
+            } elseif (DeTai::where('maGV_HD', $user->maGV)->exists()) {
+                $role = 'gvhd';
+            } elseif (DeTai::where('maGV_PB', $user->maGV)->exists()) {
+                $role = 'gvpb';
+            }
         }
 
         return response()->json([
